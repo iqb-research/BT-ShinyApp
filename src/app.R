@@ -1,9 +1,3 @@
-# TODO: Wenn es alles passt, könnt Ihr die Referenzen zu den alten Code-Stellen gern rauslöschen!
-# Betroffene Kommentare habe ich kommentiert mit
-# TODO: start-delete
-# {CODE}
-# TODO: end-delete
-
 # Shiny
 library(shiny)
 library(shinythemes)
@@ -15,18 +9,14 @@ library(widgetframe)
 
 # Plot
 library(ggplot2)
-# TODO: delete-start
-# funktioniert mit der neuesten Version von eatMap
-# devtools::install_github("franikowsp/eatMap")
-# TODO: delete-end
 library(eatMap)
-# library(ggplot2) # tidyverse
 
 # Datenselektion
 library(tidyverse)
 
 # Geodaten
 library(sf)
+
 # Infobuttons
 library(shinyBS)
 
@@ -267,9 +257,7 @@ combinations <-
   distinct(cycle, fachKb, year, parameter, targetPop)
 
 # Vorbereitung der grouped radio buttons ---------------------------------------
-# TODO: start-delete
-# Ich habe hier das zweite id in parentId umgeändert, damit das ggf. noch ein wenig klarer wird, was das ist?
-# TODO: end-delete
+
 radioSubgroup <- function(inputId, parentId, label, choices, selected, inline = FALSE) {
   values <- paste0(parentId, "-", choices)
   choices <- setNames(values, choices)
@@ -282,23 +270,6 @@ radioGroupContainer <- function(inputId, ...) {
   div(id = inputId, class = class, ...)
 }
 
-# TODO: start-delete
-# # Zum Gegenprüfen
-# kb_current <- config$fachKb[["4. Klasse"]]
-# subject = "Deutsch"
-# n_subject = 1
-# # Funktion ersetzt dann alle diese Knoten
-# column(
-#   12,
-#   radioSubgroup(
-#     "Kompetenzbereich",
-#     "Deutsch",
-#     label = "Deutsch:",
-#     choices = kb_GS_deutsch,
-#     selected = "Deutsch-Lesen"
-#   )
-# )
-# TODO: end-delete
 make_radioSubgroup <- function(kb_current, subject, n_subject) {
   selected_choice = character(0)
   # Treat first Kb differently
@@ -773,13 +744,10 @@ server <- function(input, output, session) {
                         envir = new.env(parent = globalenv())
       )
     }
-  ) # output$report
+  ) 
 }
 
 
 # Build App --------------------------------------------------------------------
 
 shinyApp(ui = ui, server = server)
-
-
-#rsconnect::deployApp('C:\\Users\\alina\\Desktop\\IQB\\BT-Shiny-Minimalloesung')
