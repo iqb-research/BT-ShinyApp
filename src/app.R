@@ -14,7 +14,7 @@ library(shinyBS)
 library(widgetframe)
 
 # Plot
-library(ggiraph)
+library(ggplot2)
 # TODO: delete-start
 # funktioniert mit der neuesten Version von eatMap
 # devtools::install_github("franikowsp/eatMap")
@@ -45,6 +45,7 @@ names(mapdata) <- c("Bundesland", "geometry")
 # eatMap als auch für ggplot2 nutzen!
 config <-
   list(
+    na_label = "keine Daten",
     fachKb = list(
       # 4. Klasse
       "4. Klasse" = list(
@@ -106,13 +107,13 @@ config <-
         ),
         "minVerfehltESA" = list(
           label = "Mindeststandard für ESA verfehlt (%)",
-          title = "Mindeststandard für ESA \nverfehlt (%)",
+          title = "Mindeststandard für \nESA verfehlt (%)",
           range = list(min = 0, max = 20),
           reverse = TRUE
         ),
         "minVerfehltMSA" = list(
           label = "Mindeststandard für MSA verfehlt (%)",
-          title = "Mindeststandard für MSA \nverfehlt (%)",
+          title = "Mindeststandard für \nMSA verfehlt (%)",
           range = list(min = 5, max = 30),
           reverse = TRUE
         ),
@@ -124,7 +125,7 @@ config <-
         ),
         "regErreichtMSA" = list(
           label = "Regelstandard für MSA erreicht (%)",
-          title = "Regelstandard für MSA \nerreicht (%)",
+          title = "Regelstandard für \nMSA erreicht (%)",
           range = list(min = 30, max = 75),
           reverse = FALSE
         ),
@@ -136,7 +137,7 @@ config <-
         ),
         "optErreichtMSA" = list(
           label = "Optimalstandard für MSA erreicht (%)",
-          title = "Optimalstandard für MSA \nerreicht (%)",
+          title = "Optimalstandard für \nMSA erreicht (%)",
           range = list(min = 0, max = 20),
           reverse = FALSE
         )
@@ -209,7 +210,7 @@ allDatRec <-
 print_percent <- function(x) {
   # Anteil in Prozentwert umwandeln und "%" anhängen
   x_perc <- paste0(x, "%")
-
+  
   # Korrektur, falls NAs zu Strings geworden sind
   ifelse(x_perc == "NA%", NA_character_, x_perc)
 }
@@ -235,7 +236,7 @@ BTdata <-
       .default = print_percent(est)
     ),
     # NAs sollen außerdem als "keine Daten" beschriftet werden
-    est_print = ifelse(is.na(est_print), "keine Daten", est_print)
+    est_print = ifelse(is.na(est_print), config$na_label, est_print)
   ) %>%
   left_join(range_check) %>%
   mutate(
@@ -304,10 +305,10 @@ make_radioSubgroup <- function(kb_current, subject, n_subject) {
   if (n_subject == 1) {
     subject1 <- names(kb_current)[1]
     kb1 <- kb_current[[subject1]][1]
-
+    
     selected_choice <- str_glue("{subject1}-{kb1}")
   }
-
+  
   column(
     12,
     radioSubgroup(
@@ -337,25 +338,25 @@ make_YearParameterPopulation <- function(cycle_current) {
   fachKb1 <- config$fachKb[[cycle_current]][1]
   fach1 <- names(fachKb1)
   fachKb_default <- str_glue("{fach1}-{fachKb1[[1]][1]}")
-
+  
   selected_combinations <- combinations[combinations$cycle == cycle_current &
                                           combinations$fachKb == fachKb_default, ]
-
+  
   targetPop_default <- "alle"
   parameter_default <- "mean"
-
+  
   years <- sort(unique(selected_combinations[selected_combinations$targetPop == targetPop_default &
                                                selected_combinations$parameter == parameter_default, ]$year))
-
+  
   # Darüber sollte immer der aktuellste BT angesteuert werden
   year_default <- max(years)
-
+  
   parameters <- order_parameters(unique(selected_combinations[selected_combinations$targetPop == targetPop_default &
                                                                 selected_combinations$year == year_default, ]$parameter))
-
+  
   targetPops <- order_targetpop(unique(selected_combinations[selected_combinations$year == year_default &
                                                                selected_combinations$parameter == parameter_default, ]$targetPop))
-
+  
   div(
     sliderTextInput(inputId = "Jahr",
                     label = "Jahr",
@@ -364,7 +365,7 @@ make_YearParameterPopulation <- function(cycle_current) {
                     selected = year_default,
                     hide_min_max = TRUE,
                     width='75%'),
-
+    
     selectInput(
       inputId = "Kennwert",
       label = "Kennwert",
@@ -372,7 +373,7 @@ make_YearParameterPopulation <- function(cycle_current) {
       selected = parameter_default,
       width = '95%'
     ),
-
+    
     selectInput(
       inputId = "Zielpopulation",
       label = "Zielpopulation",
@@ -400,21 +401,21 @@ order_targetpop <- function(targetpops) {
 # UI ---------------------------------------------------------------------------
 
 ui <- fluidPage(
-
+  
   # Styling --------------------------------------------------------------------
   theme = shinytheme("sandstone"),
-
+  
   # Aussehen des Sliders
   # .irs-grid-pol.small: entfernt die vertikalen Gitternetzlinien zwischen den Ticks
   # .irs-grid-text: Schriftgröße der Labels unterhalb des Sliders
   # .irs-bar.irs-bar--single: Setzt Hintergrund der Slider-Leiste transparent
-
+  
   # Infobutton
   # .fa-info: Anpassungen am i Symbol auf dem Button
   # .custom-btn: Farbe usw. des Infobuttons
   # .popover: Box des Popovers (Breite der Box)
   # .no-padding: custom Klasse für column ohne padding am Rand
-
+  
   tags$style(
     HTML(
       "
@@ -451,13 +452,11 @@ ui <- fluidPage(
       "
     )
   ),
-
-  # Navigationsbalken Weibseiten-Kopf: -----------------------------------------
-  navbarPage(title = "IQB Bildungstrend-Karte"),
-
+  
+  
   # Navigationsfeld links ------------------------------------------------------
   sidebarPanel(
-
+    
     # Erhebungsreihe (Zyklus)
     fluidRow(
       column(
@@ -484,7 +483,7 @@ ui <- fluidPage(
         )
       )
     ),
-
+    
     # Kompetenzbereiche
     fluidRow(
       column(
@@ -504,7 +503,7 @@ ui <- fluidPage(
         )
       )
     ),
-
+    
     # Jahr, Kennwert und Zielpopulation
     fluidRow(
       column(
@@ -540,17 +539,31 @@ ui <- fluidPage(
           size = "extra-small"
         )
       )
+    ),
+    tags$div(style = "height: 20px;"),
+    
+    # Download-Button ------------------------------------------------------------
+    
+    fluidRow(
+      column(
+        width = 12, # Spalte für die dynamischen Inhalte
+        class = "no-padding",
+        downloadButton("report", " PDF Export",
+                       style = "width:100%; margin-top:10px;
+                   background-color:#f0f0f0; color: #000000;
+                   border: 1px solid #A9A9A9;
+                   padding: 3px 8px;
+                   height: 30px;")
+      )
     )
   ),
-
+  
   # Main-Panel mit der Deutschlandkarte ----------------------------------------
   mainPanel(
     eatMapOutput("deutschlandkarte", width = "100%")
   ),
-  # TODO: delete-start
-  # girafeOutput("deutschlandkarte", width = '100%')),
-  # TODO: delete-end
-
+  
+  
   # Texte in den Infobuttons ---------------------------------------------------
   # Info-Button Popover für Zyklus
   bsPopover(
@@ -563,7 +576,7 @@ ui <- fluidPage(
     trigger = "klick",
     options = list(container = "body")
   ),
-
+  
   # Info-Button Popover für Kompetenzbereiche
   bsPopover(
     id = "infobutton_kompetenzbereiche",
@@ -575,7 +588,7 @@ ui <- fluidPage(
     trigger = "klick",
     options = list(container = "body")
   ),
-
+  
   # Info-Button Popover für Jahre
   bsPopover(
     id = "infobutton_jahre",
@@ -587,7 +600,7 @@ ui <- fluidPage(
     trigger = "klick",
     options = list(container = "body")
   ),
-
+  
   # Info-Buttons Kennwert und Zielpopulation
   bsPopover(
     id = "infobutton_kennwert",
@@ -599,7 +612,7 @@ ui <- fluidPage(
     trigger = "klick",
     options = list(container = "body")
   ),
-
+  
   bsPopover(
     id = "infobutton_zielpopulation",
     title = "Grundgesamtheit",
@@ -615,19 +628,19 @@ ui <- fluidPage(
 # Server -----------------------------------------------------------------------
 
 server <- function(input, output, session) {
-
+  
   # Eingabevariablen auslesen und zwischenspeichern ----------------------------
-
+  
   # Zyklus (davon hängt ab, welche Eingabefelder dynamisch angezeigt werden)
   selectedZyklus <- reactive({
     input$Zyklus
   })
-
+  
   # Kennwert
   selectedKennwert <- reactive({
     input$Kennwert
   })
-
+  
   # Kompetenzbereich (aus dem dynamischen Panel)
   selectedKompetenzbereich <- reactive({
     # TODO: start-delete
@@ -638,59 +651,59 @@ server <- function(input, output, session) {
     # TODO: end-delete
     input$fachKb
   })
-
+  
   # Jahr (aus dynamischem Panel)
   selectedJahr <- reactive({
     input$Jahr
   })
-
+  
   # Zielpopulation (aus dynamischem panel)
   selectedZielpopulation <- reactive({
     input$Zielpopulation
   })
-
-
+  
+  
   # Dynamisches Auswahlpanel für Kompetenzbereiche generieren ------------------
   output$dynamicPanel_kompetenzbereiche <- renderUI({
     kb_current <- config$fachKb[[selectedZyklus()]]
     make_radioGroupContainer(kb_current)
   })
-
+  
   # Dynamisches Auswahlpanel für Jahr, Kennwert $ Zielpopulation ---------------
   output$dynamicPanel_JahrKennwertZielpopulation <- renderUI({
     make_YearParameterPopulation(selectedZyklus())
   })
-
-
+  
+  
   # Jahr, Kennwert & Zielpopulation jeweils voneinander abhängig ---------------
   observe({
     req(selectedKompetenzbereich())
-
+    
     selected_combinations <- combinations[combinations$cycle == selectedZyklus() &
                                             combinations$fachKb == selectedKompetenzbereich() , ]
-
+    
     kennwerte <- order_parameters(unique(selected_combinations$parameter))
     # ...abhängig von Zyklus und Fach-Kompetenzbereich
-
+    
     zielpopulationen <- order_targetpop(unique(selected_combinations[selected_combinations$parameter == selectedKennwert() , ]$targetPop))
     # ...abhängig von Zyklus, Fach-Kompetenzbereich, und Kennwert
-
+    
     jahre <- unique(selected_combinations[selected_combinations$parameter == selectedKennwert() &
                                             selected_combinations$targetPop == selectedZielpopulation(), ]$year)
     # ...abhängig von Zyklus, Fach-Kompetenzbereich, Kennwert, und Zielpopulation
-
+    
     updateSliderTextInput(session,
                           inputId = "Jahr",
                           label = "Jahr",
                           choices = jahre,
                           selected = selectedJahr())
-
+    
     updateSelectInput(session,
                       inputId = "Kennwert",
                       label = "Kennwert",
                       choices = kennwerte,
                       selected = selectedKennwert())
-
+    
     updateSelectInput(session,
                       inputId = "Zielpopulation",
                       label = "Zielpopulation",
@@ -699,11 +712,10 @@ server <- function(input, output, session) {
                                         selectedZielpopulation(),
                                         zielpopulationen[1]))
   })
-
+  
   # Datensatz selektieren ------------------------------------------------------
-
-
-  # Datensatz anhand der User-Eingaben selektieren
+  # anhand der User-Eingaben
+  
   data_selected <- reactive({
     req(selectedKennwert())
     data_selected <- BTdata[ BTdata$cycle == selectedZyklus() &
@@ -713,66 +725,55 @@ server <- function(input, output, session) {
                                BTdata$targetPop == selectedZielpopulation(), ]
     data_selected
   })
-
+  
   # Wähle Minimum und Maximum für die Skala
   config_parameter <- eventReactive(selectedKennwert(), config$parameter[[selectedKennwert()]])
-
+  
+  
+  
   # Deutschlandkarte -----------------------------------------------------------
-  # TODO: delete-start
-  # # kann nun raus, eatMap hat nun einen Fallback
-  #
-  # output$deutschlandkarte <- renderGirafe({
-  #
-  #   # mit Kartendaten zusammenfügen
-  #   data <- left_join(x = mapdata,
-  #                     y = data_selected(),
-  #                     by = "Bundesland")
-  #
-  #   # Legende ------------------------------------------------------------------
-  #
-  #   # Range der Legende
-  #   min_est <- config_parameter()$range$min
-  #   max_est <- config_parameter()$range$max
-  #
-  #   # Legendentitel
-  #   legendentitel <- config_parameter()$title
-  #
-  #   # Achseninversion
-  #   reverse <- config_parameter()$reverse
-  #
-  #   # Plot ---------------------------------------------------------------------
-  #
-  #   gg <-
-  #     ggplot(data) +
-  #     geom_sf_interactive(aes(
-  #       fill = est_delimited,
-  #       tooltip = sprintf("%s<br/>%s", Bundesland, est_print),
-  #       data_id = Bundesland
-  #     ),
-  #     color = "black") +
-  #     theme_void() +
-  #     scale_fill_viridis_c(
-  #       limits = c(min_est, max_est),
-  #       direction = ifelse(reverse, -1, 1), # hier sind große Zahlen schlecht
-  #       name = legendentitel,
-  #       guide = guide_colorbar(reverse = reverse)
-  #     ) +
-  #     labs(fill = input$Kennwert)
-  #   xx <- girafe(ggobj = gg)
-  #   print(xx)
-  # })
-  # TODO: delete-end
-
-  # # Datensatz selektieren ------------------------------------------------------
-  # # ... anhand der User-Eingaben
+  
   output$deutschlandkarte <- renderEatMap({
     req(data_selected(), selectedKompetenzbereich())
-
+    
     data_selected() %>%
       eatMap(data = ., config = config)
   })
-
-
+  
+  # PDF Export -----------------------------------------------------------------
+  
+  output$report <- downloadHandler(
+    
+    filename = "IQB_Bildungstrendkarte.pdf",
+    content = function(file) {
+      
+      # Lade-Anzeige (Feedback) während Download vorbereitet wird
+      showModal(modalDialog("PDF-Download wird vorbereitet...", footer=NULL))
+      on.exit(removeModal())
+      
+      # PDF soll in temporäres directory kopiert werden, falls keine Schreibrechte
+      # für das aktuelle directory vorliegen
+      tempReport <- file.path(tempdir(), "export.Rmd")
+      file.copy("export.Rmd", tempReport, overwrite = TRUE)
+      
+      # Parameter für das .Rmd Dokument
+      params <- list(data = left_join(x = mapdata,
+                                      y = data_selected(),
+                                      by = "Bundesland"),
+                     min_est = config_parameter()$range$min,
+                     max_est = config_parameter()$range$max,
+                     reverse = config_parameter()$reverse,
+                     legendentitel = config_parameter()$title,
+                     kennwert = input$Kennwert,
+                     na_label = config$na_label)
+      
+      # Knitten
+      rmarkdown::render(tempReport, output_file = file,
+                        params = params,
+                        envir = new.env(parent = globalenv())
+      )
+    }
+  ) # output$report
 }
 
 
