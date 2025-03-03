@@ -3,6 +3,9 @@ FROM rocker/shiny-verse:4.4
 # Helper tools for dev
 RUN apt update && apt install -y less wget vim
 
+# Remove example apps
+RUN rm /srv/shiny-server/*
+
 COPY src /srv/shiny-server/app
 
 # Install R dependencies
