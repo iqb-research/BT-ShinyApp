@@ -724,7 +724,9 @@ server <- function(input, output, session) {
                       inputId = "Zielpopulation",
                       label = "Population",
                       choices = zielpopulationen,
-                      selected = selectedZielpopulation())
+                      selected = ifelse(selectedZielpopulation() %in% zielpopulationen,
+                                        selectedZielpopulation(),
+                                        zielpopulationen[1]))
     
     updateSelectInput(session,
                       inputId = "Kennwert",
