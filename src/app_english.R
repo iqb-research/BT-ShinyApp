@@ -401,18 +401,18 @@ make_YearPopulationParameter <- function(cycle_current) {
                     width='75%'),
 
     selectInput(
-      inputId = "Kennwert",
-      label = "Parameter",
-      choices = parameters,
-      selected = parameter_default,
-      width = '95%'
-    ),
-
-    selectInput(
       inputId = "Zielpopulation",
       label = "Target Population",
       choices = targetPops,
       selected = targetPop_default,
+      width = '95%'
+    ),
+
+    selectInput(
+      inputId = "Kennwert",
+      label = "Parameter",
+      choices = parameters,
+      selected = parameter_default,
       width = '95%'
     )
   )
@@ -560,7 +560,7 @@ ui <- fluidPage(
         ),
         tags$div(style = "height: 60px;"), # vertikaler Abstand
         bsButton(
-          inputId = "infobutton_kennwert",
+          inputId = "infobutton_zielpopulation",
           label = "",
           icon = icon("info", lib = "font-awesome"),
           style = "custom-btn",
@@ -568,7 +568,7 @@ ui <- fluidPage(
         ),
         tags$div(style = "height: 50px;"), # vertikaler Abstand
         bsButton(
-          inputId = "infobutton_zielpopulation",
+          inputId = "infobutton_kennwert",
           label = "",
           icon = icon("info", lib = "font-awesome"),
           style = "custom-btn",
@@ -623,12 +623,12 @@ ui <- fluidPage(
     options = list(container = "body")
   ),
 
-  # Info-Buttons Kennwert und Zielpopulation
+  # Info-Buttons Zielpopulation und Kennwert
   bsPopover(
-    id = "infobutton_kennwert",
-    title = "Parameter",
+    id = "infobutton_zielpopulation",
+    title = "Population",
     content = HTML(paste0(
-      "The <strong>mean</strong> indicates the average proficiency score achieved by a specific group or subgroup.<br>The scale (e.g., proficiency score for German reading) was defined so that the population (e.g., all fourth graders in 2011) has a mean of 500.<br><br>The <strong>standard deviation (dispersion)</strong> indicates the extent to which proficiencies vary within a group. It describes whether the distribution of proficiencies scores is more uniform (homogeneous, low values) or different (heterogeneous, high values).<br>The scale (e.g., proficiencies score for German reading) was defined so that the population (e.g., all fourth graders in 2011) has a standard deviation of 100.<br><br>The proficiency level models contain descriptions of the requirements that students should achieve at least, generally and ideally at certain points in their school career.<br>The percentage under <strong>“minimum standard missed”</strong> indicates the proportion of students who failed to meet the basic requirements.<br><strong>“Regular standard met”</strong> describes the proportion of students who meet the expected requirements, while <strong>“optimal standard met”</strong> indicates the proportion who meet the highest requirements.<br><br>The abbreviations <strong>ESA</strong> and <strong>MSA</strong> stand for \"Erster Schulabschluss\" (engl. first school leaving certificate, formerly Hauptschulabschluss) and \"Mittlerer Schulabschluss\" (engl. secondary school leaving certificate) respectively.<br><br>Additional information: <a href=\"https://datatab.de/tutorial/mittelwert-median-modus\" target=\"_blank\">Mean</a>, <a href=\"https://datatab.de/tutorial/standardabweichung\" target=\"_blank\">standard deviation</a>, and <a href=\"https://www.iqb.hu-berlin.de/bista/ksm/\" target=\"_blank\">standards for the proficiency level models</a>."
+      "The IQB Trends in Student Achievement studies aim to describe all students in the 4th and 9th grades in Germany. For this purpose, samples are drawn from the so-called <a href=\"https://datatab.de/tutorial/hypothesentest\" target=\"_blank\">target population</a>. This includes all students that we want to make statements about with the respective study result. Which parameters and which subpopulations are included in the individual assessment cycles and for what reasons can be found in the respective <a href=\"https://www.iqb.hu-berlin.de/bt/\" target=\"_blank\">report volumes</a>.<br><br>The specification <strong>“all”</strong> includes all students at all types of schools, including students with special educational needs. The only exceptions are special needs students in the area of “mental development” and students who have been taught in German for less than one year. The information <strong>“all (taught on the basis of educational standards)”</strong> distinguishes whether students are taught \"zielgleich\" meaning on the basis of the same standard curriculum. Achievement of the educational standards is only reported for students taught in that way.<br><br>In addition, the IQB Trends in Student Achievement studies also show results separately only for students who are aiming for at least the <strong>secondary school leaving certificate (MSA)</strong> and students at <strong>college-preparatory secondary schools (Gymnasien)</strong>."
     )),
     placement = "right",
     trigger = "klick",
@@ -636,10 +636,10 @@ ui <- fluidPage(
   ),
 
   bsPopover(
-    id = "infobutton_zielpopulation",
-    title = "Population",
+    id = "infobutton_kennwert",
+    title = "Parameter",
     content = HTML(paste0(
-      "The IQB Trends in Student Achievement studies aim to describe all students in the 4th and 9th grades in Germany. For this purpose, samples are drawn from the so-called <a href=\"https://datatab.de/tutorial/hypothesentest\" target=\"_blank\">target population</a>. This includes all students that we want to make statements about with the respective study result. Which parameters and which subpopulations are included in the individual assessment cycles and for what reasons can be found in the respective <a href=\"https://www.iqb.hu-berlin.de/bt/\" target=\"_blank\">report volumes</a>.<br><br>The specification <strong>“all”</strong> includes all students at all types of schools, including students with special educational needs. The only exceptions are special needs students in the area of “mental development” and students who have been taught in German for less than one year. The information <strong>“all (taught on the basis of educational standards)”</strong> distinguishes whether students are taught \"zielgleich\" meaning on the basis of the same standard curriculum. Achievement of the educational standards is only reported for students taught in that way.<br><br>In addition, the IQB Trends in Student Achievement studies also show results separately only for students who are aiming for at least the <strong>secondary school leaving certificate (MSA)</strong> and students at <strong>college-preparatory secondary schools (Gymnasien)</strong>."
+      "The <strong>mean</strong> indicates the average proficiency score achieved by a specific group or subgroup.<br>The scale (e.g., proficiency score for German reading) was defined so that the population (e.g., all fourth graders in 2011) has a mean of 500.<br><br>The <strong>standard deviation (dispersion)</strong> indicates the extent to which proficiencies vary within a group. It describes whether the distribution of proficiencies scores is more uniform (homogeneous, low values) or different (heterogeneous, high values).<br>The scale (e.g., proficiencies score for German reading) was defined so that the population (e.g., all fourth graders in 2011) has a standard deviation of 100.<br><br>The proficiency level models contain descriptions of the requirements that students should achieve at least, generally and ideally at certain points in their school career.<br>The percentage under <strong>“minimum standard missed”</strong> indicates the proportion of students who failed to meet the basic requirements.<br><strong>“Regular standard met”</strong> describes the proportion of students who meet the expected requirements, while <strong>“optimal standard met”</strong> indicates the proportion who meet the highest requirements.<br><br>The abbreviations <strong>ESA</strong> and <strong>MSA</strong> stand for \"Erster Schulabschluss\" (engl. first school leaving certificate, formerly Hauptschulabschluss) and \"Mittlerer Schulabschluss\" (engl. secondary school leaving certificate) respectively.<br><br>Additional information: <a href=\"https://datatab.de/tutorial/mittelwert-median-modus\" target=\"_blank\">Mean</a>, <a href=\"https://datatab.de/tutorial/standardabweichung\" target=\"_blank\">standard deviation</a>, and <a href=\"https://www.iqb.hu-berlin.de/bista/ksm/\" target=\"_blank\">standards for the proficiency level models</a>."
     )),
     placement = "right",
     trigger = "klick",
@@ -691,7 +691,7 @@ server <- function(input, output, session) {
     make_radioGroupContainer(kb_current)
   })
 
-  # Dynamisches Auswahlpanel für Jahr, Kennwert $ Zielpopulation ---------------
+  # Dynamisches Auswahlpanel für Jahr, Zielpopulation & Kennwert ---------------
   output$dynamicPanel_JahrZielpopulationKennwert <- renderUI({
     make_YearPopulationParameter(selectedZyklus())
   })
@@ -700,39 +700,39 @@ server <- function(input, output, session) {
   # Jahr, Zielpopulation & Kennwert jeweils voneinander abhängig ---------------
   observe({
     req(selectedKompetenzbereich())
-
+    
     selected_combinations <- combinations[combinations$cycle == selectedZyklus() &
                                             combinations$fachKb == selectedKompetenzbereich() , ]
-
-    kennwerte <- order_parameters(unique(selected_combinations$parameter))
+    
+    zielpopulationen <- order_targetpop(unique(selected_combinations$targetPop))
     # ...abhängig von Zyklus und Fach-Kompetenzbereich
-
-    zielpopulationen <- order_targetpop(unique(selected_combinations[selected_combinations$parameter == selectedKennwert() , ]$targetPop))
-    # ...abhängig von Zyklus, Fach-Kompetenzbereich, und Kennwert
-
+    
+    kennwerte <- order_parameters(unique(selected_combinations[selected_combinations$targetPop == selectedZielpopulation() , ]$parameter))
+    # ...abhängig von Zyklus, Fach-Kompetenzbereich, und Zielpopulation
+    
     jahre <- unique(selected_combinations[selected_combinations$parameter == selectedKennwert() &
                                             selected_combinations$targetPop == selectedZielpopulation(), ]$year)
-    # ...abhängig von Zyklus, Fach-Kompetenzbereich, Kennwert, und Zielpopulation
-
+    # ...abhängig von Zyklus, Fach-Kompetenzbereich, Zielpopulation, und Kennwert
+    
     updateSliderTextInput(session,
                           inputId = "Jahr",
                           label = "Year",
                           choices = jahre,
                           selected = selectedJahr())
-
-    updateSelectInput(session,
-                      inputId = "Kennwert",
-                      label = "Parameter",
-                      choices = kennwerte,
-                      selected = selectedKennwert())
-
+    
     updateSelectInput(session,
                       inputId = "Zielpopulation",
                       label = "Population",
                       choices = zielpopulationen,
-                      selected = ifelse(selectedZielpopulation() %in% zielpopulationen,
-                                        selectedZielpopulation(),
-                                        zielpopulationen[1]))
+                      selected = selectedZielpopulation())
+    
+    updateSelectInput(session,
+                      inputId = "Kennwert",
+                      label = "Parameter",
+                      choices = kennwerte,
+                      selected = ifelse(selectedKennwert() %in% kennwerte,
+                                        selectedKennwert(),
+                                        kennwerte[1]))
   })
 
   # Datensatz selektieren ------------------------------------------------------
