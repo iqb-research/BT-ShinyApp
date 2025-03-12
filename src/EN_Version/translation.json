@@ -1,0 +1,225 @@
+{
+  "languages": ["de", "en"],
+  "translation": [
+      {
+      "de": "Erhebungsreihe", 
+      "en": "Assessment Cycle"
+      }
+      {
+      "de": "4. Klasse", 
+      "en": "4th Grade"
+      },
+      {
+      "de": "Deutsch", 
+      "en": "German"
+      },
+      {
+      "de": "Lesen", 
+      "en": "Reading"
+      },
+      {
+      "de": "Zuhören", 
+      "en": "Listening"
+      },
+      {
+      "de": "Orthografie", 
+      "en": "Orthography"
+      },
+      {
+      "de": "Mathematik", 
+      "en": "Mathematics"
+      },
+      {
+      "de": "Globalskala", 
+      "en": "Global Scale"
+      },
+      {
+      "de": "Zahlen und Operationen", 
+      "en": "Numbers and Operations"
+      },
+      {
+      "de": "Größen und Messen", 
+      "en": "Sizes and Measurements"
+      },
+      {
+      "de": "Raum und Form", 
+      "en": "Space and Shape"
+      },
+      {
+      "de": "Muster und Strukturen", 
+      "en": "Patterns and Structures"
+      },
+      {
+      "de": "Daten, Häufigkeit und Wahrscheinlichkeit", 
+      "en": "Data, Frequency, and Probability"
+      },
+      {
+      "de": "9. Klasse: Mathe/Naturwissenschaften", 
+      "en": "9th Grade: Math/Science"
+      },
+      {
+      "de": "Zahl", 
+      "en": "Numbers"
+      },
+      {
+      "de": "Messen", 
+      "en": "Measurements"
+      },
+      {
+      "de": "Funktionaler Zusammenhang", 
+      "en": "Functional Relations"
+      },
+      {
+      "de": "Daten und Zufall", 
+      "en": "Data and Chance"
+      },
+      {
+      "de": "Biologie", 
+      "en": "Biology"
+      },
+      {
+      "de": "Chemie", 
+      "en": "Chemistry"
+      },
+      {
+      "de": "Physik", 
+      "en": "Physics"
+      },
+      {
+      "de": "Erkenntnisgewinnung", 
+      "en": "Scientific Inquiry"
+      },
+      {
+      "de": "Fachwissen", 
+      "en": "Subject Knowledge"
+      },
+      {
+      "de": "9. Klasse: Sprachen", 
+      "en": "9th Grade: Languages"
+      },
+      {
+      "de": "Englisch", 
+      "en": "English"
+      },
+      {
+      "de": "Französisch", 
+      "en": "French"
+      },
+      {
+      "de": "Leseverstehen", 
+      "en": "Reading Comprehension"
+      },
+      {
+      "de": "Hörverstehen", 
+      "en": "Listening Comprehension"
+      },
+      {
+      "de": "Jahr", 
+      "en": "Year"
+      },
+      {
+      "de": "Kennwert", 
+      "en": "Parameter"
+      },
+      {
+      "de": "Mittelwert", 
+      "en": "Mean"
+      },
+      {
+      "de": "Streuung", 
+      "en": "Dispersion"
+      },
+      {
+      "de": "Mindeststandard verfehlt", 
+      "en": "Minimum standard missed"
+      },
+      {
+      "de": "Mindeststandard für ESA verfehlt", 
+      "en": "Minimum standard for ESA missed"
+      },
+      {
+      "de": "Mindeststandard für MSA verfehlt", 
+      "en": "Minimum standard for MSA missed"
+      },
+      {
+      "de": "Regelstandard erreicht", 
+      "en": "Normative standard met"
+      },
+      {
+      "de": "Regelstandard für MSA erreicht", 
+      "en": "Normative standard for MSA met"
+      },
+      {
+      "de": "Optimalstandard erreicht", 
+      "en": "Optimal standard met"
+      },
+      {
+      "de": "Optimalstandard MSA erreicht", 
+      "en": "Optimal standard for MSA met"
+      },
+      {
+      "de": "Zielpopulation", 
+      "en": "Target Population"
+      },
+      {
+      "de": "alle", 
+      "en": "all"
+      },
+      {
+      "de": "alle (zielgleich unterrichtet)", 
+      "en": "all (taught on the basis of educational standards)"
+      },
+      {
+      "de": "alle ohne Sonderpädagogischen Förderbedarf", 
+      "en": "all without special educational needs"
+      },
+      {
+      "de": "Mittlerer Schulabschluss (MSA)", 
+      "en": "Secondary school leaving certificate (MSA)"
+      },
+      {
+      "de": "Gymnasium", 
+      "en": "college-preparatory secondary schools [Gymnasien]"
+      },
+      {
+      "de": "Grundgesamtheit", 
+      "en": "Population"
+      },
+      {
+      "de": "Bildungstrend-Karte", 
+      "en": "IQB Trends in Student Achievement - Map"
+      },
+      {
+      "de": "keine Angabe", 
+      "en": "no data"
+      },
+      {
+      "de": "keine Daten", 
+      "en": "no data"
+      },
+      {
+      "de": "Kompetenzmittelwerte", 
+      "en": "mean proficiencies"
+      },
+      {
+      "de": "Im Rahmen des <a href=\"http://www.kmk.org/bildung-schule/qualitaetssicherung-in-schulen/bildungsmonitoring/ueberblick-gesamtstrategie-zum-bildungsmonitoring.html\" target=\"_blank\">Bildungsmonitorings</a> überprüft das Institut zur Qualitätsentwicklung im Bildungswesen (IQB) im Auftrag der Kultusministerkonferenz regelmäßig, inwieweit die Lernziele erreicht werden, die in den <a href=\"https://www.kmk.org/themen/qualitaetssicherung-in-schulen/bildungsstandards.html\" target=\"_blank\">Bildungsstandards</a> definiert wurden. <br><br>Diese Erhebungen führt das IQB in verschiedenen Reihen durch: Sie heißen \"IQB-Bildungstrends\". Alle Ergebnisberichte sind mit umfassenden Zusatzinformationen <a href=\"https://www.iqb.hu-berlin.de/bt/\" target=\"_blank\">hier</a> frei verfügbar. Im Primarbereich (Grundschule) wird das Erreichen der Bildungsstandards in Deutsch und Mathematik alle fünf Jahre überprüft. In der Sekundarstufe I wechseln sich alle drei Jahre Testungen in Deutsch, Englisch und Französisch mit solchen in Mathematik, Biologie, Chemie und Physik ab.", 
+      "en": "As part of the <a href=\"http://www.kmk.org/bildung-schule/qualitaetssicherung-in-schulen/bildungsmonitoring/ueberblick-gesamtstrategie-zum-bildungsmonitoring.html\" target=\"_blank\">educational monitoring</a>, the Institute for Educational Quality Improvement (IQB) regularly reviews the extent to which the learning objectives defined in the <a href=\"https://www.kmk.org/themen/qualitaetssicherung-in-schulen/bildungsstandards.html\" target=\"_blank\">national educational standards</a> are achieved, on behalf of the Standing Conference of the Ministers of Education and Cultural Affairs of the States in the Federal Republic of Germany (KMK).<br><br>The IQB conducts these surveys in various periods: They are called \“IQB Trends in Student Achievement\”. All results reports are freely available <a href=\"https://www.iqb.hu-berlin.de/bt/\" target=\"_blank\">here</a> with comprehensive additional information. At primary level (elementary school), achievement of the educational standards in German and mathematics is assessed every five years. At secondary level I, tests in German, English and French alternate with tests in mathematics, biology, chemistry and physics every three years."
+      },
+      {
+      "de": "Bundesweit geltende Bildungsstandards, die von der Kultusministerkonferenz zu verschiedenen Schulfächern verabschiedet wurden, können <a href=\"https://www.iqb.hu-berlin.de/bista/subject/\" target=\"_blank\">hier</a> eingesehen werden. <strong>Kompetenzbereiche</strong> sind Teilbereiche dieser Schulfächer.<br><br> Die <a href=\"https://www.iqb.hu-berlin.de/bista/subject/\" target=\"_blank\">Bildungsstandards</a> beschreiben, welche Fertigkeiten Schüler:innen in verschiedenen Schulfächern und deren Teilbereichen bis zu einem bestimmten Zeitpunkt in ihrer Schullaufbahn entwickelt haben sollen.", 
+      "en": "Nationwide educational standards adopted by the Standing Conference of the Ministers of Education and Cultural Affairs of the States in the Federal Republic of Germany (KMK) for various school subjects can be viewed <a href=\"https://www.iqb.hu-berlin.de/bista/subject/\" target=\"_blank\">here</a>. The <strong>proficiency domains</strong> are sub-areas of these school subjects.<br><br>The <a href=\"https://www.iqb.hu-berlin.de/bista/subject/\" target=\"_blank\">educational standards</a> describe which skills students should have developed in various school subjects and their sub-areas by a certain point in their school career."
+      },
+      {
+      "de": "Die Erhebungsjahre richten sich nach der Systematik der oben beschriebenen Erhebungsreihen.<br><br>Besonderheiten in einzelnen Jahren:<br><ul><li><strong>2009</strong>: Es wurden keine Schüler:innen mit sonderpädagogischem Förderbedarf (SPF) getestet. Daher ist die Zielpopulation „alle (zielgleich)“ nicht direkt mit den Werten von 2015 und 2022 vergleichbar. Genauere Informationen finden sich in den Berichtsbänden, insbesondere <a href=\"https://www.iqb.hu-berlin.de/bt/BT2022/Bericht/\" target=\"_blank\">hier</a>.</li> <li><strong>2011</strong>: In der Grundschule wurde Orthografie nicht getestet. Weitere Einzelheiten sind im <a href=\"https://www.iqb.hu-berlin.de/bt/BT2021/Bericht/\" target=\"_blank\">Bericht</a> nachzulesen.</li> <li><strong>2021</strong>: Pandemiebedingte Schulschließungen in Mecklenburg-Vorpommern führten zu einem unzureichenden Datensatz. Daher können keine belastbaren Aussagen getroffen werden, und anstelle von Werten wird „keine Daten“ angezeigt.</li></ul>", 
+      "en": "The survey years are based on the system of the survey periods described above.<br><br>Special features in individual years:<br><ul><li><strong>2009</strong>: No students with special educational needs were tested. Therefore, the target population “all (taught on the basis of educational standards)” is not directly comparable with the values from 2015 and 2022. More detailed information can be found in the report volumes, in particular <a href=\"https://www.iqb.hu-berlin.de/bt/BT2022/Bericht/\" target=\"_blank\">here</a>.</li><li><strong>2011</strong>: Orthography was not tested in elementary school. Further details can be found in the <a href=\"https://www.iqb.hu-berlin.de/bt/BT2021/Bericht/\" target=\"_blank\">report</a>.</li><li><strong>2021</strong>: Pandemic-related school closures in Mecklenburg-Vorpommern led to an insufficient data set. Therefore, no reliable statements can be made and “no data” is displayed instead of values.</li></ul>"
+      },
+      {
+      "de": "Ein <strong>Mittelwert</strong> gibt die durchschnittlich erreichten Kompetenzwerte einer bestimmten Gruppe oder Untergruppe an.<br>Die Skala (z.B. Kompetenzwert für Deutsch Lesen) wurde so festgelegt, dass die Grundgesamtheit (z.B. alle Viertklässler:innen im Jahr 2011) einen Mittelwert von 500 hat.<br><br>Eine <strong>Standardabweichung (Streuung)</strong> gibt an, wie stark die Kompetenzen innerhalb einer Gruppe variieren. Sie beschreibt, ob die Verteilung der Kompetenzwerte eher einheitlich (homogen, niedrige Werte) oder unterschiedlich (heterogen, hohe Werte) ist.<br>Die Skala (z.B. Kompetenzwert für Deutsch Lesen) wurde so festgelegt, dass die Grundgesamtheit (z.B. alle Viertklässler:innen im Jahr 2011) eine Standardabweichung von 100 hat.<br><br>Die Kompetenzstufenmodelle beinhalten Beschreibungen, welche Anforderungen Schüler:innen zu bestimmten Zeitpunkten ihrer Schullaufbahn mindestens, in der Regel und optimalerweise erreichen sollten.<br>Die Prozentangabe unter <strong>„Mindeststandard verfehlt“</strong> gibt an, welcher Anteil der Schüler:innen die grundlegenden Anforderungen nicht erfüllt.<br>Die Angabe <strong>„Regelstandard erreicht“</strong> beschreibt den Anteil der Schüler:innen, die die erwarteten Anforderungen erfüllen, während <strong>„Optimalstandard erreicht“</strong> den Anteil nennt, der die höchsten Anforderungen erfüllt.<br><br>Die Abkürzungen <strong>ESA</strong> und <strong>MSA</strong> stehen dabei für den Ersten Schulabschluss (früher Hauptschulabschluss) bzw. den Mittleren Schulabschluss.<br><br>Weitere Informationen: <a href=\"https://datatab.de/tutorial/mittelwert-median-modus\" target=\"_blank\">Mittelwert</a>, <a href=\"https://datatab.de/tutorial/standardabweichung\" target=\"_blank\">Standardabweichung</a> und <a href=\"https://www.iqb.hu-berlin.de/bista/ksm/\" target=\"_blank\">Standards der Kompetenzstufenmodelle</a>", 
+      "en": "The <strong>mean</strong> indicates the average proficiency score achieved by a specific group or subgroup.<br>The scale (e.g., proficiency score for German reading) was defined so that the population (e.g., all fourth graders in 2011) has a mean of 500.<br><br>The <strong>standard deviation (dispersion)</strong> indicates the extent to which proficiencies vary within a group. It describes whether the distribution of proficiencies scores is more uniform (homogeneous, low values) or different (heterogeneous, high values).<br>The scale (e.g., proficiencies score for German reading) was defined so that the population (e.g., all fourth graders in 2011) has a standard deviation of 100.<br><br>The proficiency level models contain descriptions of the requirements that students should achieve at least, generally and ideally at certain points in their school career.<br>The percentage under <strong>“minimum standard missed”</strong> indicates the proportion of students who failed to meet the basic requirements.<br><strong>“Regular standard met”</strong> describes the proportion of students who meet the expected requirements, while <strong>“optimal standard met”</strong> indicates the proportion who meet the highest requirements.<br><br>The abbreviations <strong>ESA</strong> and <strong>MSA</strong> stand for \"Erster Schulabschluss\" (engl. first school leaving certificate, formerly Hauptschulabschluss) and \"Mittlerer Schulabschluss\" (engl. secondary school leaving certificate) respectively.<br><br>Additional information: <a href=\"https://datatab.de/tutorial/mittelwert-median-modus\" target=\"_blank\">Mean</a>, <a href=\"https://datatab.de/tutorial/standardabweichung\" target=\"_blank\">standard deviation</a>, and <a href=\"https://www.iqb.hu-berlin.de/bista/ksm/\" target=\"_blank\">standards for the proficiency level models</a>."
+      },
+      {
+      "de": "In den IQB-Bildungstrend-Studien sollen alle Schüler:innen der 4. und 9. Jahrgangsstufe in Deutschland beschrieben werden. Dazu werden Stichproben aus der sogenannten <a href=\"https://datatab.de/tutorial/hypothesentest\" target=\"_blank\">Grundgesamtheit</a> gezogen, auch Population oder <strong>Zielpopulation</strong> genannt. Diese umfasst alle Schüler:innen, über die mit dem jeweiligen Studienergebnis Aussagen getroffen werden sollen. Welche Kennwerte und welche Subpopulationen aus welchen Gründen in den einzelnen Erhebungsreihen enthalten sind, kann den jeweiligen <a href=\"https://www.iqb.hu-berlin.de/bt/\" target=\"_blank\">Berichtsbänden</a> entnommen werden.<br><br>Die Angabe <strong>„alle“</strong> umfasst alle Schüler:innen an allen Schularten, einschließlich Schüler:innen mit Sonderpädagogischem Förderbedarf (SPF). Ausgenommen sind nur Förderschüler:innen im Bereich „geistige Entwicklung“ und Schüler:innen, die weniger als ein Jahr in deutscher Sprache unterrichtet wurden.<br><br>Bei der Angabe <strong>„alle (zielgleich unterrichtet)“</strong> wird unterschieden, ob Schüler:innen gemäß den Regelungen des jeweiligen Landes zielgleich und somit auf Grundlage der Bildungsstandards unterrichtet werden. Das Erreichen der Bildungsstandards wird nur für zielgleich unterrichtete Schüler:innen berichtet.<br><br>Zudem werden in den IQB-Bildungstrend-Studien auch Ergebnisse nur für Schüler:innen, die mindestens den <strong>Mittleren Schulabschlusses (MSA)</strong> anstreben, und Schüler:innen an <strong>Gymnasien</strong> separat ausgewiesen.", 
+      "en": "The IQB Trends in Student Achievement studies aim to describe all students in the 4th and 9th grades in Germany. For this purpose, samples are drawn from the so-called <a href=\"https://datatab.de/tutorial/hypothesentest\" target=\"_blank\">target population</a>. This includes all students that we want to make statements about with the respective study result. Which parameters and which subpopulations are included in the individual assessment cycles and for what reasons can be found in the respective <a href=\"https://www.iqb.hu-berlin.de/bt/\" target=\"_blank\">report volumes</a>.<br><br>The specification <strong>“all”</strong> includes all students at all types of schools, including students with special educational needs. The only exceptions are special needs students in the area of “mental development” and students who have been taught in German for less than one year. The information <strong>“all (taught on the basis of educational standards)”</strong> distinguishes whether students are taught \"zielgleich\" meaning on the basis of the same standard curriculum. Achievement of the educational standards is only reported for students taught in that way.<br><br>In addition, the IQB Trends in Student Achievement studies also show results separately only for students who are aiming for at least the <strong>secondary school leaving certificate (MSA)</strong> and students at <strong>college-preparatory secondary schools (Gymnasien)</strong>."
+      }
+    ]
+}
