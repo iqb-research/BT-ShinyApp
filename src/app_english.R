@@ -367,7 +367,7 @@ make_radioGroupContainer <- function(kb_current) {
 }
 
 # cycle_current <- "9. Klasse: Mathe/Naturwissenschaften"
-make_YearParameterPopulation <- function(cycle_current) {
+make_YearPopulationParameter <- function(cycle_current) {
   # 1. Kb separieren
   fachKb1 <- config$fachKb[[cycle_current]][1]
   fach1 <- names(fachKb1)
@@ -540,12 +540,12 @@ ui <- fluidPage(
       )
     ),
 
-    # Jahr, Kennwert und Zielpopulation
+    # Jahr, Zielpopulation und Kennwert
     fluidRow(
       column(
         width = 11, # Spalte für die dynamischen Inhalte
         class = "no-padding",
-        uiOutput('dynamicPanel_JahrKennwertZielpopulation')
+        uiOutput('dynamicPanel_JahrZielpopulationKennwert')
       ),
       column(
         width = 1, # Info-Button in einer separaten Spalte
@@ -692,12 +692,12 @@ server <- function(input, output, session) {
   })
 
   # Dynamisches Auswahlpanel für Jahr, Kennwert $ Zielpopulation ---------------
-  output$dynamicPanel_JahrKennwertZielpopulation <- renderUI({
-    make_YearParameterPopulation(selectedZyklus())
+  output$dynamicPanel_JahrZielpopulationKennwert <- renderUI({
+    make_YearPopulationParameter(selectedZyklus())
   })
 
 
-  # Jahr, Kennwert & Zielpopulation jeweils voneinander abhängig ---------------
+  # Jahr, Zielpopulation & Kennwert jeweils voneinander abhängig ---------------
   observe({
     req(selectedKompetenzbereich())
 

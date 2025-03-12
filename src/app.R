@@ -304,7 +304,7 @@ make_radioGroupContainer <- function(kb_current) {
 }
 
 # cycle_current <- "9. Klasse: Mathe/Naturwissenschaften"
-make_YearParameterPopulation <- function(cycle_current) {
+make_YearPopulationParameter <- function(cycle_current) {
   # 1. Kb separieren
   fachKb1 <- config$fachKb[[cycle_current]][1]
   fach1 <- names(fachKb1)
@@ -338,18 +338,18 @@ make_YearParameterPopulation <- function(cycle_current) {
                     width='75%'),
     
     selectInput(
-      inputId = "Kennwert",
-      label = "Kennwert",
-      choices = parameters,
-      selected = parameter_default,
-      width = '95%'
-    ),
-    
-    selectInput(
       inputId = "Zielpopulation",
       label = "Zielpopulation",
       choices = targetPops,
       selected = targetPop_default,
+      width = '95%'
+    ),
+    
+    selectInput(
+      inputId = "Kennwert",
+      label = "Kennwert",
+      choices = parameters,
+      selected = parameter_default,
       width = '95%'
     )
   )
@@ -475,12 +475,12 @@ ui <- fluidPage(
       )
     ),
     
-    # Jahr, Kennwert und Zielpopulation
+    # Jahr, Zielpopulation und Kennwert
     fluidRow(
       column(
         width = 11, # Spalte für die dynamischen Inhalte
         class = "no-padding",
-        uiOutput('dynamicPanel_JahrKennwertZielpopulation')
+        uiOutput('dynamicPanel_JahrZielpopulationKennwert')
       ),
       column(
         width = 1, # Info-Button in einer separaten Spalte
@@ -495,7 +495,7 @@ ui <- fluidPage(
         ),
         tags$div(style = "height: 60px;"), # vertikaler Abstand
         bsButton(
-          inputId = "infobutton_kennwert",
+          inputId = "infobutton_zielpopulation",
           label = "",
           icon = icon("info", lib = "font-awesome"),
           style = "custom-btn",
@@ -503,7 +503,7 @@ ui <- fluidPage(
         ),
         tags$div(style = "height: 50px;"), # vertikaler Abstand
         bsButton(
-          inputId = "infobutton_zielpopulation",
+          inputId = "infobutton_kennwert",
           label = "",
           icon = icon("info", lib = "font-awesome"),
           style = "custom-btn",
@@ -572,12 +572,13 @@ ui <- fluidPage(
     options = list(container = "body")
   ),
   
-  # Info-Buttons Kennwert und Zielpopulation
+  # Info-Buttons Zielpopulation und Kennwert
+  
   bsPopover(
-    id = "infobutton_kennwert",
-    title = "Kennwert",
+    id = "infobutton_zielpopulation",
+    title = "Grundgesamtheit",
     content = HTML(paste0(
-      "Ein <strong>Mittelwert</strong> gibt die durchschnittlich erreichten Kompetenzwerte einer bestimmten Gruppe oder Untergruppe an.<br>Die Skala (z.B. Kompetenzwert für Deutsch Lesen) wurde so festgelegt, dass die Grundgesamtheit (z.B. alle Viertklässler:innen im Jahr 2011) einen Mittelwert von 500 hat.<br><br>Eine <strong>Standardabweichung (Streuung)</strong> gibt an, wie stark die Kompetenzen innerhalb einer Gruppe variieren. Sie beschreibt, ob die Verteilung der Kompetenzwerte eher einheitlich (homogen, niedrige Werte) oder unterschiedlich (heterogen, hohe Werte) ist.<br>Die Skala (z.B. Kompetenzwert für Deutsch Lesen) wurde so festgelegt, dass die Grundgesamtheit (z.B. alle Viertklässler:innen im Jahr 2011) eine Standardabweichung von 100 hat.<br><br>Die Kompetenzstufenmodelle beinhalten Beschreibungen, welche Anforderungen Schüler:innen zu bestimmten Zeitpunkten ihrer Schullaufbahn mindestens, in der Regel und optimalerweise erreichen sollten.<br>Die Prozentangabe unter <strong>„Mindeststandard verfehlt“</strong> gibt an, welcher Anteil der Schüler:innen die grundlegenden Anforderungen nicht erfüllt.<br>Die Angabe <strong>„Regelstandard erreicht“</strong> beschreibt den Anteil der Schüler:innen, die die erwarteten Anforderungen erfüllen, während <strong>„Optimalstandard erreicht“</strong> den Anteil nennt, der die höchsten Anforderungen erfüllt.<br><br>Die Abkürzungen <strong>ESA</strong> und <strong>MSA</strong> stehen dabei für den Ersten Schulabschluss (früher Hauptschulabschluss) bzw. den Mittleren Schulabschluss.<br><br>Weitere Informationen: <a href=\"https://datatab.de/tutorial/mittelwert-median-modus\" target=\"_blank\">Mittelwert</a>, <a href=\"https://datatab.de/tutorial/standardabweichung\" target=\"_blank\">Standardabweichung</a> und <a href=\"https://www.iqb.hu-berlin.de/bista/ksm/\" target=\"_blank\">Standards der Kompetenzstufenmodelle</a>"
+      "In den IQB-Bildungstrend-Studien sollen alle Schüler:innen der 4. und 9. Jahrgangsstufe in Deutschland beschrieben werden. Dazu werden Stichproben aus der sogenannten <a href=\"https://datatab.de/tutorial/hypothesentest\" target=\"_blank\">Grundgesamtheit</a> gezogen, auch Population oder <strong>Zielpopulation</strong> genannt. Diese umfasst alle Schüler:innen, über die mit dem jeweiligen Studienergebnis Aussagen getroffen werden sollen. Welche Kennwerte und welche Subpopulationen aus welchen Gründen in den einzelnen Erhebungsreihen enthalten sind, kann den jeweiligen <a href=\"https://www.iqb.hu-berlin.de/bt/\" target=\"_blank\">Berichtsbänden</a> entnommen werden.<br><br>Die Angabe <strong>„alle“</strong> umfasst alle Schüler:innen an allen Schularten, einschließlich Schüler:innen mit Sonderpädagogischem Förderbedarf (SPF). Ausgenommen sind nur Förderschüler:innen im Bereich „geistige Entwicklung“ und Schüler:innen, die weniger als ein Jahr in deutscher Sprache unterrichtet wurden.<br><br>Bei der Angabe <strong>„alle (zielgleich unterrichtet)“</strong> wird unterschieden, ob Schüler:innen gemäß den Regelungen des jeweiligen Landes zielgleich und somit auf Grundlage der Bildungsstandards unterrichtet werden. Das Erreichen der Bildungsstandards wird nur für zielgleich unterrichtete Schüler:innen berichtet.<br><br>Zudem werden in den IQB-Bildungstrend-Studien auch Ergebnisse nur für Schüler:innen, die mindestens den <strong>Mittleren Schulabschlusses (MSA)</strong> anstreben, und Schüler:innen an <strong>Gymnasien</strong> separat ausgewiesen."
     )),
     placement = "right",
     trigger = "klick",
@@ -585,10 +586,10 @@ ui <- fluidPage(
   ),
   
   bsPopover(
-    id = "infobutton_zielpopulation",
-    title = "Grundgesamtheit",
+    id = "infobutton_kennwert",
+    title = "Kennwert",
     content = HTML(paste0(
-      "In den IQB-Bildungstrend-Studien sollen alle Schüler:innen der 4. und 9. Jahrgangsstufe in Deutschland beschrieben werden. Dazu werden Stichproben aus der sogenannten <a href=\"https://datatab.de/tutorial/hypothesentest\" target=\"_blank\">Grundgesamtheit</a> gezogen, auch Population oder <strong>Zielpopulation</strong> genannt. Diese umfasst alle Schüler:innen, über die mit dem jeweiligen Studienergebnis Aussagen getroffen werden sollen. Welche Kennwerte und welche Subpopulationen aus welchen Gründen in den einzelnen Erhebungsreihen enthalten sind, kann den jeweiligen <a href=\"https://www.iqb.hu-berlin.de/bt/\" target=\"_blank\">Berichtsbänden</a> entnommen werden.<br><br>Die Angabe <strong>„alle“</strong> umfasst alle Schüler:innen an allen Schularten, einschließlich Schüler:innen mit Sonderpädagogischem Förderbedarf (SPF). Ausgenommen sind nur Förderschüler:innen im Bereich „geistige Entwicklung“ und Schüler:innen, die weniger als ein Jahr in deutscher Sprache unterrichtet wurden.<br><br>Bei der Angabe <strong>„alle (zielgleich unterrichtet)“</strong> wird unterschieden, ob Schüler:innen gemäß den Regelungen des jeweiligen Landes zielgleich und somit auf Grundlage der Bildungsstandards unterrichtet werden. Das Erreichen der Bildungsstandards wird nur für zielgleich unterrichtete Schüler:innen berichtet.<br><br>Zudem werden in den IQB-Bildungstrend-Studien auch Ergebnisse nur für Schüler:innen, die mindestens den <strong>Mittleren Schulabschlusses (MSA)</strong> anstreben, und Schüler:innen an <strong>Gymnasien</strong> separat ausgewiesen."
+      "Ein <strong>Mittelwert</strong> gibt die durchschnittlich erreichten Kompetenzwerte einer bestimmten Gruppe oder Untergruppe an.<br>Die Skala (z.B. Kompetenzwert für Deutsch Lesen) wurde so festgelegt, dass die Grundgesamtheit (z.B. alle Viertklässler:innen im Jahr 2011) einen Mittelwert von 500 hat.<br><br>Eine <strong>Standardabweichung (Streuung)</strong> gibt an, wie stark die Kompetenzen innerhalb einer Gruppe variieren. Sie beschreibt, ob die Verteilung der Kompetenzwerte eher einheitlich (homogen, niedrige Werte) oder unterschiedlich (heterogen, hohe Werte) ist.<br>Die Skala (z.B. Kompetenzwert für Deutsch Lesen) wurde so festgelegt, dass die Grundgesamtheit (z.B. alle Viertklässler:innen im Jahr 2011) eine Standardabweichung von 100 hat.<br><br>Die Kompetenzstufenmodelle beinhalten Beschreibungen, welche Anforderungen Schüler:innen zu bestimmten Zeitpunkten ihrer Schullaufbahn mindestens, in der Regel und optimalerweise erreichen sollten.<br>Die Prozentangabe unter <strong>„Mindeststandard verfehlt“</strong> gibt an, welcher Anteil der Schüler:innen die grundlegenden Anforderungen nicht erfüllt.<br>Die Angabe <strong>„Regelstandard erreicht“</strong> beschreibt den Anteil der Schüler:innen, die die erwarteten Anforderungen erfüllen, während <strong>„Optimalstandard erreicht“</strong> den Anteil nennt, der die höchsten Anforderungen erfüllt.<br><br>Die Abkürzungen <strong>ESA</strong> und <strong>MSA</strong> stehen dabei für den Ersten Schulabschluss (früher Hauptschulabschluss) bzw. den Mittleren Schulabschluss.<br><br>Weitere Informationen: <a href=\"https://datatab.de/tutorial/mittelwert-median-modus\" target=\"_blank\">Mittelwert</a>, <a href=\"https://datatab.de/tutorial/standardabweichung\" target=\"_blank\">Standardabweichung</a> und <a href=\"https://www.iqb.hu-berlin.de/bista/ksm/\" target=\"_blank\">Standards der Kompetenzstufenmodelle</a>"
     )),
     placement = "right",
     trigger = "klick",
@@ -641,27 +642,27 @@ server <- function(input, output, session) {
   })
   
   # Dynamisches Auswahlpanel für Jahr, Kennwert $ Zielpopulation ---------------
-  output$dynamicPanel_JahrKennwertZielpopulation <- renderUI({
-    make_YearParameterPopulation(selectedZyklus())
+  output$dynamicPanel_JahrZielpopulationKennwert <- renderUI({
+    make_YearPopulationParameter(selectedZyklus())
   })
   
   
-  # Jahr, Kennwert & Zielpopulation jeweils voneinander abhängig ---------------
+  # Jahr, Zielpopulation & Kennwert jeweils voneinander abhängig ---------------
   observe({
     req(selectedKompetenzbereich())
     
     selected_combinations <- combinations[combinations$cycle == selectedZyklus() &
                                             combinations$fachKb == selectedKompetenzbereich() , ]
     
-    kennwerte <- order_parameters(unique(selected_combinations$parameter))
+    zielpopulationen <- order_targetpop(unique(selected_combinations$targetPop))
     # ...abhängig von Zyklus und Fach-Kompetenzbereich
     
-    zielpopulationen <- order_targetpop(unique(selected_combinations[selected_combinations$parameter == selectedKennwert() , ]$targetPop))
-    # ...abhängig von Zyklus, Fach-Kompetenzbereich, und Kennwert
+    kennwerte <- order_parameters(unique(selected_combinations[selected_combinations$targetPop == selectedZielpopulation() , ]$parameter))
+    # ...abhängig von Zyklus, Fach-Kompetenzbereich, und Zielpopulation
     
     jahre <- unique(selected_combinations[selected_combinations$parameter == selectedKennwert() &
                                             selected_combinations$targetPop == selectedZielpopulation(), ]$year)
-    # ...abhängig von Zyklus, Fach-Kompetenzbereich, Kennwert, und Zielpopulation
+    # ...abhängig von Zyklus, Fach-Kompetenzbereich, Zielpopulation, und Kennwert
     
     updateSliderTextInput(session,
                           inputId = "Jahr",
@@ -670,18 +671,18 @@ server <- function(input, output, session) {
                           selected = selectedJahr())
     
     updateSelectInput(session,
-                      inputId = "Kennwert",
-                      label = "Kennwert",
-                      choices = kennwerte,
-                      selected = selectedKennwert())
-    
-    updateSelectInput(session,
                       inputId = "Zielpopulation",
                       label = "Zielpopulation",
                       choices = zielpopulationen,
-                      selected = ifelse(selectedZielpopulation() %in% zielpopulationen,
-                                        selectedZielpopulation(),
-                                        zielpopulationen[1]))
+                      selected = selectedZielpopulation())
+    
+    updateSelectInput(session,
+                      inputId = "Kennwert",
+                      label = "Kennwert",
+                      choices = kennwerte,
+                      selected = ifelse(selectedKennwert() %in% kennwerte,
+                                        selectedKennwert(),
+                                        kennwerte[1]))
   })
   
   # Datensatz selektieren ------------------------------------------------------
