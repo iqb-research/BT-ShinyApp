@@ -1,4 +1,4 @@
-packages <- c("remotes", "shinythemes", "shinyWidgets", "widgetframe", "ggplot2", "sf", "shinyBS", "eatMap")
+packages <- c("remotes", "shinythemes", "shinyWidgets", "widgetframe", "ggplot2", "sf", "shinyBS", "eatMap", "shiny.i18n")
 
 install_if_missing <- function(pkg) {
   if(!require(pkg, character.only = TRUE)) {

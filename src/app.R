@@ -20,6 +20,9 @@ library(sf)
 # Infobuttons
 library(shinyBS)
 
+# Übersetzung
+library(shiny.i18n)
+
 
 # Vorbereitung der Kartendaten -------------------------------------------------
 
@@ -367,6 +370,9 @@ order_parameters <- function(params) {
 order_targetpop <- function(targetpops) {
   predefined_order_targetpop[which(predefined_order_targetpop %in% targetpops)]
 }
+
+# Übersetzung ------------------------------------------------------------------
+i18n <- Translator$new(translation_json_path = "EN_Version/translation.json")
 
 
 # UI ---------------------------------------------------------------------------
