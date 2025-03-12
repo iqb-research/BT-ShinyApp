@@ -1,0 +1,114 @@
+---
+output: 
+  pdf_document:
+    latex_engine: xelatex
+geometry: a4paper,landscape,margin=1in
+header-includes:
+  - \usepackage{fontspec}
+  - \setmainfont{Arial}
+  - \usepackage{titlesec}
+  - \titleformat{\section}[block]{\normalfont\Large\bfseries}{\thesection}{1em}{}
+  - \titleformat{\subsection}[block]{\normalfont\large\bfseries}{\thesubsection}{1em}{}
+  - \titleformat{\subsubsection}[block]{\normalfont\small\bfseries}{\thesubsubsection}{1em}{}
+params:
+  data: NA
+  min_est: 0
+  max_est: 800
+  reverse: FALSE
+  legendentitel: "-"
+  kennwert: "Mittelwert"
+  na_label: ""
+---
+\pagenumbering{gobble}
+
+```{r echo=FALSE}
+# Titel generieren
+
+titel <- paste0(
+  "IQB Bildungstrend, ",
+  unique(na.omit(params$data$cycle)),
+  ", ",
+  unique(na.omit(params$data$year))
+)
+
+untertitel <- paste0(
+  "Kompetenzbereich ",
+  unique(na.omit(params$data$fachKb)), 
+  ", ", 
+  gsub("alle", "alle Schüler:innen", unique(na.omit(params$data$targetPop)))
+)
+```
+
+
+```{r echo=FALSE, results='asis'}
+# Titel anzeigen
+
+cat(paste0(
+  "# ", titel, "\n\n",
+  "## ", untertitel, "\n\n"
+))
+```
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+# Plot und Tabelle generieren
+
+karte <- ggplot(params$data) +
+  geom_sf(aes(
+    fill = est_delimited),
+  color = "black") +
+  theme_void() +
+  scale_fill_viridis_c(
+    limits = c(params$min_est, params$max_est),
+    direction = ifelse(params$reverse,-1, 1), # hier sind große Zahlen schlecht
+    name = params$legendentitel,
+    guide = guide_colorbar(reverse = params$reverse)
+  ) +
+  theme(
+    text = element_text(family = "ArialMT")  # Schriftart für Text
+  )
+
+karte_grob <- ggplotGrob(karte)
+
+# Datensatz mit relevanten Spalten erstellen
+table_data <- sf::st_drop_geometry(params$data)[, c("Bundesland", "est_print")]
+table_data[is.na(table_data$est_print),"est_print"] <- params$na_label
+colnames(table_data) <- c("Bundesland", params$legendentitel)
+
+tabelle <- gridExtra::tableGrob(
+  table_data,
+  rows = NULL,
+  theme = gridExtra::ttheme_default(
+    core = list(
+      fg_params = list(cex = 0.8, fontfamily = "ArialMT")  # Schriftart für Tabellenzellen
+    ),
+    colhead = list(
+      fg_params = list(cex = 0.9, fontfamily = "ArialMT")  # Schriftart für Kopfzeilen
+    )
+  )
+)
+
+```
+
+```{r echo =FALSE, fig.height = 5.6, fig.width = 10}
+library(grid)
+
+# Neues Grid-Layout erstellen
+grid.newpage()
+
+# Layout definieren
+layout <- grid.layout(nrow = 1, ncol = 2, widths = c(3, 2.5))
+pushViewport(viewport(layout = layout))
+
+# Karte in erster Spalte
+pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 1))
+grid.draw(karte_grob)  # Zeichne Karte
+popViewport()
+
+# Tabelle in zweiter Spalte
+pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 2))
+grid.draw(tabelle)  # Zeichne Tabelle
+popViewport()
+
+popViewport()  # Gesamtes Layout verlassen
+```
