@@ -22,6 +22,8 @@ library(shinyBS)
 
 # Übersetzung
 library(shiny.i18n)
+library(readxl)
+library(rjson)
 
 
 # Vorbereitung der Kartendaten -------------------------------------------------
@@ -373,7 +375,30 @@ order_targetpop <- function(targetpops) {
 
 # Übersetzung ------------------------------------------------------------------
 i18n <- Translator$new(translation_json_path = "translation.json")
-i18n$set_translation_language("en")
+infotexte <- read_excel("Infotexte.xlsx")
+
+language <- "en"
+i18n$set_translation_language(language)
+
+# JSON einlesen
+woerterbuch <- fromJSON(paste(readLines("translation.json"), collapse=""), flatten = TRUE)
+woerterbuch <- setNames(woerterbuch$translation$en, woerterbuch$translation$de)
+
+recode_nested_list <- function(my_list, recode_rules) {
+  map(my_list, function(x) { # map() = Apply a function to each element of a vector
+    if (is.list(x)) {
+      recode_nested_list(x, recode_rules)  # rekursiv alle Listen durchgehen
+    } else if (is.character(x)) {
+      recode(x, !!! recode_rules)  # einzelne Elemente rekodieren
+    } else {
+      x  # alles was kein character ist in Ruhe lassen
+    }
+  })
+}
+
+if(language == "en"){
+  config <- recode_nested_list(config, woerterbuch)
+}
 
 # UI ---------------------------------------------------------------------------
 
@@ -546,9 +571,7 @@ ui <- fluidPage(
   bsPopover(
     id = "infobutton_zyklus",
     title = i18n$t("Erhebungsreihe"),
-    content = HTML(paste0(
-      "Im Rahmen des <a href=\"http://www.kmk.org/bildung-schule/qualitaetssicherung-in-schulen/bildungsmonitoring/ueberblick-gesamtstrategie-zum-bildungsmonitoring.html\" target=\"_blank\">Bildungsmonitorings</a> überprüft das Institut zur Qualitätsentwicklung im Bildungswesen (IQB) im Auftrag der Kultusministerkonferenz regelmäßig, inwieweit die Lernziele erreicht werden, die in den <a href=\"https://www.kmk.org/themen/qualitaetssicherung-in-schulen/bildungsstandards.html\" target=\"_blank\">Bildungsstandards</a> definiert wurden. <br><br>Diese Erhebungen führt das IQB in verschiedenen Reihen durch: Sie heißen \"IQB-Bildungstrends\". Alle Ergebnisberichte sind mit umfassenden Zusatzinformationen <a href=\"https://www.iqb.hu-berlin.de/bt/\" target=\"_blank\">hier</a> frei verfügbar. Im Primarbereich (Grundschule) wird das Erreichen der Bildungsstandards in Deutsch und Mathematik alle fünf Jahre überprüft. In der Sekundarstufe I wechseln sich alle drei Jahre Testungen in Deutsch, Englisch und Französisch mit solchen in Mathematik, Biologie, Chemie und Physik ab."
-    )),
+    content = HTML(paste0(infotexte[infotexte$chunk == "Erhebungsreihe", language])),
     placement = "right",
     trigger = "klick",
     options = list(container = "body")
@@ -558,9 +581,7 @@ ui <- fluidPage(
   bsPopover(
     id = "infobutton_kompetenzbereiche",
     title = i18n$t("Kompetenzbereich"),
-    content = HTML(paste0(
-      "Bundesweit geltende Bildungsstandards, die von der Kultusministerkonferenz zu verschiedenen Schulfächern verabschiedet wurden, können <a href=\"https://www.iqb.hu-berlin.de/bista/subject/\" target=\"_blank\">hier</a> eingesehen werden. <strong>Kompetenzbereiche</strong> sind Teilbereiche dieser Schulfächer.<br><br> Die <a href=\"https://www.iqb.hu-berlin.de/bista/subject/\" target=\"_blank\">Bildungsstandards</a> beschreiben, welche Fertigkeiten Schüler:innen in verschiedenen Schulfächern und deren Teilbereichen bis zu einem bestimmten Zeitpunkt in ihrer Schullaufbahn entwickelt haben sollen."
-    )),
+    content = HTML(paste0(infotexte[infotexte$chunk == "Kompetenzbereich", language])),
     placement = "right",
     trigger = "klick",
     options = list(container = "body")
@@ -570,9 +591,7 @@ ui <- fluidPage(
   bsPopover(
     id = "infobutton_jahre",
     title = i18n$t("Jahr"),
-    content = HTML(paste0(
-      "Die Erhebungsjahre richten sich nach der Systematik der oben beschriebenen Erhebungsreihen.<br><br>Besonderheiten in einzelnen Jahren:<br><ul><li><strong>2009</strong>: Es wurden keine Schüler:innen mit sonderpädagogischem Förderbedarf (SPF) getestet. Daher ist die Zielpopulation „alle (zielgleich)“ nicht direkt mit den Werten von 2015 und 2022 vergleichbar. Genauere Informationen finden sich in den Berichtsbänden, insbesondere <a href=\"https://www.iqb.hu-berlin.de/bt/BT2022/Bericht/\" target=\"_blank\">hier</a>.</li> <li><strong>2011</strong>: In der Grundschule wurde Orthografie nicht getestet. Weitere Einzelheiten sind im <a href=\"https://www.iqb.hu-berlin.de/bt/BT2021/Bericht/\" target=\"_blank\">Bericht</a> nachzulesen.</li> <li><strong>2021</strong>: Pandemiebedingte Schulschließungen in Mecklenburg-Vorpommern führten zu einem unzureichenden Datensatz. Daher können keine belastbaren Aussagen getroffen werden, und anstelle von Werten wird „keine Daten“ angezeigt.</li></ul>"
-    )),
+    content = HTML(paste0(infotexte[infotexte$chunk == "Jahr", language])),
     placement = "right",
     trigger = "klick",
     options = list(container = "body")
@@ -583,9 +602,7 @@ ui <- fluidPage(
   bsPopover(
     id = "infobutton_zielpopulation",
     title = i18n$t("Grundgesamtheit"),
-    content = HTML(paste0(
-      "In den IQB-Bildungstrend-Studien sollen alle Schüler:innen der 4. und 9. Jahrgangsstufe in Deutschland beschrieben werden. Dazu werden Stichproben aus der sogenannten <a href=\"https://datatab.de/tutorial/hypothesentest\" target=\"_blank\">Grundgesamtheit</a> gezogen, auch Population oder <strong>Zielpopulation</strong> genannt. Diese umfasst alle Schüler:innen, über die mit dem jeweiligen Studienergebnis Aussagen getroffen werden sollen. Welche Kennwerte und welche Subpopulationen aus welchen Gründen in den einzelnen Erhebungsreihen enthalten sind, kann den jeweiligen <a href=\"https://www.iqb.hu-berlin.de/bt/\" target=\"_blank\">Berichtsbänden</a> entnommen werden.<br><br>Die Angabe <strong>„alle“</strong> umfasst alle Schüler:innen an allen Schularten, einschließlich Schüler:innen mit Sonderpädagogischem Förderbedarf (SPF). Ausgenommen sind nur Förderschüler:innen im Bereich „geistige Entwicklung“ und Schüler:innen, die weniger als ein Jahr in deutscher Sprache unterrichtet wurden.<br><br>Bei der Angabe <strong>„alle (zielgleich unterrichtet)“</strong> wird unterschieden, ob Schüler:innen gemäß den Regelungen des jeweiligen Landes zielgleich und somit auf Grundlage der Bildungsstandards unterrichtet werden. Das Erreichen der Bildungsstandards wird nur für zielgleich unterrichtete Schüler:innen berichtet.<br><br>Zudem werden in den IQB-Bildungstrend-Studien auch Ergebnisse nur für Schüler:innen, die mindestens den <strong>Mittleren Schulabschlusses (MSA)</strong> anstreben, und Schüler:innen an <strong>Gymnasien</strong> separat ausgewiesen."
-    )),
+    content = HTML(paste0(infotexte[infotexte$chunk == "Zielpopulation", language])),
     placement = "right",
     trigger = "klick",
     options = list(container = "body")
@@ -594,9 +611,7 @@ ui <- fluidPage(
   bsPopover(
     id = "infobutton_kennwert",
     title = i18n$t("Kennwert"),
-    content = HTML(paste0(
-      "Ein <strong>Mittelwert</strong> gibt die durchschnittlich erreichten Kompetenzwerte einer bestimmten Gruppe oder Untergruppe an.<br>Die Skala (z.B. Kompetenzwert für Deutsch Lesen) wurde so festgelegt, dass die Grundgesamtheit (z.B. alle Viertklässler:innen im Jahr 2011) einen Mittelwert von 500 hat.<br><br>Eine <strong>Standardabweichung (Streuung)</strong> gibt an, wie stark die Kompetenzen innerhalb einer Gruppe variieren. Sie beschreibt, ob die Verteilung der Kompetenzwerte eher einheitlich (homogen, niedrige Werte) oder unterschiedlich (heterogen, hohe Werte) ist.<br>Die Skala (z.B. Kompetenzwert für Deutsch Lesen) wurde so festgelegt, dass die Grundgesamtheit (z.B. alle Viertklässler:innen im Jahr 2011) eine Standardabweichung von 100 hat.<br><br>Die Kompetenzstufenmodelle beinhalten Beschreibungen, welche Anforderungen Schüler:innen zu bestimmten Zeitpunkten ihrer Schullaufbahn mindestens, in der Regel und optimalerweise erreichen sollten.<br>Die Prozentangabe unter <strong>„Mindeststandard verfehlt“</strong> gibt an, welcher Anteil der Schüler:innen die grundlegenden Anforderungen nicht erfüllt.<br>Die Angabe <strong>„Regelstandard erreicht“</strong> beschreibt den Anteil der Schüler:innen, die die erwarteten Anforderungen erfüllen, während <strong>„Optimalstandard erreicht“</strong> den Anteil nennt, der die höchsten Anforderungen erfüllt.<br><br>Die Abkürzungen <strong>ESA</strong> und <strong>MSA</strong> stehen dabei für den Ersten Schulabschluss (früher Hauptschulabschluss) bzw. den Mittleren Schulabschluss.<br><br>Weitere Informationen: <a href=\"https://datatab.de/tutorial/mittelwert-median-modus\" target=\"_blank\">Mittelwert</a>, <a href=\"https://datatab.de/tutorial/standardabweichung\" target=\"_blank\">Standardabweichung</a> und <a href=\"https://www.iqb.hu-berlin.de/bista/ksm/\" target=\"_blank\">Standards der Kompetenzstufenmodelle</a>"
-    )),
+    content = HTML(paste0(infotexte[infotexte$chunk == "Kennwert", language])),
     placement = "right",
     trigger = "klick",
     options = list(container = "body")
