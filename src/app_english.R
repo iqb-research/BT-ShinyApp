@@ -46,6 +46,7 @@ names(mapdata) <- c("Bundesland", "geometry")
 # eatMap als auch für ggplot2 nutzen!
 config <-
   list(
+    na_label = "no data",
     fachKb = list(
       # 4. Klasse
       "4th Grade" = list(
