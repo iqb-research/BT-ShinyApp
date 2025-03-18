@@ -24,6 +24,8 @@ library(shinyBS)
 library(shiny.i18n)
 library(readxl)
 library(rjson)
+library(jsonlite)
+library(purrr)
 
 
 # Vorbereitung der Kartendaten -------------------------------------------------
@@ -396,8 +398,24 @@ recode_nested_list <- function(my_list, recode_rules) {
   })
 }
 
+# config Liste übersetzen
 if(language == "en"){
   config <- recode_nested_list(config, woerterbuch)
+}
+
+# Datensatz rekodieren
+if(language == "en"){
+  BTdata <- BTdata %>%
+      mutate(across(kb:cycle, ~ recode(.x, !!! woerterbuch)))
+}
+
+# UI Choices übersetzen
+if(language == "en"){
+  combinations <- combinations %>%
+    mutate(across(cycle:targetPop, ~ recode(.x, !!! woerterbuch)))
+  
+  available_cycles <- recode(available_cycles, !!! woerterbuch)
+  available_parameters <- recode(available_parameters, !!! woerterbuch)
 }
 
 # UI ---------------------------------------------------------------------------
@@ -468,7 +486,7 @@ ui <- fluidPage(
           inputId = "Zyklus",
           label = i18n$t("Erhebungsreihe"),
           choices = available_cycles,
-          selected = "9. Klasse: Sprachen",
+          selected = i18n$t("9. Klasse: Sprachen"),
           width = '95%'
         )
       ),
