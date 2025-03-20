@@ -320,7 +320,7 @@ make_YearPopulationParameter <- function(cycle_current) {
   selected_combinations <- combinations[combinations$cycle == cycle_current &
                                           combinations$fachKb == fachKb_default, ]
   
-  targetPop_default <- "alle"
+  targetPop_default <- ifelse(language == "en", "all", "alle")
   parameter_default <- "mean"
   
   years <- sort(unique(selected_combinations[selected_combinations$targetPop == targetPop_default &
@@ -337,7 +337,7 @@ make_YearPopulationParameter <- function(cycle_current) {
   
   div(
     sliderTextInput(inputId = "Jahr",
-                    label = "Jahr",
+                    label = i18n$t("Jahr"),
                     grid = TRUE,
                     choices = years,
                     selected = year_default,
@@ -346,7 +346,7 @@ make_YearPopulationParameter <- function(cycle_current) {
     
     selectInput(
       inputId = "Zielpopulation",
-      label = "Zielpopulation",
+      label = i18n$t("Zielpopulation"),
       choices = targetPops,
       selected = targetPop_default,
       width = '95%'
@@ -406,7 +406,7 @@ if(language == "en"){
 # Datensatz rekodieren
 if(language == "en"){
   BTdata <- BTdata %>%
-      mutate(across(kb:cycle, ~ recode(.x, !!! woerterbuch)))
+      mutate(across(kb:fachKb, ~ recode(.x, !!! woerterbuch)))
 }
 
 # UI Choices übersetzen
