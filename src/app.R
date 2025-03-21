@@ -1,13 +1,11 @@
 # Sprache der App --------------------------------------------------------------
-# "de" für Deutsch
-# "en" für Englisch
+# "de" für Deutsch, "en" für Englisch
 language <- "de"
 
 # Pakete -----------------------------------------------------------------------
 source("requirements.R")
 
 # Konfigurationsliste ----------------------------------------------------------
-# ... enthält
 # ... wird von eatMap verarbeitet und beim PDF-Export für ggplot2 verwendet
 # ... beinhaltet auch implizit die Reihenfolge der entsprechenden Einträge
 source("config.R")

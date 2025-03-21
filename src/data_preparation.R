@@ -1,13 +1,23 @@
+################################################################################
 # Rohdaten: "data/allDat.RData"
-# "data_preparation.R" muss neu ausgeführt werden, wenn "data/allDat.RData" geupdated wird.
+#
+# "data_preparation.R" muss neu ausgeführt werden, 
+# wenn "data/allDat.RData" geupdated wird.
+################################################################################
 
+
+# Vorbereitung -----------------------------------------------------------------
+# Laden der erforderlichen Bibliotheken
 library(dplyr)
 library(tidyverse)
 
+# Laden der Konfigurationsliste
 source("config.R")
 
+# Rohdatensatz
 load("data/allDat.RData")
 
+# Rekodierung von targetPop, Zyklusbezeichnungen, Variablennamen ---------------
 allDatRec <-
   allDat %>%
   tibble::as_tibble() %>%
@@ -46,6 +56,10 @@ allDatRec <-
   ) %>%
   dplyr::rename(Bundesland = TR_BUNDESLAND)
 
+
+# Funktionen für den nächsten Schritt ------------------------------------------
+
+# Umwandlung 
 print_percent <- function(x) {
   # Anteil in Prozentwert umwandeln und "%" anhängen
   x_perc <- paste0(x, "%")
@@ -63,6 +77,8 @@ range_check <-
   ) %>%
   unnest(value)
 
+
+# Umformatierung der Kompetenzwerte --------------------------------------------
 BTdata <-
   allDatRec %>%
   mutate(
@@ -83,7 +99,7 @@ BTdata <-
       parameter %in% c("mean", "sd") ~ paste0(round(est, 0)),
       .default = print_percent(est)
     ),
-    # NAs sollen außerdem als "keine Daten" beschriftet werden
+    # NAs sollen außerdem mit dem NA-Label aus der config-Liste beschriftet werden
     est_print = ifelse(is.na(est_print), config$na_label, est_print)
   ) %>%
   left_join(range_check) %>%
@@ -95,8 +111,10 @@ BTdata <-
       est > max ~ max,
       .default = est
     ),
+    # neue Spalte fachKb mit der Kombination von Fachbereichen
     fachKb = str_glue("{fach}-{kb}")
   )
 
+# Abspeichern ------------------------------------------------------------------
 saveRDS(BTdata, "data/BTdata_processed.Rds")
 rm(list = ls())
