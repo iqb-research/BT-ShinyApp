@@ -1,3 +1,8 @@
+# Sprache der App --------------------------------------------------------------
+# "de" für Deutsch
+# "en" für Englisch
+language <- "de"
+
 # Pakete -----------------------------------------------------------------------
 source("requirements.R")
 
@@ -249,7 +254,6 @@ order_targetpop <- function(targetpops) {
 i18n <- Translator$new(translation_json_path = "translation.json")
 infotexte <- read_excel("Infotexte.xlsx")
 
-language <- "en"
 i18n$set_translation_language(language)
 
 # JSON einlesen
