@@ -12,120 +12,21 @@ source("requirements.R")
 # ... beinhaltet auch implizit die Reihenfolge der entsprechenden Einträge
 source("config.R")
 
-# Vorbereitung der Kartendaten -------------------------------------------------
+# Datensätze -------------------------------------------------------------------
+# Rohdaten: "data/allDat.RData"
+# Die Datenaufbereitung erfolgt in einem separaten Skript: "data_preparation.R".
+# "data_preparation.R" muss neu ausgeführt werden, wenn "data/allDat.RData" geupdated wird.
+BTdata <- readRDS("data/BTdata_processed.Rds")
 
+# Kartendaten
 # https://gadm.org/download_country.html
-
 mapdata <- st_read("gadm41_DEU_shp", layer = "gadm41_DEU_1")
 mapdata <- mapdata[, c("NAME_1", "geometry")]
 names(mapdata) <- c("Bundesland", "geometry")
 
-
-# Das ist ein Auszug, der die Färbung deckelt (est_delimited)
-# eatMap braucht den eigentlich bereits nicht mehr (läuft intern)
-range_check <-
-  config$parameter %>%
-  map("range") %>%
-  enframe(name = "parameter") %>%
-  mutate(
-    value = map(value, as_tibble)
-  ) %>%
-  unnest(value)
-
-# Vorbereitung der BT Daten ----------------------------------------------------
-#
-# TODO: start-delete
-# Achtung: Hier kommen jetzt ein paar Schritte von unten hoch - keiner der Schritte muss aus meiner Sicht in einem reactive passieren!
-# Ich würde sogar noch einen Schritt weitergehen und nur das Objekt BTdata am Ende in die Shiny-App überreichen, d. h. die Datenaufbereitung
-# komplett extern laufen zu lassen?
-# TODO: end-delete
-load("data/allDat.RData")
-
-allDatRec <-
-  allDat %>%
-  tibble::as_tibble() %>%
-  dplyr::mutate(
-    # Rekodierung: full -> zielgleich bei allen Standards
-    targetPop = ifelse(parameter %in% c("minVerfehlt",
-                                        "regErreicht",
-                                        "optErreicht",
-                                        "minVerfehltESA",
-                                        "minVerfehltMSA",
-                                        "optErreichtMSA",
-                                        "regErreichtMSA") &
-                         targetPop == "full",
-                       "zielgleich",
-                       targetPop),
-    # Zielpopulation
-    targetPop = dplyr::recode(
-      targetPop,
-      "full" = "alle",
-      "zielgleich" = "alle (zielgleich unterrichtet)",
-      "nonSPF" = "alle ohne Sonderpädagogischen Förderbedarf",
-      "MSA" = "Mittlerer Schulabschluss (MSA)",
-      "Gymnasium" = "Gymnasium"
-    ),
-    # Ausschreiben Zyklus
-    cycle = dplyr::recode(
-      cycle,
-      "9. Klasse: Mathe/Nawi" = "9. Klasse: Mathe/Naturwissenschaften"
-    ),
-    # Umlaute
-    TR_BUNDESLAND = dplyr::recode(
-      TR_BUNDESLAND,
-      "Thueringen" = "Thüringen",
-      "Baden-Wuerttemberg" = "Baden-Württemberg"
-    )
-  ) %>%
-  dplyr::rename(Bundesland = TR_BUNDESLAND)
-
-print_percent <- function(x) {
-  # Anteil in Prozentwert umwandeln und "%" anhängen
-  x_perc <- paste0(x, "%")
-  
-  # Korrektur, falls NAs zu Strings geworden sind
-  ifelse(x_perc == "NA%", NA_character_, x_perc)
-}
-
-BTdata <-
-  allDatRec %>%
-  mutate(
-    # die Spalte "est" enthält die tatsächlichen Kompetenzmittelwerte
-    # ...diese sollen aber so nicht im Hover-Effekt eingetragen werden, sondern
-    # zur leichteren Interpretierbarkeit gerundet werden -> neue Spalte
-    est = case_when(
-      parameter %in% c("mean", "sd") ~ est,
-      # Anteil bereits in Prozentwert umgerechnet
-      .default = est * 100
-    ),
-    se = case_when(
-      parameter %in% c("mean", "sd") ~ se,
-      # Anteil bereits in Prozentwert umgerechnet
-      .default = se * 100
-    ),
-    est_print = case_when(
-      parameter %in% c("mean", "sd") ~ paste0(round(est, 0)),
-      .default = print_percent(est)
-    ),
-    # NAs sollen außerdem als "keine Daten" beschriftet werden
-    est_print = ifelse(is.na(est_print), config$na_label, est_print)
-  ) %>%
-  left_join(range_check) %>%
-  mutate(
-    # Werte, die < min_est sind, sollen farblich als min_est und
-    # Werte, die > max_est sind, sollen farblich als max_est eingetragen werden
-    est_delimited = case_when(
-      est < min ~ min,
-      est > max ~ max,
-      .default = est
-    ),
-    fachKb = str_glue("{fach}-{kb}")
-  )
-
-rm(allDat, allDatRec)
-
 # BT Daten und Kartendaten werden erst zusammengefügt, nachdem der BT Datensatz
-# im Server selektiert wurde
+# im Server selektiert wurde, da es sonst zu Fehlern mit den Geodaten kommt
+
 
 # UI Choices -------------------------------------------------------------------
 
