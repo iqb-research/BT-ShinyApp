@@ -1,32 +1,11 @@
-# Shiny
-library(shiny)
-library(shinythemes)
-library(shinyWidgets)
-library(shinyBS)
+# Pakete -----------------------------------------------------------------------
+source("requirements.R")
 
-# HTML
-library(widgetframe)
-
-# Plot
-library(ggplot2)
-library(eatMap)
-
-# Datenselektion
-library(tidyverse)
-
-# Geodaten
-library(sf)
-
-# Infobuttons
-library(shinyBS)
-
-# Übersetzung
-library(shiny.i18n)
-library(readxl)
-library(rjson)
-library(jsonlite)
-library(purrr)
-
+# Konfigurationsliste ----------------------------------------------------------
+# ... enthält
+# ... wird von eatMap verarbeitet und beim PDF-Export für ggplot2 verwendet
+# ... beinhaltet auch implizit die Reihenfolge der entsprechenden Einträge
+source("config.R")
 
 # Vorbereitung der Kartendaten -------------------------------------------------
 
@@ -36,11 +15,6 @@ mapdata <- st_read("gadm41_DEU_shp", layer = "gadm41_DEU_1")
 mapdata <- mapdata[, c("NAME_1", "geometry")]
 names(mapdata) <- c("Bundesland", "geometry")
 
-# Konfigurationsliste -----------------------------------------------------
-# Diese beinhaltet auch implizit die Reihenfolge der entsprechenden Einträge
-# Diese Liste wird auch von eatMap verarbeitet! Man muss sie nur an dieser Stelle pflegen und kann sie dann sowohl für
-# eatMap als auch für ggplot2 nutzen!
-source(config.R)
 
 # Das ist ein Auszug, der die Färbung deckelt (est_delimited)
 # eatMap braucht den eigentlich bereits nicht mehr (läuft intern)
