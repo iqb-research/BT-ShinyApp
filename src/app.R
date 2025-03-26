@@ -368,6 +368,19 @@ order_targetpop <- function(targetpops) {
   predefined_order_targetpop[which(predefined_order_targetpop %in% targetpops)]
 }
 
+# Zitierbarkeit ----------------------------------------------------------------
+
+# Hiermit wird der Text aus dem Link-Feld angepasst (kann nicht in der Funktion selbst angepasst werden).
+# Der Standard-Text ist sonst auf Englisch.
+js_bookmarking <- HTML(paste("$(function() {",
+                 "$('body').on('shown.bs.modal', function() {",
+                 "$('.modal-dialog .modal-header > .modal-title').text('Lesezeichenfähiger Link')", 
+                 "$('.modal-dialog .modal-body > span:first').text('Dieser Link speichert den aktuellen Status Ihrer Eingaben.')",
+                 "$('#shiny-bookmark-copy-text').text('Drücken Sie Ctrl-C um den Link zu kopieren.')",
+                 "$('.modal-dialog .modal-footer > button').text('Schließen')",
+                 "})",
+                 "})",
+                 sep = "\n"))
 
 # UI ---------------------------------------------------------------------------
 
@@ -377,6 +390,7 @@ ui <- function(request) {
   
   # Styling --------------------------------------------------------------------
   theme = shinytheme("sandstone"),
+  tags$head(tags$script(js_bookmarking, type = "text/javascript")), # Text im Bookmarking-Button
   
   # Aussehen des Sliders
   # .irs-grid-pol.small: entfernt die vertikalen Gitternetzlinien zwischen den Ticks
@@ -521,8 +535,9 @@ ui <- function(request) {
         width = 12, # Spalte für die dynamischen Inhalte
         class = "no-padding",
         bookmarkButton(
+          id = "bookmark",
           label = "Lesezeichenfähiger Link",
-          title = "Dieser Link speichert Ihre aktuellen Eingaben.",
+          title = "Dieser Link speichert den aktuellen Status Ihrer Eingaben.",
           style = "width:100%; margin-top:10px;
                    background-color:#f0f0f0; color: #000000;
                    border: 1px solid #A9A9A9;
@@ -769,6 +784,14 @@ server <- function(input, output, session) {
       )
     }
   ) 
+  # Bookmarking ----------------------------------------------------------------
+  
+  # der Bookmark-Button soll sich selbst nicht mit bookmarken
+  setBookmarkExclude("bookmark")
+  
+  observeEvent(input$bookmark, {
+    session$doBookmark()
+  })
 }
 
 
