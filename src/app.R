@@ -371,7 +371,7 @@ order_targetpop <- function(targetpops) {
 
 # UI ---------------------------------------------------------------------------
 
-ui <- <- function(request) {
+ui <- function(request) {
 
   fluidPage(
   
@@ -515,18 +515,36 @@ ui <- <- function(request) {
     ),
     tags$div(style = "height: 20px;"),
     
-    # Download-Button ------------------------------------------------------------
+    # Link & Download-Button ---------------------------------------------------
+    fluidRow(
+      column(
+        width = 12, # Spalte für die dynamischen Inhalte
+        class = "no-padding",
+        bookmarkButton(
+          label = "Lesezeichenfähiger Link",
+          title = "Dieser Link speichert Ihre aktuellen Eingaben.",
+          style = "width:100%; margin-top:10px;
+                   background-color:#f0f0f0; color: #000000;
+                   border: 1px solid #A9A9A9;
+                   padding: 3px 8px;
+                   height: 30px;"
+        )
+      )
+    ),
     
     fluidRow(
       column(
         width = 12, # Spalte für die dynamischen Inhalte
         class = "no-padding",
-        downloadButton("report", " PDF Export",
-                       style = "width:100%; margin-top:10px;
+        downloadButton(
+          "report",
+          " PDF Export",
+          style = "width:100%; margin-top:10px;
                    background-color:#f0f0f0; color: #000000;
                    border: 1px solid #A9A9A9;
                    padding: 3px 8px;
-                   height: 30px;")
+                   height: 30px;"
+        )
       )
     )
   ),
@@ -756,4 +774,4 @@ server <- function(input, output, session) {
 
 # Build App --------------------------------------------------------------------
 
-shinyApp(ui = ui, server = server)
+shinyApp(ui = ui, server = server, enableBookmarking = "url")
