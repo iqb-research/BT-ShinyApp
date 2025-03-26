@@ -371,7 +371,9 @@ order_targetpop <- function(targetpops) {
 
 # UI ---------------------------------------------------------------------------
 
-ui <- fluidPage(
+ui <- <- function(request) {
+
+  fluidPage(
   
   # Styling --------------------------------------------------------------------
   theme = shinytheme("sandstone"),
@@ -594,8 +596,9 @@ ui <- fluidPage(
     placement = "right",
     trigger = "klick",
     options = list(container = "body")
+    )
   )
-)
+  }
 
 # Server -----------------------------------------------------------------------
 
