@@ -18,6 +18,7 @@ params:
   legendentitel: "-"
   kennwert: "Mittelwert"
   na_label: ""
+  quelle: ""
 ---
 \pagenumbering{gobble}
 
@@ -111,4 +112,18 @@ grid.draw(tabelle)  # Zeichne Tabelle
 popViewport()
 
 popViewport()  # Gesamtes Layout verlassen
+```
+
+\newpage
+\noindent\rule{3cm}{0.4pt}
+**Die Daten sowie weitere Informationen sind dem entsprechenden Berichtsband zu entnehmen:**   
+
+```{r echo=FALSE}
+
+```
+
+
+```{r echo=FALSE, results='asis'}
+# Quellenangabe
+cat(params$quelle)
 ```
