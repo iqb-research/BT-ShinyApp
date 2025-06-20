@@ -1,0 +1,236 @@
+{
+  "languages": ["de", "en"],
+  "translation": [
+      {
+      "de": "Erhebungsreihe", 
+      "en": "Assessment Cycle"
+      },
+      {
+      "de": "4. Klasse", 
+      "en": "4th Grade"
+      },
+      {
+      "de": "Deutsch", 
+      "en": "German"
+      },
+      {
+      "de": "Lesen", 
+      "en": "Reading"
+      },
+      {
+      "de": "Zuhören", 
+      "en": "Listening"
+      },
+      {
+      "de": "Orthografie", 
+      "en": "Orthography"
+      },
+      {
+      "de": "Mathematik", 
+      "en": "Mathematics"
+      },
+      {
+      "de": "Globalskala", 
+      "en": "Global Scale"
+      },
+      {
+      "de": "Zahlen und Operationen", 
+      "en": "Numbers and Operations"
+      },
+      {
+      "de": "Größen und Messen", 
+      "en": "Sizes and Measurements"
+      },
+      {
+      "de": "Raum und Form", 
+      "en": "Space and Shape"
+      },
+      {
+      "de": "Muster und Strukturen", 
+      "en": "Patterns and Structures"
+      },
+      {
+      "de": "Daten, Häufigkeit und Wahrscheinlichkeit", 
+      "en": "Data, Frequency, and Probability"
+      },
+      {
+      "de": "9. Klasse: Mathe/Naturwissenschaften", 
+      "en": "9th Grade: Math/Science"
+      },
+      {
+      "de": "Zahl", 
+      "en": "Numbers"
+      },
+      {
+      "de": "Messen", 
+      "en": "Measurements"
+      },
+      {
+      "de": "Funktionaler Zusammenhang", 
+      "en": "Functional Relations"
+      },
+      {
+      "de": "Daten und Zufall", 
+      "en": "Data and Chance"
+      },
+      {
+      "de": "Biologie", 
+      "en": "Biology"
+      },
+      {
+      "de": "Chemie", 
+      "en": "Chemistry"
+      },
+      {
+      "de": "Physik", 
+      "en": "Physics"
+      },
+      {
+      "de": "Erkenntnisgewinnung", 
+      "en": "Scientific Inquiry"
+      },
+      {
+      "de": "Fachwissen", 
+      "en": "Subject Knowledge"
+      },
+      {
+      "de": "9. Klasse: Sprachen", 
+      "en": "9th Grade: Languages"
+      },
+      {
+      "de": "Englisch", 
+      "en": "English"
+      },
+      {
+      "de": "Französisch", 
+      "en": "French"
+      },
+      {
+      "de": "Leseverstehen", 
+      "en": "Reading Comprehension"
+      },
+      {
+      "de": "Hörverstehen", 
+      "en": "Listening Comprehension"
+      },
+      {
+      "de": "Jahr", 
+      "en": "Year"
+      },
+      {
+      "de": "Kennwert", 
+      "en": "Parameter"
+      },
+      {
+      "de": "Mittelwert", 
+      "en": "Mean"
+      },
+      {
+      "de": "Streuung", 
+      "en": "Dispersion"
+      },
+      {
+      "de": "Mindeststandard verfehlt", 
+      "en": "Minimum standard missed"
+      },
+      {
+      "de": "Mindeststandard für ESA verfehlt", 
+      "en": "Minimum standard for ESA missed"
+      },
+      {
+      "de": "Mindeststandard für MSA verfehlt", 
+      "en": "Minimum standard for MSA missed"
+      },
+      {
+      "de": "Regelstandard erreicht", 
+      "en": "Normative standard met"
+      },
+      {
+      "de": "Regelstandard für MSA erreicht", 
+      "en": "Normative standard for MSA met"
+      },
+      {
+      "de": "Optimalstandard erreicht", 
+      "en": "Optimal standard met"
+      },
+      {
+      "de": "Optimalstandard MSA erreicht", 
+      "en": "Optimal standard for MSA met"
+      },
+      {
+      "de": "Zielpopulation", 
+      "en": "Target Population"
+      },
+      {
+      "de": "alle", 
+      "en": "all"
+      },
+      {
+      "de": "alle (zielgleich unterrichtet)", 
+      "en": "all (taught on the basis of educational standards)"
+      },
+      {
+      "de": "alle ohne Sonderpädagogischen Förderbedarf", 
+      "en": "all without special educational needs"
+      },
+      {
+      "de": "Mittlerer Schulabschluss (MSA)", 
+      "en": "Secondary school leaving certificate (MSA)"
+      },
+      {
+      "de": "Gymnasium", 
+      "en": "college-preparatory secondary schools [Gymnasien]"
+      },
+      {
+      "de": "Grundgesamtheit", 
+      "en": "Population"
+      },
+      {
+      "de": "Bildungstrend-Karte", 
+      "en": "IQB Trends in Student Achievement - Map"
+      },
+      {
+      "de": "keine Angabe", 
+      "en": "no data"
+      },
+      {
+      "de": "keine Daten", 
+      "en": "no data"
+      },
+      {
+      "de": "Kompetenzmittelwerte", 
+      "en": "mean proficiencies"
+      },
+      {
+      "de": "PDF-Download wird vorbereitet...", 
+      "en": "PDF download is being prepared..."
+      },
+      {
+      "de": "Kompetenzbereich", 
+      "en": "Proficiency Domain"
+      },
+      {"de": "Biologie-Erkenntnisgewinnung", "en": "Biology-Scientific Inquiry"},
+      {"de": "Biologie-Fachwissen", "en": "Biology-Subject Knowledge"},
+      {"de": "Chemie-Erkenntnisgewinnung", "en": "Chemistry-Scientific Inquiry"},
+      {"de": "Chemie-Fachwissen", "en": "Chemistry-Subject Knowledge"},
+      {"de": "Deutsch-Lesen", "en": "German-Reading"},
+      {"de": "Deutsch-Orthografie", "en": "German-Orthography"},
+      {"de": "Deutsch-Zuhören", "en": "German-Listening"},
+      {"de": "Englisch-Hörverstehen", "en": "English-Listening Comprehension"},
+      {"de": "Englisch-Leseverstehen", "en": "English-Reading Comprehension"},
+      {"de": "Französisch-Hörverstehen", "en": "French-Listening Comprehension"},
+      {"de": "Französisch-Leseverstehen", "en": "French-Reading Comprehension"},
+      {"de": "Mathematik-Daten, Häufigkeit und Wahrscheinlichkeit", "en": "Mathematics-Data, Frequency, and Probability"},
+      {"de": "Mathematik-Globalskala", "en": "Mathematics-Global Scale"},
+      {"de": "Mathematik-Größen und Messen", "en": "Mathematics-Sizes and Measurements"},
+      {"de": "Mathematik-Muster und Strukturen", "en": "Mathematics-Patterns and Structures"},
+      {"de": "Mathematik-Raum und Form", "en": "Mathematics-Space and Shape"},
+      {"de": "Mathematik-Zahlen und Operationen", "en": "Mathematics-Numbers and Operations"},
+      {"de": "Mathematik-Daten und Zufall", "en": "Mathematics-Data and Chance"},
+      {"de": "Mathematik-Funktionaler Zusammenhang", "en": "Mathematics-Functional Relations"},
+      {"de": "Mathematik-Messen", "en": "Mathematics-Measurements"},
+      {"de": "Mathematik-Zahl", "en": "Mathematics-Numbers"},
+      {"de": "Physik-Erkenntnisgewinnung", "en": "Physics-Scientific Inquiry"},
+      {"de": "Physik-Fachwissen", "en": "Physics-Subject Knowledge"}
+    ]
+}

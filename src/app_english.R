@@ -17,7 +17,6 @@ library(widgetframe)
 library(ggiraph)
 # TODO: delete-start
 # funktioniert mit der neuesten Version von eatMap
-# devtools::install_github("franikowsp/eatMap")
 # TODO: delete-end
 library(eatMap)
 # library(ggplot2) # tidyverse
