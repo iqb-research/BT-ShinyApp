@@ -2,7 +2,7 @@
 output: 
   pdf_document:
     latex_engine: xelatex
-geometry: a4paper,landscape,margin=1in
+geometry: a4paper,landscape,left=3cm,right=3cm,top=1.5cm,bottom=1cm
 header-includes:
   - \usepackage{fontspec}
   - \setmainfont{Arial}
@@ -18,6 +18,7 @@ params:
   legendentitel: "-"
   kennwert: "Mittelwert"
   na_label: ""
+  quelle: ""
 ---
 \pagenumbering{gobble}
 
@@ -111,4 +112,12 @@ grid.draw(tabelle)  # Zeichne Tabelle
 popViewport()
 
 popViewport()  # Gesamtes Layout verlassen
+```
+
+\noindent\rule{3cm}{0.4pt}
+**Die Daten sowie weitere Informationen sind dem entsprechenden Berichtsband zu entnehmen:**   
+
+```{r echo=FALSE, results='asis'}
+# Quellenangabe
+cat(params$quelle)
 ```

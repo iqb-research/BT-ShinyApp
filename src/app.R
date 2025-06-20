@@ -730,6 +730,9 @@ server <- function(input, output, session) {
       tempReport <- file.path(tempdir(), "export.Rmd")
       file.copy("export.Rmd", tempReport, overwrite = TRUE)
       
+      # Quellenangaben einlesen
+      sources <- readxl::read_xlsx("sources.xlsx")
+
       # Parameter für das .Rmd Dokument
       params <- list(data = left_join(x = mapdata,
                                       y = data_selected(),
@@ -739,7 +742,8 @@ server <- function(input, output, session) {
                      reverse = config_parameter()$reverse,
                      legendentitel = config_parameter()$title,
                      kennwert = input$Kennwert,
-                     na_label = config$na_label)
+                     na_label = config$na_label,
+                     quelle = sources[sources$year == selectedJahr(), ]$source)
       
       # Knitten
       rmarkdown::render(tempReport, output_file = file,
