@@ -1,6 +1,6 @@
 # Sprache der App --------------------------------------------------------------
 # "de" für Deutsch, "en" für Englisch
-language <- "de"
+language <- "en"
 
 # Pakete -----------------------------------------------------------------------
 source("requirements.R")
@@ -31,6 +31,11 @@ names(mapdata) <- c("Bundesland", "geometry")
 # Zyklen
 available_cycles <- unique(BTdata$cycle)[order(unique(BTdata$cycle))] # alle erhobenen Zyklen, Hotfix für Ordnung
 available_parameters <- unique(BTdata$parameter) # Parameter
+default_newest_cycle <- BTdata %>%
+  filter(year == max(BTdata$year)) %>% # Get rows for the most recent year
+  distinct(cycle) %>%                  # Find the unique cycle(s) in that year
+  pull(cycle) %>%                      # Extract the cycle name(s) as a vector
+  .[1]
 
 # alle im Datensatz enthaltenen Kombinationen der UI choices
 combinations <-
@@ -160,6 +165,7 @@ woerterbuch <- fromJSON(paste(readLines("translation.json"), collapse=""), flatt
 woerterbuch <- setNames(woerterbuch$translation$en, woerterbuch$translation$de)
 
 recode_nested_list <- function(my_list, recode_rules) {
+  names(my_list) <- recode(names(my_list), !!!recode_rules, .default = names(my_list))
   map(my_list, function(x) { # map() = Apply a function to each element of a vector
     if (is.list(x)) {
       recode_nested_list(x, recode_rules)  # rekursiv alle Listen durchgehen
@@ -179,17 +185,31 @@ if(language == "en"){
 # Datensatz rekodieren
 if(language == "en"){
   BTdata <- BTdata %>%
-      mutate(across(kb:fachKb, ~ recode(.x, !!! woerterbuch)))
+    # 1. alle Spalten übersetzen
+    mutate(across(c(cycle, fach, klassenstufe, kb, targetPop), ~ recode(.x, !!! woerterbuch))) %>%
+    # 2. 'fachKb' neu erstellen
+    mutate(fachKb = paste(fach, kb, sep = "-"))
 }
 
 # UI Choices übersetzen
 if(language == "en"){
   combinations <- combinations %>%
-    mutate(across(cycle:targetPop, ~ recode(.x, !!! woerterbuch)))
+    mutate(
+      # 1. alle "einfachen" Spalten übersetzen
+      across(c(cycle, targetPop), ~ recode(.x, !!! woerterbuch)),
+      
+      # 2. 'fachKb' trennen, übersetzen und neu erstellen
+      fachKb = map_chr(fachKb, function(x) {
+        parts <- unlist(strsplit(x, "-"))
+        translated_parts <- recode(parts, !!! woerterbuch)
+        paste(translated_parts, collapse = "-")
+      })
+    )
   
   available_cycles <- recode(available_cycles, !!! woerterbuch)
   available_parameters <- recode(available_parameters, !!! woerterbuch)
 }
+
 
 # UI ---------------------------------------------------------------------------
 
@@ -259,7 +279,7 @@ ui <- fluidPage(
           inputId = "Zyklus",
           label = i18n$t("Erhebungsreihe"),
           choices = available_cycles,
-          selected = i18n$t("9. Klasse: Sprachen"),
+          selected = default_newest_cycle,
           width = '95%'
         )
       ),
@@ -427,12 +447,6 @@ server <- function(input, output, session) {
   
   # Kompetenzbereich (aus dem dynamischen Panel)
   selectedKompetenzbereich <- reactive({
-    # TODO: start-delete
-    # # Ist nun immer zusammengeschrieben und auch im BTdata-Objekt verfügbar
-    # req(input$Kompetenzbereich)
-    # parts <- unlist(strsplit(input$Kompetenzbereich, "-"))
-    # list(fach = parts[1], kb = parts[2])
-    # TODO: end-delete
     input$fachKb
   })
   
