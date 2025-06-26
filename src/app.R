@@ -1,6 +1,6 @@
 # Sprache der App --------------------------------------------------------------
 # "de" für Deutsch, "en" für Englisch
-language <- "de"
+language <- "en"
 
 # Pakete -----------------------------------------------------------------------
 source("requirements.R")
@@ -208,6 +208,10 @@ if(language == "en"){
   
   available_cycles <- recode(available_cycles, !!! woerterbuch)
   available_parameters <- recode(available_parameters, !!! woerterbuch)
+}
+
+if(language == "en"){
+  default_newest_cycle <- recode(default_newest_cycle, !!! woerterbuch)
 }
 
 
