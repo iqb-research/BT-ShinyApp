@@ -1,6 +1,6 @@
 # Sprache der App --------------------------------------------------------------
 # "de" für Deutsch, "en" für Englisch
-language <- "en"
+language <- "de"
 
 # Pakete -----------------------------------------------------------------------
 source("requirements.R")
@@ -561,7 +561,7 @@ server <- function(input, output, session) {
       file.copy("export.Rmd", tempReport, overwrite = TRUE)
       
       # Quellenangaben einlesen
-      sources <- readxl::read_xlsx("sources.xlsx")
+      sources <- readxl::read_xlsx("BT_Quellenangaben.xlsx")
 
       # Parameter für das .Rmd Dokument
       params <- list(data = left_join(x = mapdata,
