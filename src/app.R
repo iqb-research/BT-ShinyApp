@@ -18,7 +18,7 @@ BTdata <- readRDS("data/BTdata_processed.Rds")
 
 # Kartendaten
 # https://gadm.org/download_country.html
-mapdata <- st_read("gadm41_DEU_shp", layer = "gadm41_DEU_1")
+mapdata <- st_read("Kartendaten", layer = "gadm41_DEU_1")
 mapdata <- mapdata[, c("NAME_1", "geometry")]
 names(mapdata) <- c("Bundesland", "geometry")
 
