@@ -155,14 +155,16 @@ order_targetpop <- function(targetpops) {
 }
 
 # Übersetzung ------------------------------------------------------------------
+setwd("./text_elements")
 i18n <- Translator$new(translation_json_path = "translation.json")
 infotexte <- read_excel("Infotexte.xlsx")
-
-i18n$set_translation_language(language)
-
 # JSON einlesen
 woerterbuch <- fromJSON(paste(readLines("translation.json"), collapse=""), flatten = TRUE)
 woerterbuch <- setNames(woerterbuch$translation$en, woerterbuch$translation$de)
+setwd("../")
+# Translator setzen
+i18n$set_translation_language(language)
+
 
 recode_nested_list <- function(my_list, recode_rules) {
   names(my_list) <- recode(names(my_list), !!!recode_rules, .default = names(my_list))
@@ -561,7 +563,7 @@ server <- function(input, output, session) {
       file.copy("export.Rmd", tempReport, overwrite = TRUE)
       
       # Quellenangaben einlesen
-      sources <- readxl::read_xlsx("BT_Quellenangaben.xlsx")
+      sources <- readxl::read_xlsx("./text_elements/BT_Quellenangaben.xlsx")
 
       # Parameter für das .Rmd Dokument
       params <- list(data = left_join(x = mapdata,
