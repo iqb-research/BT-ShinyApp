@@ -130,32 +130,60 @@
       "en": "Dispersion"
       },
       {
-      "de": "Mindeststandard verfehlt", 
-      "en": "Minimum standard missed"
+      "de": "Mindeststandard verfehlt (%)", 
+      "en": "Minimum standard missed (%)"
+      },      
+      {
+      "de": "Mindeststandard \nverfehlt (%)", 
+      "en": "Minimum standard \nmissed (%)"
       },
       {
-      "de": "Mindeststandard für ESA verfehlt", 
-      "en": "Minimum standard for ESA missed"
+      "de": "Mindeststandard für ESA verfehlt (%)", 
+      "en": "Minimum standard for ESA missed (%)"
+      },      
+      {
+      "de": "Mindeststandard für \nESA verfehlt (%)", 
+      "en": "Minimum standard for \nESA missed (%)"
       },
       {
-      "de": "Mindeststandard für MSA verfehlt", 
-      "en": "Minimum standard for MSA missed"
+      "de": "Mindeststandard für MSA verfehlt (%)", 
+      "en": "Minimum standard for MSA missed (%)"
+      },      
+      {
+      "de": "Mindeststandard für \nMSA verfehlt (%)", 
+      "en": "Minimum standard for \nMSA missed (%)"
       },
       {
-      "de": "Regelstandard erreicht", 
-      "en": "Normative standard met"
+      "de": "Regelstandard erreicht (%)", 
+      "en": "Normative standard met (%)"
+      },      
+      {
+      "de": "Regelstandard \nerreicht (%)", 
+      "en": "Normative \nstandard met (%)"
       },
       {
-      "de": "Regelstandard für MSA erreicht", 
-      "en": "Normative standard for MSA met"
+      "de": "Regelstandard für \nMSA erreicht (%)", 
+      "en": "Normative standard \nfor MSA met (%)"
+      },      
+      {
+      "de": "Regelstandard für MSA erreicht (%)", 
+      "en": "Normative standard for MSA met (%)"
       },
       {
-      "de": "Optimalstandard erreicht", 
-      "en": "Optimal standard met"
+      "de": "Optimalstandard erreicht (%)", 
+      "en": "Optimal standard met (%)"
       },
       {
-      "de": "Optimalstandard MSA erreicht", 
-      "en": "Optimal standard for MSA met"
+      "de": "Optimalstandard MSA \nerreicht (%)", 
+      "en": "Optimal standard \nfor MSA met (%)"
+      },      
+      {
+      "de": "Optimalstandard \nerreicht (%)", 
+      "en": "Optimal standard \nmet (%)"
+      },
+      {
+      "de": "Optimalstandard MSA erreicht (%)", 
+      "en": "Optimal standard for MSA met (%)"
       },
       {
       "de": "Zielpopulation", 
