@@ -99,7 +99,7 @@ make_YearPopulationParameter <- function(cycle_current) {
   selected_combinations <- combinations[combinations$cycle == cycle_current &
                                           combinations$fachKb == fachKb_default, ]
   
-  targetPop_default <- ifelse(language == "en", "all", "alle")
+  targetPop_default <- ifelse(language == "en", "All", "alle")
   parameter_default <- "mean"
   
   years <- sort(unique(selected_combinations[selected_combinations$targetPop == targetPop_default &
@@ -133,7 +133,7 @@ make_YearPopulationParameter <- function(cycle_current) {
     
     selectInput(
       inputId = "Kennwert",
-      label = "Kennwert",
+      label = i18n$t("Kennwert"),
       choices = parameters,
       selected = parameter_default,
       width = '95%'
@@ -141,27 +141,14 @@ make_YearPopulationParameter <- function(cycle_current) {
   )
 }
 
-# Funktionen zum Ordnen der Auswahlmöglichkeiten
-predefined_order_parameters <- names(config$parameter)
-names(predefined_order_parameters) <- config$parameter %>% map("label")
-predefined_order_targetpop <- config$targetPop
-
-order_parameters <- function(params) {
-  ordered_parameters <- predefined_order_parameters[which(predefined_order_parameters %in% params)]
-}
-
-order_targetpop <- function(targetpops) {
-  predefined_order_targetpop[which(predefined_order_targetpop %in% targetpops)]
-}
-
 # Übersetzung ------------------------------------------------------------------
-setwd("./text_elements")
-i18n <- Translator$new(translation_json_path = "translation.json")
-infotexte <- read_excel("Infotexte.xlsx")
+
+i18n <- Translator$new(translation_json_path = "text_elements/translation.json")
+infotexte <- read_excel("text_elements/Infotexte.xlsx")
 # JSON einlesen
-woerterbuch <- fromJSON(paste(readLines("translation.json"), collapse=""), flatten = TRUE)
+woerterbuch <- fromJSON(paste(readLines("text_elements/translation.json"), collapse=""), flatten = TRUE)
 woerterbuch <- setNames(woerterbuch$translation$en, woerterbuch$translation$de)
-setwd("../")
+
 # Translator setzen
 i18n$set_translation_language(language)
 
@@ -183,6 +170,22 @@ recode_nested_list <- function(my_list, recode_rules) {
 if(language == "en"){
   config <- recode_nested_list(config, woerterbuch)
 }
+
+
+# Funktionen zum Ordnen der Auswahlmöglichkeiten
+predefined_order_parameters <- names(config$parameter)
+names(predefined_order_parameters) <- config$parameter %>% map("label")
+predefined_order_targetpop <- config$targetPop
+
+order_parameters <- function(params) {
+  ordered_parameters <- predefined_order_parameters[which(predefined_order_parameters %in% params)]
+}
+
+order_targetpop <- function(targetpops) {
+  predefined_order_targetpop[which(predefined_order_targetpop %in% targetpops)]
+}
+
+
 
 # Datensatz rekodieren
 if(language == "en"){
@@ -564,7 +567,7 @@ server <- function(input, output, session) {
       
       # Quellenangaben einlesen
       sources <- readxl::read_xlsx("./text_elements/BT_Quellenangaben.xlsx")
-
+      
       # Parameter für das .Rmd Dokument
       params <- list(data = left_join(x = mapdata,
                                       y = data_selected(),
@@ -590,3 +593,4 @@ server <- function(input, output, session) {
 # Build App --------------------------------------------------------------------
 
 shinyApp(ui = ui, server = server)
+
