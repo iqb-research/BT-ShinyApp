@@ -99,7 +99,7 @@ make_YearPopulationParameter <- function(cycle_current) {
   selected_combinations <- combinations[combinations$cycle == cycle_current &
                                           combinations$fachKb == fachKb_default, ]
   
-  targetPop_default <- ifelse(language == "en", "all", "alle")
+  targetPop_default <- ifelse(language == "en", "All", "alle")
   parameter_default <- "mean"
   
   years <- sort(unique(selected_combinations[selected_combinations$targetPop == targetPop_default &
