@@ -20,6 +20,7 @@ packages <- c(
   "rjson",
   "jsonlite",
   "purrr"
+  "gridExtra"
 )
 
 
