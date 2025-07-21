@@ -19,7 +19,7 @@ packages <- c(
   "readxl",
   "rjson",
   "jsonlite",
-  "purrr"
+  "purrr",
   "gridExtra"
 )
 
