@@ -8,14 +8,14 @@
 
 # Vorbereitung -----------------------------------------------------------------
 # Laden der erforderlichen Bibliotheken
-library(dplyr)
-library(tidyverse)
+# library(dplyr)
+# library(tidyverse)
 
 # Laden der Konfigurationsliste
-source("config.R")
+source(system.file("R", "config.R", package = "BTShinyApp"))
 
 # Rohdatensatz
-load("data/allDat.RData")
+data("allDat", package = "BTShinyApp")
 
 # Rekodierung von targetPop, Zyklusbezeichnungen, Variablennamen ---------------
 allDatRec <-
@@ -116,5 +116,5 @@ BTdata <-
   )
 
 # Abspeichern ------------------------------------------------------------------
-saveRDS(BTdata, "data/BTdata_processed.Rds")
+#saveRDS(BTdata, "data/BTdata_processed.Rds")
 rm(list = ls())

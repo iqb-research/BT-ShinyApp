@@ -1,0 +1,44 @@
+Package: BTShinyApp
+Title: Interactive Visualization of IQB-Bildungstrend Results
+Version: 0.1.5
+Authors@R: 
+    c(person("Karoline", "Sachse", "karoline.sachse@iqb.hu-berlin.de", role = c("aut"),
+           comment = c(ORCID = "0000-0001-6688-1267")),
+      person("Apel", "Alina", email = "apelalin@hu-berlin.de", role = "aut"),
+      person("Franikowski", "Philipp", email = "philipp.franikowski@iqb.hu-berlin.de", role = "aut"),
+      person("Grewers", "Edna", email = "edna.grewers@iqb.hu-berlin.de", role = "ctb"),
+      person("Wilm", "Lisa", email = "wilmlich@hu-berlin.de", role = "ctb"),
+    )
+Description: Provides a Shiny application for interactively visualizing the results
+    of the IQB-Bildungstrend studies. The app allows users to explore various
+    datasets, maps, and statistical outputs in an intuitive graphical interface.
+License: CC BY-NC-ND 4.0
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1
+Depends: R (>= 4.1.0)
+Imports:
+    shiny,
+    shinythemes,
+    shinyWidgets,
+    shinyBS,
+    widgetframe,
+    ggplot2,
+    sf,
+    shiny.i18n,
+    readxl,
+    rjson,
+    jsonlite,
+    purrr,
+    gridExtra,
+    rmarkdown,
+    dplyr,
+    knitr,
+    viridis,
+    tinytex
+Remotes:
+    franikowsp/eatMap
+
+    
+
