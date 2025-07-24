@@ -23,6 +23,7 @@ library(rmarkdown)
 library(knitr)
 library(eatMap)
 library(tinytex)
+library(stringr)
 
 # Konfigurationsliste ----------------------------------------------------------
 # ... wird von eatMap verarbeitet und beim PDF-Export für ggplot2 verwendet

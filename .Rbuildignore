@@ -3,3 +3,4 @@
 ^Dockerfile$
 ^.*\.Rhistory$
 ^.env$
+^\.Rproj\.user$
