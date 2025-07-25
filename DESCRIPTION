@@ -4,10 +4,10 @@ Version: 0.1.5
 Authors@R: 
     c(person("Karoline", "Sachse", "karoline.sachse@iqb.hu-berlin.de", role = c("aut"),
            comment = c(ORCID = "0000-0001-6688-1267")),
-      person("Apel", "Alina", email = "apelalin@hu-berlin.de", role = "aut"),
-      person("Franikowski", "Philipp", email = "philipp.franikowski@iqb.hu-berlin.de", role = "aut"),
-      person("Grewers", "Edna", email = "edna.grewers@iqb.hu-berlin.de", role = "ctb"),
-      person("Wilm", "Lisa", email = "wilmlich@hu-berlin.de", role = "ctb"),
+      person("Alina", "Apel", email = "apelalin@hu-berlin.de", role = "aut"),
+      person("Philipp", "Franikowski", email = "philipp.franikowski@iqb.hu-berlin.de", role = "aut"),
+      person("Edna", "Grewers", email = "edna.grewers@iqb.hu-berlin.de", role = "ctb"),
+      person("Lisa", "Wilm", email = "wilmlich@hu-berlin.de", role = "ctb"),
     )
 Description: Provides a Shiny application for interactively visualizing the results
     of the IQB-Bildungstrend studies. The app allows users to explore various
@@ -32,6 +32,7 @@ Imports:
     jsonlite,
     purrr,
     gridExtra,
+    grid,
     rmarkdown,
     dplyr,
     knitr,
