@@ -33,13 +33,6 @@ library(viridis)
 
 
 ```{r echo=FALSE}
-# if (!requireNamespace("tinytex", quietly = TRUE)) {
-#   showModal(modalDialog("tinytex is required to render PDF reports. Please install it with install.packages('tinytex')", easyClose = TRUE))
-#   return(NULL)
-# }
-# 
-# tinytex::tlmgr_install(c("fontspec", "titlesec", "xetex", "geometry"))
-
 # Titel generieren
 
 titel <- paste0(
