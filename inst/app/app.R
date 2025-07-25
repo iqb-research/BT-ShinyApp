@@ -3,22 +3,44 @@
 language <- "de"
 
 # Pakete -----------------------------------------------------------------------
-source("requirements.R")
+library(shiny)
+library(shinythemes)
+library(shinyWidgets)
+library(shinyBS)
+library(shiny.i18n)
+library(readxl)
+library(jsonlite)
+library(rjson)
+library(dplyr)
+library(ggplot2)
+library(viridis)
+library(sf)
+library(gridExtra)
+library(grid)
+library(purrr)
+library(widgetframe)
+library(rmarkdown)
+library(knitr)
+library(eatMap)
+library(tinytex)
+library(stringr)
 
 # Konfigurationsliste ----------------------------------------------------------
 # ... wird von eatMap verarbeitet und beim PDF-Export für ggplot2 verwendet
 # ... beinhaltet auch implizit die Reihenfolge der entsprechenden Einträge
-source("config.R")
+source(system.file("R", "config.R", package = "BTShinyApp"))
 
 # Datensätze -------------------------------------------------------------------
 # Rohdaten: "data/allDat.RData"
 # Die Datenaufbereitung erfolgt in einem separaten Skript: "data_preparation.R".
 # "data_preparation.R" muss neu ausgeführt werden, wenn "data/allDat.RData" geupdated wird.
-BTdata <- readRDS("data/BTdata_processed.Rds")
+BTdata <- readRDS(system.file("data", "BTdata_processed.Rds", package = "BTShinyApp"))
+
 
 # Kartendaten
 # https://gadm.org/download_country.html
-mapdata <- st_read("map_data", layer = "gadm41_DEU_1")
+map_path <- system.file("extdata", "map_data", package = "BTShinyApp")
+mapdata <- sf::st_read(dsn = map_path, layer = "gadm41_DEU_1")
 mapdata <- mapdata[, c("NAME_1", "geometry")]
 names(mapdata) <- c("Bundesland", "geometry")
 
@@ -143,10 +165,14 @@ make_YearPopulationParameter <- function(cycle_current) {
 
 # Übersetzung ------------------------------------------------------------------
 
-i18n <- Translator$new(translation_json_path = "text_elements/translation.json")
-infotexte <- read_excel("text_elements/Infotexte.xlsx")
+json_path <- system.file("extdata", "text_elements", "translation.json", package = "BTShinyApp")
+i18n <- shiny.i18n::Translator$new(translation_json_path = json_path)
+infotextfile <- system.file("extdata/text_elements/Infotexte.xlsx", package = "BTShinyApp")
+infotexte <- readxl::read_excel(infotextfile)
+
 # JSON einlesen
-woerterbuch <- fromJSON(paste(readLines("text_elements/translation.json"), collapse=""), flatten = TRUE)
+json_path <- system.file("extdata", "text_elements", "translation.json", package = "BTShinyApp")
+woerterbuch <- jsonlite::fromJSON(paste(readLines(json_path), collapse = ""), flatten = TRUE)
 woerterbuch <- setNames(woerterbuch$translation$en, woerterbuch$translation$de)
 
 # Translator setzen
@@ -563,10 +589,11 @@ server <- function(input, output, session) {
       # PDF soll in temporäres directory kopiert werden, falls keine Schreibrechte
       # für das aktuelle directory vorliegen
       tempReport <- file.path(tempdir(), "export.Rmd")
-      file.copy("export.Rmd", tempReport, overwrite = TRUE)
+      template_path <- system.file("app", "export.Rmd", package = "BTShinyApp")
+      file.copy(template_path, tempReport, overwrite = TRUE)
       
       # Quellenangaben einlesen
-      sources <- readxl::read_xlsx("./text_elements/BT_Quellenangaben.xlsx")
+      sources <- readxl::read_xlsx(system.file("extdata", "text_elements", "BT_Quellenangaben.xlsx", package = "BTShinyApp"))
       
       # Parameter für das .Rmd Dokument
       params <- list(data = left_join(x = mapdata,

@@ -1,0 +1,6 @@
+^.*\.Rproj$
+^\.git.*
+^Dockerfile$
+^.*\.Rhistory$
+^.env$
+^\.Rproj\.user$

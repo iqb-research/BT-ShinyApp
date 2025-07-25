@@ -22,6 +22,17 @@ params:
 ---
 \pagenumbering{gobble}
 
+```{r setup, include=FALSE}
+library(ggplot2)
+library(sf)
+library(dplyr)
+library(gridExtra)
+library(grid)
+library(viridis)
+library(BTShinyApp)
+```
+
+
 ```{r echo=FALSE}
 # Titel generieren
 
@@ -92,7 +103,6 @@ tabelle <- gridExtra::tableGrob(
 ```
 
 ```{r echo =FALSE, fig.height = 5.6, fig.width = 10}
-library(grid)
 
 # Neues Grid-Layout erstellen
 grid.newpage()
