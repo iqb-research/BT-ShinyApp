@@ -61,7 +61,6 @@ cat(paste0(
 ))
 ```
 
-
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
 # Plot und Tabelle generieren
 
@@ -86,6 +85,7 @@ karte_grob <- ggplotGrob(karte)
 table_data <- sf::st_drop_geometry(params$data)[, c("Bundesland", "est_print")]
 table_data[is.na(table_data$est_print),"est_print"] <- params$na_label
 colnames(table_data) <- c("Bundesland", params$legendentitel)
+table_data[table_data$Bundesland == "total", "Bundesland"] <- "Deutschland"
 
 tabelle <- gridExtra::tableGrob(
   table_data,
