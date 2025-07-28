@@ -14,7 +14,7 @@
 # library(tidyverse)
 
 # Laden der Konfigurationsliste
-source(system.file("R", "config.R", package = "BTShinyApp"))
+source(system.file("config", "config.R", package = "BTShinyApp"))
 
 # Rohdatensatz
 data("allDat", package = "BTShinyApp")

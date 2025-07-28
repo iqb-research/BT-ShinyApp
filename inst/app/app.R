@@ -28,7 +28,7 @@ library(stringr)
 # Konfigurationsliste ----------------------------------------------------------
 # ... wird von eatMap verarbeitet und beim PDF-Export für ggplot2 verwendet
 # ... beinhaltet auch implizit die Reihenfolge der entsprechenden Einträge
-source(system.file("R", "config.R", package = "BTShinyApp"))
+source(system.file("config", "config.R", package = "BTShinyApp"))
 
 # Datensätze -------------------------------------------------------------------
 # Rohdaten: "data/allDat.RData"
