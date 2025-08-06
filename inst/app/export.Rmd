@@ -11,7 +11,8 @@ header-includes:
   - \titleformat{\subsection}[block]{\normalfont\large\bfseries}{\thesubsection}{1em}{}
   - \titleformat{\subsubsection}[block]{\normalfont\small\bfseries}{\thesubsubsection}{1em}{}
 params:
-  data: NA
+  mapdata: NA
+  data_selected: NA
   min_est: 0
   max_est: 800
   reverse: FALSE
@@ -33,21 +34,27 @@ library(BTShinyApp)
 ```
 
 
+```{r echo = FALSE}
+data <- left_join(x = params$mapdata,
+                   y = params$data_selected,
+                   by = "Bundesland")
+```
+
 ```{r echo=FALSE}
 # Titel generieren
 
 titel <- paste0(
   "IQB Bildungstrend, ",
-  unique(na.omit(params$data$cycle)),
+  unique(na.omit(data$cycle)),
   ", ",
-  unique(na.omit(params$data$year))
+  unique(na.omit(data$year))
 )
 
 untertitel <- paste0(
   "Kompetenzbereich ",
-  unique(na.omit(params$data$fachKb)), 
+  unique(na.omit(data$fachKb)), 
   ", ", 
-  gsub("alle", "alle Schüler:innen", unique(na.omit(params$data$targetPop)))
+  gsub("alle", "alle Schüler:innen", unique(na.omit(data$targetPop)))
 )
 ```
 
@@ -62,9 +69,9 @@ cat(paste0(
 ```
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
-# Plot und Tabelle generieren
+# Karte plotten
 
-karte <- ggplot(params$data) +
+karte <- ggplot(data) +
   geom_sf(aes(
     fill = est_delimited),
   color = "black") +
@@ -80,12 +87,16 @@ karte <- ggplot(params$data) +
   )
 
 karte_grob <- ggplotGrob(karte)
+```
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
 
 # Datensatz mit relevanten Spalten erstellen
-table_data <- sf::st_drop_geometry(params$data)[, c("Bundesland", "est_print")]
+table_data <- sf::st_drop_geometry(data)[, c("Bundesland", "est_print")]
 table_data[is.na(table_data$est_print),"est_print"] <- params$na_label
 colnames(table_data) <- c("Bundesland", params$legendentitel)
-table_data[table_data$Bundesland == "total", "Bundesland"] <- "Deutschland"
+#table_data[table_data$Bundesland == "total", "Bundesland"] <- "Deutschland"
 
 tabelle <- gridExtra::tableGrob(
   table_data,

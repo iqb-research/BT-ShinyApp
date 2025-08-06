@@ -596,9 +596,8 @@ server <- function(input, output, session) {
       sources <- readxl::read_xlsx(system.file("extdata", "text_elements", "BT_Quellenangaben.xlsx", package = "BTShinyApp"))
       
       # Parameter für das .Rmd Dokument
-      params <- list(data = right_join(x = mapdata,
-                                      y = data_selected(),
-                                      by = "Bundesland"),
+      params <- list(mapdata = mapdata,
+                     data_selected = data_selected(),
                      min_est = config_parameter()$range$min,
                      max_est = config_parameter()$range$max,
                      reverse = config_parameter()$reverse,
