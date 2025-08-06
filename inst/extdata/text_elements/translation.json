@@ -130,6 +130,10 @@
       "en": "Dispersion"
       },
       {
+      "de": "Kompetenz-\nmittelwert", 
+      "en": "Mean \nproficiency"
+      }, 
+      {
       "de": "Mindeststandard verfehlt (%)", 
       "en": "Minimum standard missed (%)"
       },      
@@ -174,7 +178,7 @@
       "en": "Optimal standard met (%)"
       },
       {
-      "de": "Optimalstandard MSA \nerreicht (%)", 
+      "de": "Optimalstandard für MSA \nerreicht (%)", 
       "en": "Optimal standard \nfor MSA met (%)"
       },      
       {
@@ -182,7 +186,7 @@
       "en": "Optimal standard \nmet (%)"
       },
       {
-      "de": "Optimalstandard MSA erreicht (%)", 
+      "de": "Optimalstandard für MSA erreicht (%)", 
       "en": "Optimal standard for MSA met (%)"
       },
       {

@@ -1,6 +1,6 @@
 # Sprache der App --------------------------------------------------------------
 # "de" für Deutsch, "en" für Englisch
-language <- "de"
+language <- "en"
 
 # Pakete -----------------------------------------------------------------------
 library(shiny)
