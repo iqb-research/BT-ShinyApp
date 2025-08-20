@@ -241,6 +241,14 @@
       "de": "Kompetenzbereich", 
       "en": "Proficiency Domain"
       },
+      {
+      "de": "Bundesland", 
+      "en": "Federal State"
+      },
+      {
+      "de": "Deutschland", 
+      "en": "Germany"
+      },
       {"de": "Biologie-Erkenntnisgewinnung", "en": "Biology-Scientific Inquiry"},
       {"de": "Biologie-Fachwissen", "en": "Biology-Subject Knowledge"},
       {"de": "Chemie-Erkenntnisgewinnung", "en": "Chemistry-Scientific Inquiry"},

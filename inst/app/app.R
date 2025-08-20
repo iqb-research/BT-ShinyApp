@@ -604,7 +604,9 @@ server <- function(input, output, session) {
                      legendentitel = config_parameter()$title,
                      kennwert = input$Kennwert,
                      na_label = config$na_label,
-                     quelle = sources[sources$year == selectedJahr(), ]$source)
+                     quelle = sources[sources$year == selectedJahr(), ]$source,
+                     language = language,
+                     woerterbuch = woerterbuch)
       
       # Knitten
       rmarkdown::render(tempReport, output_file = file,
