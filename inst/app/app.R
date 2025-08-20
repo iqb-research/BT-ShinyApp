@@ -2,6 +2,8 @@
 # "de" für Deutsch, "en" für Englisch
 language <- "de"
 
+if(language != "de" & language != "en") stop("Language selection must be \"de\" or \"en\".")
+
 # Pakete -----------------------------------------------------------------------
 library(shiny)
 library(shinythemes)
@@ -579,7 +581,7 @@ server <- function(input, output, session) {
   
   output$report <- downloadHandler(
     
-    filename = "IQB_Bildungstrendkarte.pdf",
+    filename = ifelse(language == "de", "IQB_Bildungstrendkarte.pdf", "IQB_Trends_in_Student_Achievement_Map.pdf"),
     content = function(file) {
       
       # Lade-Anzeige (Feedback) während Download vorbereitet wird
