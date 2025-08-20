@@ -38,9 +38,13 @@ library(BTShinyApp)
 ```{r translation strings, echo = FALSE}
 str_bundesland <- "Bundesland"
 str_deutschland <- "Deutschland"
+str_bildungstrend <- "IQB Bildungstrend"
+str_kompetentbereich <- "Kompetenzbereich"
 if(params$language == "en"){
   str_bundesland <- recode(str_bundesland, !!! params$woerterbuch)
   str_deutschland <- recode(str_deutschland, !!! params$woerterbuch)
+  str_bildungstrend <- recode(str_bildungstrend, !!! params$woerterbuch)
+  str_kompetentbereich <- recode(str_kompetentbereich, !!! params$woerterbuch)
 }
 ```
 
@@ -57,14 +61,16 @@ data <- left_join(x = params$mapdata,
 # Titel generieren
 
 titel <- paste0(
-  "IQB Bildungstrend, ",
+  str_bildungstrend,
+  ", ",
   unique(na.omit(data$cycle)),
   ", ",
   unique(na.omit(data$year))
 )
 
 untertitel <- paste0(
-  "Kompetenzbereich ",
+  str_kompetentbereich,
+  " ",
   unique(na.omit(data$fachKb)), 
   ", ", 
   gsub("alle", "alle Schüler:innen", unique(na.omit(data$targetPop)))
