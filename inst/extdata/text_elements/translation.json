@@ -253,6 +253,10 @@
       "de": "Deutschland", 
       "en": "Germany"
       },
+      {
+      "de": "Die Daten sowie weitere Informationen sind dem entsprechenden Berichtsband zu entnehmen:", 
+      "en": "The data and further information can be found in the corresponding report:"
+      },
       {"de": "Biologie-Erkenntnisgewinnung", "en": "Biology-Scientific Inquiry"},
       {"de": "Biologie-Fachwissen", "en": "Biology-Subject Knowledge"},
       {"de": "Chemie-Erkenntnisgewinnung", "en": "Chemistry-Scientific Inquiry"},

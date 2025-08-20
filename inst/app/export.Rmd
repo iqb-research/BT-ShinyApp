@@ -40,11 +40,14 @@ str_bundesland <- "Bundesland"
 str_deutschland <- "Deutschland"
 str_bildungstrend <- "IQB Bildungstrend"
 str_kompetentbereich <- "Kompetenzbereich"
+str_source_intro <- "Die Daten sowie weitere Informationen sind dem entsprechenden Berichtsband zu entnehmen:"
+
 if(params$language == "en"){
   str_bundesland <- recode(str_bundesland, !!! params$woerterbuch)
   str_deutschland <- recode(str_deutschland, !!! params$woerterbuch)
   str_bildungstrend <- recode(str_bildungstrend, !!! params$woerterbuch)
   str_kompetentbereich <- recode(str_kompetentbereich, !!! params$woerterbuch)
+  str_source_intro <- recode(str_source_intro, !!! params$woerterbuch)
 }
 ```
 
@@ -73,7 +76,9 @@ untertitel <- paste0(
   " ",
   unique(na.omit(data$fachKb)), 
   ", ", 
-  gsub("alle", "alle Schüler:innen", unique(na.omit(data$targetPop)))
+  ifelse(params$language == "de", 
+         gsub("alle", "alle Schüler:innen", unique(na.omit(data$targetPop))),
+         gsub("All", "all students", unique(na.omit(data$targetPop))))
 )
 ```
 
@@ -159,9 +164,8 @@ popViewport()  # Gesamtes Layout verlassen
 ```
 
 \noindent\rule{3cm}{0.4pt}
-**Die Daten sowie weitere Informationen sind dem entsprechenden Berichtsband zu entnehmen:**   
 
-```{r echo=FALSE, results='asis'}
-# Quellenangabe
+```{r source, echo=FALSE, results='asis'}
+cat(paste0("**", str_source_intro,"**","\n\n"))
 cat(params$quelle)
 ```
