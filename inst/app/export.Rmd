@@ -119,6 +119,11 @@ karte_grob <- ggplotGrob(karte)
 table_data <- sf::st_drop_geometry(data)[, c("Bundesland", "est_print")]
 
 table_data[is.na(table_data$est_print),"est_print"] <- params$na_label
+table_data$est_print <- ifelse(
+  grepl("%$", table_data$est_print), 
+  sprintf("%.1f%%", as.numeric(sub("%", "", table_data$est_print))),
+  table_data$est_print 
+)
 colnames(table_data) <- c(str_bundesland, params$legendentitel)
 
 # Deutschlandwert wieder hinzufügen
