@@ -1,5 +1,6 @@
 config <-
   list(
+    total_label = "Deutschland",
     na_label = "keine Daten",
     fachKb = list(
       # 4. Klasse

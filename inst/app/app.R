@@ -204,7 +204,6 @@ if(language == "en"){
   config <- recode_nested_list(config, woerterbuch)
 }
 
-
 # Funktionen zum Ordnen der Auswahlmöglichkeiten
 predefined_order_parameters <- names(config$parameter)
 names(predefined_order_parameters) <- config$parameter %>% map("label")
@@ -571,12 +570,14 @@ server <- function(input, output, session) {
   # Wähle Minimum und Maximum für die Skala
   config_parameter <- eventReactive(selectedKennwert(), config$parameter[[selectedKennwert()]])
   
-  
-  
   # Deutschlandkarte -----------------------------------------------------------
   
   output$deutschlandkarte <- renderEatMap({
     req(data_selected(), selectedKompetenzbereich())
+  
+    #totaler Mist-Hotfix an der falschen Stelle  
+    if(any(data_selected()$fach %in% "Französisch")) config$total_label <- "Gesamt"  
+    if(any(data_selected()$fach %in% "French")) config$total_label <- "Total"  
     
     data_selected() %>%
       eatMap(data = ., config = config)
