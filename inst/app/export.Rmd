@@ -37,7 +37,11 @@ library(BTShinyApp)
 
 ```{r translation strings, echo = FALSE}
 str_bundesland <- "Bundesland"
-str_deutschland <- "Deutschland"
+if(any(params$data_selected$fach %in% c("Französisch", "French"))) {
+  str_deutschland <- "Gesamt"
+} else {
+  str_deutschland <- "Deutschland"
+}
 str_bildungstrend <- "IQB Bildungstrend"
 str_kompetentbereich <- "Kompetenzbereich"
 str_source_intro <- "Die Daten sowie weitere Informationen sind dem entsprechenden Berichtsband zu entnehmen:"
@@ -48,7 +52,7 @@ if(params$language == "en"){
   str_bildungstrend <- recode(str_bildungstrend, !!! params$woerterbuch)
   str_kompetentbereich <- recode(str_kompetentbereich, !!! params$woerterbuch)
   str_source_intro <- recode(str_source_intro, !!! params$woerterbuch)
-}
+ }
 ```
 
 ```{r echo = FALSE}
@@ -130,6 +134,10 @@ colnames(table_data) <- c(str_bundesland, params$legendentitel)
 last_row <- nrow(table_data) + 1
 table_data[last_row,1] <- str_deutschland
 table_data[last_row,2] <- deutschlandwert
+
+if(params$language == "en"){
+  table_data[,1] <- recode(table_data[,1], !!! params$woerterbuch)
+}
 
 tabelle <- gridExtra::tableGrob(
   table_data,

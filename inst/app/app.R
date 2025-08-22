@@ -1,6 +1,6 @@
 # Sprache der App --------------------------------------------------------------
 # "de" für Deutsch, "en" für Englisch
-language <- "de"
+language <- "en"
 
 if(language != "de" & language != "en") stop("Language selection must be \"de\" or \"en\".")
 
