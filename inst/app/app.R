@@ -1,6 +1,6 @@
 # Sprache der App --------------------------------------------------------------
 # "de" für Deutsch, "en" für Englisch
-language <- "en"
+language <- "de"
 
 if(language != "de" & language != "en") stop("Language selection must be \"de\" or \"en\".")
 
@@ -37,7 +37,12 @@ source(system.file("config", "config.R", package = "BTShinyApp"))
 # Die Datenaufbereitung erfolgt in einem separaten Skript: "data_preparation.R".
 # "data_preparation.R" muss neu ausgeführt werden, wenn "data/allDat.RData" geupdated wird.
 BTdata <- readRDS(system.file("data", "BTdata_processed.Rds", package = "BTShinyApp"))
-
+# hot fix, will be soon moved to data-prep:
+BTdata$est_print <- ifelse(
+  grepl("%$", BTdata$est_print), 
+  sprintf("%.1f%%", as.numeric(sub("%", "", BTdata$est_print))),
+  BTdata$est_print 
+)
 
 # Kartendaten
 # https://gadm.org/download_country.html
