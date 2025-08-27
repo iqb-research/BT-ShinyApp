@@ -117,6 +117,15 @@ BTdata <-
     fachKb = stringr::str_glue("{fach}-{kb}")
   )
 
+# Umformatieren der Prozentwerte -----------------------------------------------
+# z.B. "50%" -> "50.0%"
+
+BTdata$est_print <- ifelse(
+  grepl("%$", BTdata$est_print), 
+  sprintf("%.1f%%", as.numeric(sub("%", "", BTdata$est_print))),
+  BTdata$est_print 
+)
+
 # Abspeichern ------------------------------------------------------------------
 #saveRDS(BTdata, "data/BTdata_processed.Rds")
 rm(list = ls())
