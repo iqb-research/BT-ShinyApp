@@ -308,22 +308,24 @@ ui <- fluidPage(
           div(class = "col-lg-4",
               div(class = "well",
                   # Erhebungsreihe (Zyklus) --------------------------------------------------
-                  fluidRow(
-                    column(
-                      width = 11, # Spalte nimmt 11/12 des Panels ein
-                      class = "no-padding", # ohne zusätzlichen Rand
+                  div(
+                    style = "display:flex; align-items:center; justify-content:space-between; width:100%;",
+                    
+                    # Input links 
+                    div(
+                      style = "flex-grow:1; min-width:0; padding-right:6px;",
                       selectInput(
                         inputId = "Zyklus",
                         label = i18n$t("Erhebungsreihe"),
                         choices = available_cycles,
                         selected = default_newest_cycle,
-                        width = '95%'
+                        width = '100%'
                       )
                     ),
-                    column(
-                      width = 1, # Info-Button in einer separaten Spalte
-                      class = "no-padding",
-                      tags$div(style = "height: 30px;"), # vertikaler Abstand
+                    
+                    # Button rechts 
+                    div(
+                      style = "flex:0 0 auto;",
                       bsButton(
                         inputId = "infobutton_zyklus",
                         label = "",
@@ -335,15 +337,18 @@ ui <- fluidPage(
                   ),
                   
                   # Kompetenzbereiche --------------------------------------------------------
-                  fluidRow(
-                    column(
-                      width = 11, # Spalte für die dynamischen Inhalte
-                      class = "no-padding",
+                  div(
+                    style = "display:flex; align-items:center; justify-content:space-between; width:100%;",
+                    
+                    # Input links 
+                    div(
+                      style = "flex-grow:1; min-width:0; padding-right:6px;",
                       uiOutput('dynamicPanel_kompetenzbereiche')
                     ),
-                    column(
-                      width = 1, # Info-Button in einer separaten Spalte
-                      class = "no-padding",
+                    
+                    # Button rechts
+                    div(
+                      style = "flex:0 0 auto;",
                       bsButton(
                         inputId = "infobutton_kompetenzbereiche",
                         label = "",
@@ -355,16 +360,19 @@ ui <- fluidPage(
                   ),
                   
                   # Jahr, Zielpopulation und Kennwert ----------------------------------------
-                  fluidRow(
-                    column(
-                      width = 11, # Spalte für die dynamischen Inhalte
-                      class = "no-padding",
+                  div(
+                    style = "display:flex; align-items:center; justify-content:space-between; width:100%;",
+              
+                    # Input links 
+                    div(
+                      style = "flex-grow:1; min-width:0; padding-right:6px;",
                       uiOutput('dynamicPanel_JahrZielpopulationKennwert')
                     ),
-                    column(
-                      width = 1, # Info-Button in einer separaten Spalte
+                  
+                    # Buttons rechts
+                    div(
+                      style = "flex:0 0 auto;",
                       tags$div(style = "height: 45px;"), # vertikaler Abstand
-                      class = "no-padding",
                       bsButton(
                         inputId = "infobutton_jahre",
                         label = "",
@@ -387,10 +395,10 @@ ui <- fluidPage(
                         icon = icon("info", lib = "font-awesome"),
                         style = "custom-btn",
                         size = "extra-small"
-                      )
+                      ),
+                      tags$div(style = "height: 20px;")
                     )
                   ),
-                  tags$div(style = "height: 20px;"),
                   
                   # Download-Button ----------------------------------------------------------
                   
@@ -406,7 +414,7 @@ ui <- fluidPage(
                    height: 30px;")
                     )
                   )
-                  )
+              )
           ),
           div(
             class = "col-12 col-lg-8",  # volle Breite auf kleinen Geräten
