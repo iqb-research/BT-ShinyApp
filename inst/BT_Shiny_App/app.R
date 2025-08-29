@@ -267,19 +267,11 @@ ui <- fluidPage(
   tags$style(
     HTML(
       "
-        .irs-grid-pol.small {
-          height: 0 !important;
-        }
-        .irs-grid-text {
-          font-size: 12px !important;
-        }
-        .irs-bar.irs-bar--single {
-          background: #5342ca00 !important;
-          border: none !important;
-        }
-        .fa-info {
-          color: #808080 !important;
-        }
+        .irs-grid-pol.small {height: 0 !important;}
+        .irs-grid-text {font-size: 12px !important;}
+        .irs-bar.irs-bar--single {background: #5342ca00 !important; border: none !important;}
+        .fa-info {color: #808080 !important;}
+        
         .custom-btn {
           background-color: #A9A9A9;
           color: white;
@@ -290,22 +282,19 @@ ui <- fluidPage(
           align-items: center;
           justify-content: center;
         }
-        .popover {
-        max-width: 600px !important;
-        width: 600px !important;
-        }
-        .no-padding {
-        padding: 0 !important;
-        }
+        
+        .popover {max-width: 600px !important; width: 600px !important;}
+        .no-padding {padding: 0 !important;}
       "
     )
   ),
   
   
   # Navigationsfeld links ------------------------------------------------------
+  sidebarLayout(
   sidebarPanel(
     
-    # Erhebungsreihe (Zyklus)
+    # Erhebungsreihe (Zyklus) --------------------------------------------------
     fluidRow(
       column(
         width = 11, # Spalte nimmt 11/12 des Panels ein
@@ -332,7 +321,7 @@ ui <- fluidPage(
       )
     ),
     
-    # Kompetenzbereiche
+    # Kompetenzbereiche --------------------------------------------------------
     fluidRow(
       column(
         width = 11, # Spalte für die dynamischen Inhalte
@@ -352,7 +341,7 @@ ui <- fluidPage(
       )
     ),
     
-    # Jahr, Zielpopulation und Kennwert
+    # Jahr, Zielpopulation und Kennwert ----------------------------------------
     fluidRow(
       column(
         width = 11, # Spalte für die dynamischen Inhalte
@@ -390,7 +379,7 @@ ui <- fluidPage(
     ),
     tags$div(style = "height: 20px;"),
     
-    # Download-Button ------------------------------------------------------------
+    # Download-Button ----------------------------------------------------------
     
     fluidRow(
       column(
@@ -409,59 +398,30 @@ ui <- fluidPage(
   # Main-Panel mit der Deutschlandkarte ----------------------------------------
   mainPanel(
     eatMapOutput("deutschlandkarte", width = "100%")
-  ),
+  )),
   
   
   # Texte in den Infobuttons ---------------------------------------------------
-  # Info-Button Popover für Zyklus
-  bsPopover(
-    id = "infobutton_zyklus",
-    title = i18n$t("Erhebungsreihe"),
-    content = HTML(paste0(infotexte[infotexte$chunk == "Erhebungsreihe", language])),
-    placement = "right",
-    trigger = "klick",
-    options = list(container = "body")
-  ),
   
-  # Info-Button Popover für Kompetenzbereiche
-  bsPopover(
-    id = "infobutton_kompetenzbereiche",
-    title = i18n$t("Kompetenzbereich"),
-    content = HTML(paste0(infotexte[infotexte$chunk == "Kompetenzbereich", language])),
-    placement = "right",
-    trigger = "klick",
-    options = list(container = "body")
-  ),
+  bsPopover("infobutton_zyklus", title = i18n$t("Erhebungsreihe"),
+            content = HTML(paste0(infotexte[infotexte$chunk=="Erhebungsreihe", language])),
+            placement = "right", trigger = "click", options = list(container="body")),
   
-  # Info-Button Popover für Jahre
-  bsPopover(
-    id = "infobutton_jahre",
-    title = i18n$t("Jahr"),
-    content = HTML(paste0(infotexte[infotexte$chunk == "Jahr", language])),
-    placement = "right",
-    trigger = "klick",
-    options = list(container = "body")
-  ),
+  bsPopover("infobutton_kompetenzbereiche", title = i18n$t("Kompetenzbereich"),
+            content = HTML(paste0(infotexte[infotexte$chunk=="Kompetenzbereich", language])),
+            placement = "right", trigger = "click", options = list(container="body")),
   
-  # Info-Buttons Zielpopulation und Kennwert
+  bsPopover("infobutton_jahre", title = i18n$t("Jahr"),
+            content = HTML(paste0(infotexte[infotexte$chunk=="Jahr", language])),
+            placement = "right", trigger = "click", options = list(container="body")),
   
-  bsPopover(
-    id = "infobutton_zielpopulation",
-    title = i18n$t("Grundgesamtheit"),
-    content = HTML(paste0(infotexte[infotexte$chunk == "Zielpopulation", language])),
-    placement = "right",
-    trigger = "klick",
-    options = list(container = "body")
-  ),
+  bsPopover("infobutton_zielpopulation", title = i18n$t("Grundgesamtheit"),
+            content = HTML(paste0(infotexte[infotexte$chunk=="Zielpopulation", language])),
+            placement = "right", trigger = "click", options = list(container="body")),
   
-  bsPopover(
-    id = "infobutton_kennwert",
-    title = i18n$t("Kennwert"),
-    content = HTML(paste0(infotexte[infotexte$chunk == "Kennwert", language])),
-    placement = "right",
-    trigger = "klick",
-    options = list(container = "body")
-  )
+  bsPopover("infobutton_kennwert", title = i18n$t("Kennwert"),
+            content = HTML(paste0(infotexte[infotexte$chunk=="Kennwert", language])),
+            placement = "right", trigger = "click", options = list(container="body"))
 )
 
 # Server -----------------------------------------------------------------------
