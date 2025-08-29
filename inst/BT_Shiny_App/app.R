@@ -287,121 +287,134 @@ ui <- fluidPage(
         
         .popover {max-width: 600px !important; width: 600px !important;}
         .no-padding {padding: 0 !important;}
+        
+        #deutschlandkarte svg {
+          max-width: 100% !important;
+          height: auto !important;
+        }
+        @media (max-width: 992px) {
+          .container-fluid > .row {
+            flex-direction: column;  /* Sidebar oben, Karte unten */
+          }
+        }
       "
     )
   ),
   
   
   # Navigationsfeld links ------------------------------------------------------
-  sidebarLayout(
-  sidebarPanel(
-    
-    # Erhebungsreihe (Zyklus) --------------------------------------------------
-    fluidRow(
-      column(
-        width = 11, # Spalte nimmt 11/12 des Panels ein
-        class = "no-padding", # ohne zusätzlichen Rand
-        selectInput(
-          inputId = "Zyklus",
-          label = i18n$t("Erhebungsreihe"),
-          choices = available_cycles,
-          selected = default_newest_cycle,
-          width = '95%'
-        )
-      ),
-      column(
-        width = 1, # Info-Button in einer separaten Spalte
-        class = "no-padding",
-        tags$div(style = "height: 30px;"), # vertikaler Abstand
-        bsButton(
-          inputId = "infobutton_zyklus",
-          label = "",
-          icon = icon("info", lib = "font-awesome"),
-          style = "custom-btn",
-          size = "extra-small"
-        )
-      )
-    ),
-    
-    # Kompetenzbereiche --------------------------------------------------------
-    fluidRow(
-      column(
-        width = 11, # Spalte für die dynamischen Inhalte
-        class = "no-padding",
-        uiOutput('dynamicPanel_kompetenzbereiche')
-      ),
-      column(
-        width = 1, # Info-Button in einer separaten Spalte
-        class = "no-padding",
-        bsButton(
-          inputId = "infobutton_kompetenzbereiche",
-          label = "",
-          icon = icon("info", lib = "font-awesome"),
-          style = "custom-btn",
-          size = "extra-small"
-        )
-      )
-    ),
-    
-    # Jahr, Zielpopulation und Kennwert ----------------------------------------
-    fluidRow(
-      column(
-        width = 11, # Spalte für die dynamischen Inhalte
-        class = "no-padding",
-        uiOutput('dynamicPanel_JahrZielpopulationKennwert')
-      ),
-      column(
-        width = 1, # Info-Button in einer separaten Spalte
-        tags$div(style = "height: 45px;"), # vertikaler Abstand
-        class = "no-padding",
-        bsButton(
-          inputId = "infobutton_jahre",
-          label = "",
-          icon = icon("info", lib = "font-awesome"),
-          style = "custom-btn",
-          size = "extra-small"
-        ),
-        tags$div(style = "height: 60px;"), # vertikaler Abstand
-        bsButton(
-          inputId = "infobutton_zielpopulation",
-          label = "",
-          icon = icon("info", lib = "font-awesome"),
-          style = "custom-btn",
-          size = "extra-small"
-        ),
-        tags$div(style = "height: 50px;"), # vertikaler Abstand
-        bsButton(
-          inputId = "infobutton_kennwert",
-          label = "",
-          icon = icon("info", lib = "font-awesome"),
-          style = "custom-btn",
-          size = "extra-small"
-        )
-      )
-    ),
-    tags$div(style = "height: 20px;"),
-    
-    # Download-Button ----------------------------------------------------------
-    
-    fluidRow(
-      column(
-        width = 12, # Spalte für die dynamischen Inhalte
-        class = "no-padding",
-        downloadButton("report", " PDF Export",
-                       style = "width:100%; margin-top:10px;
+  div(class = "container-fluid",
+      div(class = "row", 
+          div(class = "col-lg-4",
+              div(class = "well",
+                  # Erhebungsreihe (Zyklus) --------------------------------------------------
+                  fluidRow(
+                    column(
+                      width = 11, # Spalte nimmt 11/12 des Panels ein
+                      class = "no-padding", # ohne zusätzlichen Rand
+                      selectInput(
+                        inputId = "Zyklus",
+                        label = i18n$t("Erhebungsreihe"),
+                        choices = available_cycles,
+                        selected = default_newest_cycle,
+                        width = '95%'
+                      )
+                    ),
+                    column(
+                      width = 1, # Info-Button in einer separaten Spalte
+                      class = "no-padding",
+                      tags$div(style = "height: 30px;"), # vertikaler Abstand
+                      bsButton(
+                        inputId = "infobutton_zyklus",
+                        label = "",
+                        icon = icon("info", lib = "font-awesome"),
+                        style = "custom-btn",
+                        size = "extra-small"
+                      )
+                    )
+                  ),
+                  
+                  # Kompetenzbereiche --------------------------------------------------------
+                  fluidRow(
+                    column(
+                      width = 11, # Spalte für die dynamischen Inhalte
+                      class = "no-padding",
+                      uiOutput('dynamicPanel_kompetenzbereiche')
+                    ),
+                    column(
+                      width = 1, # Info-Button in einer separaten Spalte
+                      class = "no-padding",
+                      bsButton(
+                        inputId = "infobutton_kompetenzbereiche",
+                        label = "",
+                        icon = icon("info", lib = "font-awesome"),
+                        style = "custom-btn",
+                        size = "extra-small"
+                      )
+                    )
+                  ),
+                  
+                  # Jahr, Zielpopulation und Kennwert ----------------------------------------
+                  fluidRow(
+                    column(
+                      width = 11, # Spalte für die dynamischen Inhalte
+                      class = "no-padding",
+                      uiOutput('dynamicPanel_JahrZielpopulationKennwert')
+                    ),
+                    column(
+                      width = 1, # Info-Button in einer separaten Spalte
+                      tags$div(style = "height: 45px;"), # vertikaler Abstand
+                      class = "no-padding",
+                      bsButton(
+                        inputId = "infobutton_jahre",
+                        label = "",
+                        icon = icon("info", lib = "font-awesome"),
+                        style = "custom-btn",
+                        size = "extra-small"
+                      ),
+                      tags$div(style = "height: 60px;"), # vertikaler Abstand
+                      bsButton(
+                        inputId = "infobutton_zielpopulation",
+                        label = "",
+                        icon = icon("info", lib = "font-awesome"),
+                        style = "custom-btn",
+                        size = "extra-small"
+                      ),
+                      tags$div(style = "height: 50px;"), # vertikaler Abstand
+                      bsButton(
+                        inputId = "infobutton_kennwert",
+                        label = "",
+                        icon = icon("info", lib = "font-awesome"),
+                        style = "custom-btn",
+                        size = "extra-small"
+                      )
+                    )
+                  ),
+                  tags$div(style = "height: 20px;"),
+                  
+                  # Download-Button ----------------------------------------------------------
+                  
+                  fluidRow(
+                    column(
+                      width = 12, # Spalte für die dynamischen Inhalte
+                      class = "no-padding",
+                      downloadButton("report", " PDF Export",
+                                     style = "width:100%; margin-top:10px;
                    background-color:#f0f0f0; color: #000000;
                    border: 1px solid #A9A9A9;
                    padding: 3px 8px;
                    height: 30px;")
+                    )
+                  )
+                  )
+          ),
+          div(
+            class = "col-12 col-lg-8",  # volle Breite auf kleinen Geräten
+            style = "padding:0; display:flex; justify-content:center;",
+            eatMapOutput("deutschlandkarte", width = "100%", height = "auto")
+          )
       )
-    )
   ),
-  
-  # Main-Panel mit der Deutschlandkarte ----------------------------------------
-  mainPanel(
-    eatMapOutput("deutschlandkarte", width = "100%")
-  )),
-  
   
   # Texte in den Infobuttons ---------------------------------------------------
   
