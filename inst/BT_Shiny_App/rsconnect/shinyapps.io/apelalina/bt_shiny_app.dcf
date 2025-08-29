@@ -1,0 +1,10 @@
+name: bt_shiny_app
+title:
+username: apelalina
+account: apelalina
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 15301561
+bundleId: 10835482
+url: https://apelalina.shinyapps.io/bt_shiny_app/
+version: 1
