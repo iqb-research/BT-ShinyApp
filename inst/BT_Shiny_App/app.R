@@ -27,6 +27,8 @@ library(eatMap)
 library(tinytex)
 library(stringr)
 
+library(bslib)
+
 # Konfigurationsliste ----------------------------------------------------------
 # ... wird von eatMap verarbeitet und beim PDF-Export für ggplot2 verwendet
 # ... beinhaltet auch implizit die Reihenfolge der entsprechenden Einträge
@@ -251,7 +253,7 @@ if(language == "en"){
 ui <- fluidPage(
   
   # Styling --------------------------------------------------------------------
-  theme = shinytheme("sandstone"),
+  theme = bs_theme(version = 5, bootswatch = "sandstone"),
   
   # Aussehen des Sliders
   # .irs-grid-pol.small: entfernt die vertikalen Gitternetzlinien zwischen den Ticks
