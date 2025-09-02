@@ -2,6 +2,8 @@
 # "de" für Deutsch, "en" für Englisch
 language <- "de"
 
+if(language != "de" & language != "en") stop("Language selection must be \"de\" or \"en\".")
+
 # Pakete -----------------------------------------------------------------------
 library(shiny)
 library(shinythemes)
@@ -35,7 +37,6 @@ source(system.file("config", "config.R", package = "BTShinyApp"))
 # Die Datenaufbereitung erfolgt in einem separaten Skript: "data_preparation.R".
 # "data_preparation.R" muss neu ausgeführt werden, wenn "data/allDat.RData" geupdated wird.
 BTdata <- readRDS(system.file("data", "BTdata_processed.Rds", package = "BTShinyApp"))
-
 
 # Kartendaten
 # https://gadm.org/download_country.html
@@ -196,7 +197,6 @@ recode_nested_list <- function(my_list, recode_rules) {
 if(language == "en"){
   config <- recode_nested_list(config, woerterbuch)
 }
-
 
 # Funktionen zum Ordnen der Auswahlmöglichkeiten
 predefined_order_parameters <- names(config$parameter)
@@ -564,12 +564,14 @@ server <- function(input, output, session) {
   # Wähle Minimum und Maximum für die Skala
   config_parameter <- eventReactive(selectedKennwert(), config$parameter[[selectedKennwert()]])
   
-  
-  
   # Deutschlandkarte -----------------------------------------------------------
   
   output$deutschlandkarte <- renderEatMap({
     req(data_selected(), selectedKompetenzbereich())
+  
+    #totaler Mist-Hotfix an der falschen Stelle  
+    if(any(data_selected()$fach %in% "Französisch")) config$total_label <- "Gesamt"  
+    if(any(data_selected()$fach %in% "French")) config$total_label <- "Total"  
     
     data_selected() %>%
       eatMap(data = ., config = config)
@@ -579,7 +581,7 @@ server <- function(input, output, session) {
   
   output$report <- downloadHandler(
     
-    filename = "IQB_Bildungstrendkarte.pdf",
+    filename = ifelse(language == "de", "IQB_Bildungstrendkarte.pdf", "IQB_Trends_in_Student_Achievement_Map.pdf"),
     content = function(file) {
       
       # Lade-Anzeige (Feedback) während Download vorbereitet wird
@@ -596,16 +598,17 @@ server <- function(input, output, session) {
       sources <- readxl::read_xlsx(system.file("extdata", "text_elements", "BT_Quellenangaben.xlsx", package = "BTShinyApp"))
       
       # Parameter für das .Rmd Dokument
-      params <- list(data = right_join(x = mapdata,
-                                      y = data_selected(),
-                                      by = "Bundesland"),
+      params <- list(mapdata = mapdata,
+                     data_selected = data_selected(),
                      min_est = config_parameter()$range$min,
                      max_est = config_parameter()$range$max,
                      reverse = config_parameter()$reverse,
                      legendentitel = config_parameter()$title,
                      kennwert = input$Kennwert,
                      na_label = config$na_label,
-                     quelle = sources[sources$year == selectedJahr(), ]$source)
+                     quelle = sources[sources$year == selectedJahr(), ]$source,
+                     language = language,
+                     woerterbuch = woerterbuch)
       
       # Knitten
       rmarkdown::render(tempReport, output_file = file,
