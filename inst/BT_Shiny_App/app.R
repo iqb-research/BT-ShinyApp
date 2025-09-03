@@ -170,8 +170,6 @@ make_YearPopulationParameter <- function(cycle_current) {
 
 json_path <-  file.path("extdata", "text_elements", "translation.json" )
 i18n <- shiny.i18n::Translator$new(translation_json_path = json_path)
-infotextfile <-  file.path("extdata/text_elements/Infotexte.xlsx" )
-infotexte <- readxl::read_excel(infotextfile)
 
 # JSON einlesen
 json_path <-  file.path("extdata", "text_elements", "translation.json" )
@@ -247,6 +245,16 @@ if(language == "en"){
   default_newest_cycle <- recode(default_newest_cycle, !!! woerterbuch)
 }
 
+# Texte für die Infobuttons ----------------------------------------------------
+
+infotextfile <-  file.path("extdata/text_elements/Infotexte.xlsx" )
+infotexte <- readxl::read_excel(infotextfile)
+
+infotexte_list <- setNames(
+  infotexte[[language]],
+  infotexte$chunk
+)
+
 
 # UI ---------------------------------------------------------------------------
 
@@ -272,21 +280,6 @@ ui <- fluidPage(
         .irs-grid-pol.small {height: 0 !important;}
         .irs-grid-text {font-size: 12px !important;}
         .irs-bar.irs-bar--single {background: #5342ca00 !important; border: none !important;}
-        .fa-info {color: #808080 !important;}
-        
-        .custom-btn {
-          background-color: #A9A9A9;
-          color: white;
-          border-radius: 5px;
-          border: none;
-          padding: 0px 0px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-        
-        .popover {max-width: 600px !important; width: 600px !important;}
-        .no-padding {padding: 0 !important;}
         
         #deutschlandkarte svg {
           max-width: 100% !important;
@@ -300,7 +293,6 @@ ui <- fluidPage(
       "
     )
   ),
-  
   
   # Navigationsfeld links ------------------------------------------------------
   div(class = "container-fluid",
@@ -326,12 +318,14 @@ ui <- fluidPage(
                     # Button rechts 
                     div(
                       style = "flex:0 0 auto;",
-                      bsButton(
+                      actionButton(
                         inputId = "infobutton_zyklus",
                         label = "",
                         icon = icon("info", lib = "font-awesome"),
-                        style = "custom-btn",
-                        size = "extra-small"
+                        class = "custom-btn",
+                        `data-bs-toggle` = "popover",
+                        `data-bs-trigger` = "click",  
+                        `data-bs-placement` = "right"
                       )
                     )
                   ),
@@ -349,12 +343,14 @@ ui <- fluidPage(
                     # Button rechts
                     div(
                       style = "flex:0 0 auto;",
-                      bsButton(
-                        inputId = "infobutton_kompetenzbereiche",
+                      actionButton(
+                        inputId = "infobutton_kompetenzbereich",
                         label = "",
                         icon = icon("info", lib = "font-awesome"),
-                        style = "custom-btn",
-                        size = "extra-small"
+                        class = "custom-btn",
+                        `data-bs-toggle` = "popover",
+                        `data-bs-trigger` = "click",  
+                        `data-bs-placement` = "right"
                       )
                     )
                   ),
@@ -373,28 +369,34 @@ ui <- fluidPage(
                     div(
                       style = "flex:0 0 auto;",
                       tags$div(style = "height: 45px;"), # vertikaler Abstand
-                      bsButton(
-                        inputId = "infobutton_jahre",
+                      actionButton(
+                        inputId = "infobutton_jahr",
                         label = "",
                         icon = icon("info", lib = "font-awesome"),
-                        style = "custom-btn",
-                        size = "extra-small"
+                        class = "custom-btn",
+                        `data-bs-toggle` = "popover",
+                        `data-bs-trigger` = "click",  
+                        `data-bs-placement` = "right"
                       ),
                       tags$div(style = "height: 60px;"), # vertikaler Abstand
-                      bsButton(
+                      actionButton(
                         inputId = "infobutton_zielpopulation",
                         label = "",
                         icon = icon("info", lib = "font-awesome"),
-                        style = "custom-btn",
-                        size = "extra-small"
+                        class = "custom-btn",
+                        `data-bs-toggle` = "popover",
+                        `data-bs-trigger` = "click",  
+                        `data-bs-placement` = "right"
                       ),
                       tags$div(style = "height: 50px;"), # vertikaler Abstand
-                      bsButton(
+                      actionButton(
                         inputId = "infobutton_kennwert",
                         label = "",
                         icon = icon("info", lib = "font-awesome"),
-                        style = "custom-btn",
-                        size = "extra-small"
+                        class = "custom-btn",
+                        `data-bs-toggle` = "popover",
+                        `data-bs-trigger` = "click",  
+                        `data-bs-placement` = "right"
                       ),
                       tags$div(style = "height: 20px;")
                     )
@@ -424,27 +426,50 @@ ui <- fluidPage(
       )
   ),
   
-  # Texte in den Infobuttons ---------------------------------------------------
-  
-  bsPopover("infobutton_zyklus", title = i18n$t("Erhebungsreihe"),
-            content = HTML(paste0(infotexte[infotexte$chunk=="Erhebungsreihe", language])),
-            placement = "right", trigger = "click", options = list(container="body")),
-  
-  bsPopover("infobutton_kompetenzbereiche", title = i18n$t("Kompetenzbereich"),
-            content = HTML(paste0(infotexte[infotexte$chunk=="Kompetenzbereich", language])),
-            placement = "right", trigger = "click", options = list(container="body")),
-  
-  bsPopover("infobutton_jahre", title = i18n$t("Jahr"),
-            content = HTML(paste0(infotexte[infotexte$chunk=="Jahr", language])),
-            placement = "right", trigger = "click", options = list(container="body")),
-  
-  bsPopover("infobutton_zielpopulation", title = i18n$t("Grundgesamtheit"),
-            content = HTML(paste0(infotexte[infotexte$chunk=="Zielpopulation", language])),
-            placement = "right", trigger = "click", options = list(container="body")),
-  
-  bsPopover("infobutton_kennwert", title = i18n$t("Kennwert"),
-            content = HTML(paste0(infotexte[infotexte$chunk=="Kennwert", language])),
-            placement = "right", trigger = "click", options = list(container="body"))
+  # JavaScript für Infobutton-Popover
+  tags$script(HTML(paste0("
+    var button = document.querySelector('#infobutton_zyklus');
+    new bootstrap.Popover(button, {
+      html: true,
+      content: `", infotexte_list[["Erhebungsreihe"]], "`,
+      trigger: 'click',
+      placement: 'right'
+    });
+    
+    var button = document.querySelector('#infobutton_kompetenzbereich');
+    new bootstrap.Popover(button, {
+      html: true,
+      content: `", infotexte_list[["Kompetenzbereich"]], "`,
+      trigger: 'click',
+      placement: 'right'
+    });
+    
+    var button = document.querySelector('#infobutton_jahr');
+    new bootstrap.Popover(button, {
+      html: true,
+      content: `", infotexte_list[["Jahr"]], "`,
+      trigger: 'click',
+      placement: 'right'
+    });
+    
+    var button = document.querySelector('#infobutton_zielpopulation');
+    new bootstrap.Popover(button, {
+      html: true,
+      content: `", infotexte_list[["Zielpopulation"]], "`,
+      trigger: 'click',
+      placement: 'right'
+    });
+    
+    var button = document.querySelector('#infobutton_kennwert');
+    new bootstrap.Popover(button, {
+      html: true,
+      content: `", infotexte_list[["Kennwert"]], "`,
+      trigger: 'click',
+      placement: 'right'
+    });
+    
+    
+  ")))
 )
 
 # Server -----------------------------------------------------------------------
