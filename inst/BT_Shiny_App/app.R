@@ -72,8 +72,11 @@ combinations <-
 radioSubgroup <- function(inputId, parentId, label, choices, selected, inline = FALSE) {
   values <- paste0(parentId, "-", choices)
   choices <- setNames(values, choices)
-  rb <- radioButtons(inputId, label, choices, selected, inline = inline)
-  rb$children
+  
+  div(class = "radio-group-container",
+      tags$label(class = "radio-group-label", label),  # Überschrift fett
+      radioButtons(inputId, NULL, choices, selected, inline = inline)
+  )
 }
 
 radioGroupContainer <- function(inputId, ...) {
@@ -290,6 +293,56 @@ ui <- fluidPage(
             flex-direction: column;  /* Sidebar oben, Karte unten */
           }
         }
+        
+        /* Haupt-Label der Inputs fett */
+        .form-group > label {
+          font-weight: bold;
+        }
+        
+        /* Radiobuttons Überschrift fett */
+        .radio-group-container > .radio-group-label {
+          font-weight: bold;
+          display: block;
+          margin-bottom: 5px; /* Abstand zu den Optionsbuttons */
+        }
+        
+        /* Radiobuttons Optionslabels normal */
+        .radio-group-container .radio label,
+        .radio-group-container .checkbox label {
+          font-weight: normal;
+        }
+                
+        /* --- Infobutton Styling --- */
+        .custom-btn {
+          width: 22px;              
+          height: 22px;
+          padding: 0;
+          background-color: #bfbdbd; 
+          color: white;
+          border-radius: 4px;        /* leicht abgerundete Ecken, viereckig */
+          border: none;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+          transition: all 0.2s ease;
+        }
+        
+        .custom-btn:hover {
+          background-color: #495057; /* dunkler beim Hover */
+          cursor: pointer;
+        }
+        
+        .custom-btn:active {
+          background-color: #343a40; /* noch dunkler beim Klick */
+        }
+        
+        /* Icon anpassen */
+        .custom-btn .fa-info {
+          font-size: 14px; 
+          margin: 0;
+        }
+
       "
     )
   ),
@@ -318,6 +371,7 @@ ui <- fluidPage(
                     # Button rechts 
                     div(
                       style = "flex:0 0 auto;",
+                      tags$div(style = "height: 15px;"), # vertikaler Abstand
                       actionButton(
                         inputId = "infobutton_zyklus",
                         label = "",
@@ -357,7 +411,7 @@ ui <- fluidPage(
                   
                   # Jahr, Zielpopulation und Kennwert ----------------------------------------
                   div(
-                    style = "display:flex; align-items:center; justify-content:space-between; width:100%;",
+                    style = "display:flex; align-items:top; justify-content:space-between; width:100%;",
               
                     # Input links 
                     div(
@@ -368,7 +422,7 @@ ui <- fluidPage(
                     # Buttons rechts
                     div(
                       style = "flex:0 0 auto;",
-                      tags$div(style = "height: 45px;"), # vertikaler Abstand
+                      tags$div(style = "height: 50px;"), # vertikaler Abstand
                       actionButton(
                         inputId = "infobutton_jahr",
                         label = "",
@@ -378,7 +432,7 @@ ui <- fluidPage(
                         `data-bs-trigger` = "click",  
                         `data-bs-placement` = "right"
                       ),
-                      tags$div(style = "height: 60px;"), # vertikaler Abstand
+                      tags$div(style = "height: 75px;"), # vertikaler Abstand
                       actionButton(
                         inputId = "infobutton_zielpopulation",
                         label = "",
@@ -388,7 +442,7 @@ ui <- fluidPage(
                         `data-bs-trigger` = "click",  
                         `data-bs-placement` = "right"
                       ),
-                      tags$div(style = "height: 50px;"), # vertikaler Abstand
+                      tags$div(style = "height: 65px;"), # vertikaler Abstand
                       actionButton(
                         inputId = "infobutton_kennwert",
                         label = "",
