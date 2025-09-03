@@ -481,49 +481,58 @@ ui <- fluidPage(
   ),
   
   # JavaScript für Infobutton-Popover
-  tags$script(HTML(paste0("
-    var button = document.querySelector('#infobutton_zyklus');
-    new bootstrap.Popover(button, {
-      html: true,
-      content: `", infotexte_list[["Erhebungsreihe"]], "`,
-      trigger: 'click',
-      placement: 'right'
+  tags$script(HTML("
+  
+    // Alle Infobutton-IDs und ihr Inhalt aus infotexte_list
+  
+    // Popover-Inhalte definieren (HTML erlaubt)
+    var popoverContents = {
+      '#infobutton_zyklus': `", infotexte_list[["Erhebungsreihe"]], "`,
+      '#infobutton_kompetenzbereich': `", infotexte_list[["Kompetenzbereich"]], "`,
+      '#infobutton_jahr': `", infotexte_list[["Jahr"]], "`,
+      '#infobutton_zielpopulation': `", infotexte_list[["Zielpopulation"]], "`,
+      '#infobutton_kennwert': `", infotexte_list[["Kennwert"]], "`
+    };
+    
+    // Array mit allen Infobutton-IDs
+    var buttons = ['#infobutton_zyklus', '#infobutton_kompetenzbereich',
+                   '#infobutton_jahr', '#infobutton_zielpopulation', '#infobutton_kennwert'];
+  
+    // Popovers initialisieren
+    buttons.forEach(function(btnId) {
+      var btn = document.querySelector(btnId);
+      new bootstrap.Popover(btn, {
+        html: true,
+        trigger: 'manual',  // manuelles Öffnen
+        placement: 'right',
+        content: popoverContents[btnId]
+      });
+  
+      // Click Event
+      btn.addEventListener('click', function() {
+        // alle anderen Popovers schließen
+        buttons.forEach(function(otherId) {
+          if(otherId !== btnId) {
+            var otherBtn = document.querySelector(otherId);
+            bootstrap.Popover.getInstance(otherBtn)?.hide();
+          }
+        });
+  
+        // aktuellen Popover toggeln
+        var pop = bootstrap.Popover.getInstance(btn);
+        pop.toggle();
+      });
     });
-    
-    var button = document.querySelector('#infobutton_kompetenzbereich');
-    new bootstrap.Popover(button, {
-      html: true,
-      content: `", infotexte_list[["Kompetenzbereich"]], "`,
-      trigger: 'click',
-      placement: 'right'
+  
+    // Popover schließen, wenn außerhalb geklickt wird
+    document.addEventListener('click', function(e) {
+      if (!buttons.some(id => document.querySelector(id).contains(e.target))) {
+        buttons.forEach(function(btnId) {
+          bootstrap.Popover.getInstance(document.querySelector(btnId))?.hide();
+        });
+      }
     });
-    
-    var button = document.querySelector('#infobutton_jahr');
-    new bootstrap.Popover(button, {
-      html: true,
-      content: `", infotexte_list[["Jahr"]], "`,
-      trigger: 'click',
-      placement: 'right'
-    });
-    
-    var button = document.querySelector('#infobutton_zielpopulation');
-    new bootstrap.Popover(button, {
-      html: true,
-      content: `", infotexte_list[["Zielpopulation"]], "`,
-      trigger: 'click',
-      placement: 'right'
-    });
-    
-    var button = document.querySelector('#infobutton_kennwert');
-    new bootstrap.Popover(button, {
-      html: true,
-      content: `", infotexte_list[["Kennwert"]], "`,
-      trigger: 'click',
-      placement: 'right'
-    });
-    
-    
-  ")))
+  "))
 )
 
 # Server -----------------------------------------------------------------------
