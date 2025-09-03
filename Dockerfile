@@ -14,18 +14,24 @@ RUN apt-get update && apt-get install -y \
 # Install LaTeX
 RUN R -e "install.packages('tinytex'); tinytex::install_tinytex()"
 
-# Copy your Shiny package into the container
-COPY R /srv/shiny-server/app
-COPY data /srv/shiny-server/app
-COPY inst /srv/shiny-server/app
-COPY man /srv/shiny-server/app
-COPY DESCRIPTION /srv/shiny-server/app
-COPY NAMESPACE /srv/shiny-server/app
-COPY BT-ShinyApp.Rproj /srv/shiny-server/app
-COPY .Rbuildignore /srv/shiny-server/app
+COPY R /tmp/BTShinyApp/R
+COPY data /tmp/BTShinyApp/data
+COPY inst /tmp/BTShinyApp/inst
+COPY man /tmp/BTShinyApp/man
+COPY DESCRIPTION /tmp/BTShinyApp/DESCRIPTION
+COPY NAMESPACE /tmp/BTShinyApp/NAMESPACE
+COPY .Rbuildignore /tmp/BTShinyApp/.Rbuildignore
+
+RUN Rscript -e "remotes::install_github('franikowsp/eatMap')"
 
 # Install the Shiny app package (including dependencies from DESCRIPTION)
-RUN R -e "devtools::install_local('/srv/shiny-server/app', dependencies = TRUE)"
+RUN R -e "devtools::install_local('/tmp/BTShinyApp', dependencies = TRUE)"
+
+RUN rm -rf /tmp/BTShinyApp
+
+# Copy only the app entry point to Shiny server directory
+COPY inst/BT_Shiny_App/app.R /srv/shiny-server/app/app.R
+COPY inst/BT_Shiny_App/export.Rmd /srv/shiny-server/app/export.Rmd
 
 # Make 'shiny' user the owner of the app directory
 RUN chown -R shiny:shiny /srv/shiny-server/app
