@@ -288,11 +288,6 @@ ui <- fluidPage(
           max-width: 100% !important;
           height: auto !important;
         }
-        @media (max-width: 992px) {
-          .container-fluid > .row {
-            flex-direction: column;  /* Sidebar oben, Karte unten */
-          }
-        }
         
         /* Haupt-Label der Inputs fett */
         .form-group > label {
@@ -342,7 +337,27 @@ ui <- fluidPage(
           font-size: 14px; 
           margin: 0;
         }
+        
+        .popover {
+          max-width: 60vw !important;   /* nur 60% Breite */
+          width: auto;                  /* wächst dynamisch */
+        }
 
+
+        @media (max-width: 992px) {
+          .container-fluid > .row {
+            flex-direction: column;  /* Sidebar oben, Karte unten */
+          }
+          @media (max-width: 992px) {
+          .container-fluid > .row {
+            flex-direction: column;  /* Sidebar oben, Karte unten */
+          }
+          .popover {
+            max-width: 90vw !important; /* 90% der Viewport-Breite */
+            width: auto;
+            }
+          }
+        }
       "
     )
   ),
@@ -485,7 +500,7 @@ ui <- fluidPage(
   
     // Alle Infobutton-IDs und ihr Inhalt aus infotexte_list
   
-    // Popover-Inhalte definieren (HTML erlaubt)
+    // Popover-Inhalte definieren 
     var popoverContents = {
       '#infobutton_zyklus': `", infotexte_list[["Erhebungsreihe"]], "`,
       '#infobutton_kompetenzbereich': `", infotexte_list[["Kompetenzbereich"]], "`,
@@ -494,6 +509,16 @@ ui <- fluidPage(
       '#infobutton_kennwert': `", infotexte_list[["Kennwert"]], "`
     };
     
+    // Popover-Titel definieren 
+    var popoverTitles = {
+      '#infobutton_zyklus': '", ifelse(language == "en", recode("Erhebungsreihe", !!!woerterbuch), "Erhebungsreihe"), "',
+      '#infobutton_kompetenzbereich': '", ifelse(language == "en", recode("Kompetenzbereich", !!!woerterbuch), "Kompetenzbereich"), "',
+      '#infobutton_jahr': '", ifelse(language == "en", recode("Jahr", !!!woerterbuch), "Jahr"), "',
+      '#infobutton_zielpopulation': '", ifelse(language == "en", recode("Zielpopulation", !!!woerterbuch), "Zielpopulation"), "',
+      '#infobutton_kennwert': '", ifelse(language == "en", recode("Kennwert", !!!woerterbuch), "Kennwert"), "'
+    };
+
+      
     // Array mit allen Infobutton-IDs
     var buttons = ['#infobutton_zyklus', '#infobutton_kompetenzbereich',
                    '#infobutton_jahr', '#infobutton_zielpopulation', '#infobutton_kennwert'];
@@ -501,10 +526,15 @@ ui <- fluidPage(
     // Popovers initialisieren
     buttons.forEach(function(btnId) {
       var btn = document.querySelector(btnId);
+      var placement = window.innerWidth <= 992 ? 'bottom' : 'right'; // für kleine Geräte soll der Text unter dem Button auftauchen
       new bootstrap.Popover(btn, {
         html: true,
-        trigger: 'manual',  // manuelles Öffnen
-        placement: 'right',
+        trigger: 'manual',
+        container: 'body',
+        placement: placement,
+        fallbackPlacements: [], // keine Alternativen für das Placement zulassen
+        boundary: 'viewport',
+        title: popoverTitles[btnId],
         content: popoverContents[btnId]
       });
   
