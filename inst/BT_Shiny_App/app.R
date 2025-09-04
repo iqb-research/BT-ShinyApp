@@ -4,29 +4,6 @@ language <- "de"
 
 if(language != "de" & language != "en") stop("Language selection must be \"de\" or \"en\".")
 
-# Pakete -----------------------------------------------------------------------
-library(shiny)
-library(shinythemes)
-library(shinyWidgets)
-library(shinyBS)
-library(shiny.i18n)
-library(readxl)
-library(jsonlite)
-library(rjson)
-library(dplyr)
-library(ggplot2)
-library(viridis)
-library(sf)
-library(gridExtra)
-library(grid)
-library(purrr)
-library(widgetframe)
-library(rmarkdown)
-library(knitr)
-library(eatMap)
-library(tinytex)
-library(stringr)
-
 # Konfigurationsliste ----------------------------------------------------------
 # ... wird von eatMap verarbeitet und beim PDF-Export für ggplot2 verwendet
 # ... beinhaltet auch implizit die Reihenfolge der entsprechenden Einträge

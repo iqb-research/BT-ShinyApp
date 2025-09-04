@@ -38,6 +38,7 @@ Imports:
     knitr,
     viridis,
     magrittr,
-    tinytex
+    tinytex,
+    eatMap
 Remotes:
     franikowsp/eatMap

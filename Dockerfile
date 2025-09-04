@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
     rm -rf /var/lib/apt/lists/*
 
 # Install LaTeX
-RUN R -e "install.packages('tinytex'); tinytex::install_tinytex()"
+RUN R -e "install.packages('tinytex'); tinytex::install_tinytex(bundle = 'TinyTeX')"
 
 COPY R /tmp/BTShinyApp/R
 COPY data /tmp/BTShinyApp/data
