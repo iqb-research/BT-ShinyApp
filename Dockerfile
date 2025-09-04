@@ -30,8 +30,8 @@ RUN R -e "devtools::install_local('/tmp/BTShinyApp', dependencies = TRUE)"
 RUN rm -rf /tmp/BTShinyApp
 
 # Copy only the app entry point to Shiny server directory
-COPY inst/BT_Shiny_App/app.R /srv/shiny-server/app/app.R
-COPY inst/BT_Shiny_App/export.Rmd /srv/shiny-server/app/export.Rmd
+COPY app.R /srv/shiny-server/app/app.R
+#COPY inst/BT_Shiny_App/export.Rmd /srv/shiny-server/app/export.Rmd
 
 # Make 'shiny' user the owner of the app directory
 RUN chown -R shiny:shiny /srv/shiny-server/app
