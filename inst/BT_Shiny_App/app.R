@@ -1,3 +1,6 @@
+#' @importFrom magrittr %>%
+
+
 # Sprache der App --------------------------------------------------------------
 # "de" für Deutsch, "en" für Englisch
 language <- "de"
