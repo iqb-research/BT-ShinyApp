@@ -701,7 +701,7 @@ server <- function(input, output, session) {
       # PDF soll in temporäres directory kopiert werden, falls keine Schreibrechte
       # für das aktuelle directory vorliegen
       tempReport <- file.path(tempdir(), "export.Rmd")
-      template_path <- system.file("BT_Shiny_app", "export.Rmd", package = "BTShinyApp")
+      template_path <- "export.Rmd"
       file.copy(template_path, tempReport, overwrite = TRUE)
       
       # Quellenangaben einlesen
