@@ -23,11 +23,20 @@ library(purrr)
 library(widgetframe)
 library(rmarkdown)
 library(knitr)
-library(eatMap)
 library(tinytex)
 library(stringr)
 
 library(bslib)
+
+if (!requireNamespace("eatMap", quietly = TRUE)) {
+  remotes::install_github("franikowsp/eatMap")
+}
+library(eatMap)
+
+if (!requireNamespace("BTShinyApp", quietly = TRUE)) {
+  remotes::install_github("iqb-research/BT-ShinyApp")
+}
+library(BTShinyApp)
 
 # Konfigurationsliste ----------------------------------------------------------
 # ... wird von eatMap verarbeitet und beim PDF-Export für ggplot2 verwendet
