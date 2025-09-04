@@ -40,4 +40,7 @@ Imports:
     magrittr,
     tinytex
 Remotes:
-    franikowsp/eatMap
+    franikowsp/eatMap,
+    iqb-research/BT-ShinyApp,
+    Appsilon/shiny.i18n,
+    rstudio/rsconnect
