@@ -551,7 +551,7 @@ server <- function(input, output, session) {
     if(any(data_selected()$fach %in% "French")) config$total_label <- "Total"  
     
     data_selected() %>%
-      eatMap(data = ., config = config)
+      eatMap::eatMap(data = ., config = config)
   })
   
   # PDF Export -----------------------------------------------------------------
