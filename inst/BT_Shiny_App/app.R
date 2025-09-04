@@ -32,17 +32,17 @@ library(bslib)
 # Konfigurationsliste ----------------------------------------------------------
 # ... wird von eatMap verarbeitet und beim PDF-Export für ggplot2 verwendet
 # ... beinhaltet auch implizit die Reihenfolge der entsprechenden Einträge
-source(system.file("config", "config.R", package = "BTShinyApp"))
+source( file.path("config", "config.R" ))
 
 # Datensätze -------------------------------------------------------------------
 # Rohdaten: "data/allDat.RData"
 # Die Datenaufbereitung erfolgt in einem separaten Skript: "data_preparation.R".
 # "data_preparation.R" muss neu ausgeführt werden, wenn "data/allDat.RData" geupdated wird.
-BTdata <- readRDS(system.file("data", "BTdata_processed.Rds", package = "BTShinyApp"))
+BTdata <- readRDS( file.path("data", "BTdata_processed.Rds" ))
 
 # Kartendaten
 # https://gadm.org/download_country.html
-map_path <- system.file("extdata", "map_data", package = "BTShinyApp")
+map_path <-  file.path("extdata", "map_data" )
 mapdata <- sf::st_read(dsn = map_path, layer = "gadm41_DEU_1")
 mapdata <- mapdata[, c("NAME_1", "geometry")]
 names(mapdata) <- c("Bundesland", "geometry")
@@ -171,11 +171,11 @@ make_YearPopulationParameter <- function(cycle_current) {
 
 # Übersetzung ------------------------------------------------------------------
 
-# JSON Übersetzung
-
-json_path <- system.file("extdata", "text_elements", "translation.json", package = "BTShinyApp")
+json_path <-  file.path("extdata", "text_elements", "translation.json" )
 i18n <- shiny.i18n::Translator$new(translation_json_path = json_path)
 
+# JSON einlesen
+json_path <-  file.path("extdata", "text_elements", "translation.json" )
 woerterbuch <- jsonlite::fromJSON(paste(readLines(json_path), collapse = ""), flatten = TRUE)
 woerterbuch <- setNames(woerterbuch$translation$en, woerterbuch$translation$de)
 
@@ -250,7 +250,7 @@ if(language == "en"){
 
 # Texte für die Infobuttons ----------------------------------------------------
 
-infotextfile <- system.file("extdata/text_elements/Infotexte.xlsx", package = "BTShinyApp")
+infotextfile <-  file.path("extdata/text_elements/Infotexte.xlsx" )
 infotexte <- readxl::read_excel(infotextfile)
 
 infotexte_list <- setNames(
@@ -692,11 +692,11 @@ server <- function(input, output, session) {
       # PDF soll in temporäres directory kopiert werden, falls keine Schreibrechte
       # für das aktuelle directory vorliegen
       tempReport <- file.path(tempdir(), "export.Rmd")
-      template_path <- system.file("BT_Shiny_app", "export.Rmd", package = "BTShinyApp")
+      template_path <-  file.path("BT_Shiny_App", "export.Rmd" )
       file.copy(template_path, tempReport, overwrite = TRUE)
       
       # Quellenangaben einlesen
-      sources <- readxl::read_xlsx(system.file("extdata", "text_elements", "BT_Quellenangaben.xlsx", package = "BTShinyApp"))
+      sources <- readxl::read_xlsx( file.path("extdata", "text_elements", "BT_Quellenangaben.xlsx" ))
       
       # Parameter für das .Rmd Dokument
       params <- list(mapdata = mapdata,
