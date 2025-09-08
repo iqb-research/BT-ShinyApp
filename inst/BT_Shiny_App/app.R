@@ -267,7 +267,6 @@ infotexte_list <- setNames(
   infotexte$chunk
 )
 
-
 # UI ---------------------------------------------------------------------------
 
 ui <- fluidPage(
