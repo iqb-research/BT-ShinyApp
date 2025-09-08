@@ -5,6 +5,6 @@ account: apelalina
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 15301561
-bundleId: 10863273
+bundleId: 10876134
 url: https://apelalina.shinyapps.io/bt_shiny_app/
 version: 1

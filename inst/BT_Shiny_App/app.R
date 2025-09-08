@@ -34,7 +34,7 @@ if (!requireNamespace("eatMap", quietly = TRUE)) {
 library(eatMap)
 
 if (!requireNamespace("BTShinyApp", quietly = TRUE)) {
-  remotes::install_github("iqb-research/BT-ShinyApp")
+  remotes::install_github("iqb-research/BT-ShinyApp@v0.1.7")
 }
 library(BTShinyApp)
 

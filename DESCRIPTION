@@ -42,6 +42,6 @@ Imports:
     bslib
 Remotes:
     franikowsp/eatMap,
-    iqb-research/BT-ShinyApp,
+    iqb-research/BT-ShinyApp@v0.1.7,
     Appsilon/shiny.i18n,
     rstudio/rsconnect
