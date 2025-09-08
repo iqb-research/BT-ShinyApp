@@ -23,9 +23,20 @@ library(purrr)
 library(widgetframe)
 library(rmarkdown)
 library(knitr)
-library(eatMap)
 library(tinytex)
 library(stringr)
+
+library(bslib)
+
+if (!requireNamespace("eatMap", quietly = TRUE)) {
+  remotes::install_github("franikowsp/eatMap")
+}
+library(eatMap)
+
+if (!requireNamespace("BTShinyApp", quietly = TRUE)) {
+  remotes::install_github("iqb-research/BT-ShinyApp@v0.1.7")
+}
+library(BTShinyApp)
 
 # Konfigurationsliste ----------------------------------------------------------
 # ... wird von eatMap verarbeitet und beim PDF-Export für ggplot2 verwendet
@@ -70,8 +81,11 @@ combinations <-
 radioSubgroup <- function(inputId, parentId, label, choices, selected, inline = FALSE) {
   values <- paste0(parentId, "-", choices)
   choices <- setNames(values, choices)
-  rb <- radioButtons(inputId, label, choices, selected, inline = inline)
-  rb$children
+  
+  div(class = "radio-group-container",
+      tags$label(class = "radio-group-label", label),  # Überschrift fett
+      radioButtons(inputId, NULL, choices, selected, inline = inline)
+  )
 }
 
 radioGroupContainer <- function(inputId, ...) {
@@ -166,13 +180,11 @@ make_YearPopulationParameter <- function(cycle_current) {
 
 # Übersetzung ------------------------------------------------------------------
 
+# JSON Übersetzung
+
 json_path <- system.file("extdata", "text_elements", "translation.json", package = "BTShinyApp")
 i18n <- shiny.i18n::Translator$new(translation_json_path = json_path)
-infotextfile <- system.file("extdata/text_elements/Infotexte.xlsx", package = "BTShinyApp")
-infotexte <- readxl::read_excel(infotextfile)
 
-# JSON einlesen
-json_path <- system.file("extdata", "text_elements", "translation.json", package = "BTShinyApp")
 woerterbuch <- jsonlite::fromJSON(paste(readLines(json_path), collapse = ""), flatten = TRUE)
 woerterbuch <- setNames(woerterbuch$translation$en, woerterbuch$translation$de)
 
@@ -245,13 +257,22 @@ if(language == "en"){
   default_newest_cycle <- recode(default_newest_cycle, !!! woerterbuch)
 }
 
+# Texte für die Infobuttons ----------------------------------------------------
+
+infotextfile <- system.file("extdata/text_elements/Infotexte.xlsx", package = "BTShinyApp")
+infotexte <- readxl::read_excel(infotextfile)
+
+infotexte_list <- setNames(
+  infotexte[[language]],
+  infotexte$chunk
+)
 
 # UI ---------------------------------------------------------------------------
 
 ui <- fluidPage(
   
   # Styling --------------------------------------------------------------------
-  theme = shinytheme("sandstone"),
+  theme = bs_theme(version = 5, bootswatch = "sandstone"),
   
   # Aussehen des Sliders
   # .irs-grid-pol.small: entfernt die vertikalen Gitternetzlinien zwischen den Ticks
@@ -267,201 +288,289 @@ ui <- fluidPage(
   tags$style(
     HTML(
       "
-        .irs-grid-pol.small {
-          height: 0 !important;
+        .irs-grid-pol.small {height: 0 !important;}
+        .irs-grid-text {font-size: 12px !important;}
+        .irs-bar.irs-bar--single {background: #5342ca00 !important; border: none !important;}
+        
+        #deutschlandkarte svg {
+          max-width: 100% !important;
+          height: auto !important;
         }
-        .irs-grid-text {
-          font-size: 12px !important;
+        
+        /* Haupt-Label der Inputs fett */
+        .form-group > label {
+          font-weight: bold;
         }
-        .irs-bar.irs-bar--single {
-          background: #5342ca00 !important;
-          border: none !important;
+        
+        /* Radiobuttons Überschrift fett */
+        .radio-group-container > .radio-group-label {
+          font-weight: bold;
+          display: block;
+          margin-bottom: 5px; /* Abstand zu den Optionsbuttons */
         }
-        .fa-info {
-          color: #808080 !important;
+        
+        /* Radiobuttons Optionslabels normal */
+        .radio-group-container .radio label,
+        .radio-group-container .checkbox label {
+          font-weight: normal;
         }
+                
+        /* --- Infobutton Styling --- */
         .custom-btn {
-          background-color: #A9A9A9;
+          width: 22px;              
+          height: 22px;
+          padding: 0;
+          background-color: #bfbdbd; 
           color: white;
-          border-radius: 5px;
+          border-radius: 4px;        /* leicht abgerundete Ecken, viereckig */
           border: none;
-          padding: 0px 0px;
           display: flex;
           align-items: center;
           justify-content: center;
+          box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+          transition: all 0.2s ease;
         }
+        
+        .custom-btn:hover {
+          background-color: #495057; /* dunkler beim Hover */
+          cursor: pointer;
+        }
+        
+        .custom-btn:active {
+          background-color: #343a40; /* noch dunkler beim Klick */
+        }
+        
+        /* Icon anpassen */
+        .custom-btn .fa-info {
+          font-size: 14px; 
+          margin: 0;
+        }
+        
         .popover {
-        max-width: 600px !important;
-        width: 600px !important;
+          max-width: 60vw !important;   /* nur 60% Breite */
+          width: auto;                  /* wächst dynamisch */
         }
-        .no-padding {
-        padding: 0 !important;
+
+
+        @media (max-width: 992px) {
+          .container-fluid > .row {
+            flex-direction: column;  /* Sidebar oben, Karte unten */
+          }
+          @media (max-width: 992px) {
+          .container-fluid > .row {
+            flex-direction: column;  /* Sidebar oben, Karte unten */
+          }
+          .popover {
+            max-width: 90vw !important; /* 90% der Viewport-Breite */
+            width: auto;
+            }
+          }
         }
       "
     )
   ),
   
-  
   # Navigationsfeld links ------------------------------------------------------
-  sidebarPanel(
-    
-    # Erhebungsreihe (Zyklus)
-    fluidRow(
-      column(
-        width = 11, # Spalte nimmt 11/12 des Panels ein
-        class = "no-padding", # ohne zusätzlichen Rand
-        selectInput(
-          inputId = "Zyklus",
-          label = i18n$t("Erhebungsreihe"),
-          choices = available_cycles,
-          selected = default_newest_cycle,
-          width = '95%'
-        )
-      ),
-      column(
-        width = 1, # Info-Button in einer separaten Spalte
-        class = "no-padding",
-        tags$div(style = "height: 30px;"), # vertikaler Abstand
-        bsButton(
-          inputId = "infobutton_zyklus",
-          label = "",
-          icon = icon("info", lib = "font-awesome"),
-          style = "custom-btn",
-          size = "extra-small"
-        )
-      )
-    ),
-    
-    # Kompetenzbereiche
-    fluidRow(
-      column(
-        width = 11, # Spalte für die dynamischen Inhalte
-        class = "no-padding",
-        uiOutput('dynamicPanel_kompetenzbereiche')
-      ),
-      column(
-        width = 1, # Info-Button in einer separaten Spalte
-        class = "no-padding",
-        bsButton(
-          inputId = "infobutton_kompetenzbereiche",
-          label = "",
-          icon = icon("info", lib = "font-awesome"),
-          style = "custom-btn",
-          size = "extra-small"
-        )
-      )
-    ),
-    
-    # Jahr, Zielpopulation und Kennwert
-    fluidRow(
-      column(
-        width = 11, # Spalte für die dynamischen Inhalte
-        class = "no-padding",
-        uiOutput('dynamicPanel_JahrZielpopulationKennwert')
-      ),
-      column(
-        width = 1, # Info-Button in einer separaten Spalte
-        tags$div(style = "height: 45px;"), # vertikaler Abstand
-        class = "no-padding",
-        bsButton(
-          inputId = "infobutton_jahre",
-          label = "",
-          icon = icon("info", lib = "font-awesome"),
-          style = "custom-btn",
-          size = "extra-small"
-        ),
-        tags$div(style = "height: 60px;"), # vertikaler Abstand
-        bsButton(
-          inputId = "infobutton_zielpopulation",
-          label = "",
-          icon = icon("info", lib = "font-awesome"),
-          style = "custom-btn",
-          size = "extra-small"
-        ),
-        tags$div(style = "height: 50px;"), # vertikaler Abstand
-        bsButton(
-          inputId = "infobutton_kennwert",
-          label = "",
-          icon = icon("info", lib = "font-awesome"),
-          style = "custom-btn",
-          size = "extra-small"
-        )
-      )
-    ),
-    tags$div(style = "height: 20px;"),
-    
-    # Download-Button ------------------------------------------------------------
-    
-    fluidRow(
-      column(
-        width = 12, # Spalte für die dynamischen Inhalte
-        class = "no-padding",
-        downloadButton("report", " PDF Export",
-                       style = "width:100%; margin-top:10px;
+  div(class = "container-fluid",
+      div(class = "row", 
+          div(class = "col-lg-4",
+              div(class = "well",
+                  # Erhebungsreihe (Zyklus) --------------------------------------------------
+                  div(
+                    style = "display:flex; align-items:center; justify-content:space-between; width:100%;",
+                    
+                    # Input links 
+                    div(
+                      style = "flex-grow:1; min-width:0; padding-right:6px;",
+                      selectInput(
+                        inputId = "Zyklus",
+                        label = i18n$t("Erhebungsreihe"),
+                        choices = available_cycles,
+                        selected = default_newest_cycle,
+                        width = '100%'
+                      )
+                    ),
+                    
+                    # Button rechts 
+                    div(
+                      style = "flex:0 0 auto;",
+                      tags$div(style = "height: 15px;"), # vertikaler Abstand
+                      actionButton(
+                        inputId = "infobutton_zyklus",
+                        label = "",
+                        icon = icon("info", lib = "font-awesome"),
+                        class = "custom-btn",
+                        `data-bs-toggle` = "popover",
+                        `data-bs-trigger` = "click",  
+                        `data-bs-placement` = "right"
+                      )
+                    )
+                  ),
+                  
+                  # Kompetenzbereiche --------------------------------------------------------
+                  div(
+                    style = "display:flex; align-items:center; justify-content:space-between; width:100%;",
+                    
+                    # Input links 
+                    div(
+                      style = "flex-grow:1; min-width:0; padding-right:6px;",
+                      uiOutput('dynamicPanel_kompetenzbereiche')
+                    ),
+                    
+                    # Button rechts
+                    div(
+                      style = "flex:0 0 auto;",
+                      actionButton(
+                        inputId = "infobutton_kompetenzbereich",
+                        label = "",
+                        icon = icon("info", lib = "font-awesome"),
+                        class = "custom-btn",
+                        `data-bs-toggle` = "popover",
+                        `data-bs-trigger` = "click",  
+                        `data-bs-placement` = "right"
+                      )
+                    )
+                  ),
+                  
+                  # Jahr, Zielpopulation und Kennwert ----------------------------------------
+                  div(
+                    style = "display:flex; align-items:top; justify-content:space-between; width:100%;",
+              
+                    # Input links 
+                    div(
+                      style = "flex-grow:1; min-width:0; padding-right:6px;",
+                      uiOutput('dynamicPanel_JahrZielpopulationKennwert')
+                    ),
+                  
+                    # Buttons rechts
+                    div(
+                      style = "flex:0 0 auto;",
+                      tags$div(style = "height: 50px;"), # vertikaler Abstand
+                      actionButton(
+                        inputId = "infobutton_jahr",
+                        label = "",
+                        icon = icon("info", lib = "font-awesome"),
+                        class = "custom-btn",
+                        `data-bs-toggle` = "popover",
+                        `data-bs-trigger` = "click",  
+                        `data-bs-placement` = "right"
+                      ),
+                      tags$div(style = "height: 75px;"), # vertikaler Abstand
+                      actionButton(
+                        inputId = "infobutton_zielpopulation",
+                        label = "",
+                        icon = icon("info", lib = "font-awesome"),
+                        class = "custom-btn",
+                        `data-bs-toggle` = "popover",
+                        `data-bs-trigger` = "click",  
+                        `data-bs-placement` = "right"
+                      ),
+                      tags$div(style = "height: 65px;"), # vertikaler Abstand
+                      actionButton(
+                        inputId = "infobutton_kennwert",
+                        label = "",
+                        icon = icon("info", lib = "font-awesome"),
+                        class = "custom-btn",
+                        `data-bs-toggle` = "popover",
+                        `data-bs-trigger` = "click",  
+                        `data-bs-placement` = "right"
+                      ),
+                      tags$div(style = "height: 20px;")
+                    )
+                  ),
+                  
+                  # Download-Button ----------------------------------------------------------
+                  
+                  fluidRow(
+                    column(
+                      width = 12, # Spalte für die dynamischen Inhalte
+                      class = "no-padding",
+                      downloadButton("report", " PDF Export",
+                                     style = "width:100%; margin-top:10px;
                    background-color:#f0f0f0; color: #000000;
                    border: 1px solid #A9A9A9;
                    padding: 3px 8px;
                    height: 30px;")
+                    )
+                  )
+              )
+          ),
+          div(
+            class = "col-12 col-lg-8",  # volle Breite auf kleinen Geräten
+            style = "padding:0; display:flex; justify-content:center;",
+            eatMapOutput("deutschlandkarte", width = "100%", height = "auto")
+          )
       )
-    )
   ),
   
-  # Main-Panel mit der Deutschlandkarte ----------------------------------------
-  mainPanel(
-    eatMapOutput("deutschlandkarte", width = "100%")
-  ),
+  # JavaScript für Infobutton-Popover
+  tags$script(HTML("
   
+    // Alle Infobutton-IDs und ihr Inhalt aus infotexte_list
   
-  # Texte in den Infobuttons ---------------------------------------------------
-  # Info-Button Popover für Zyklus
-  bsPopover(
-    id = "infobutton_zyklus",
-    title = i18n$t("Erhebungsreihe"),
-    content = HTML(paste0(infotexte[infotexte$chunk == "Erhebungsreihe", language])),
-    placement = "right",
-    trigger = "klick",
-    options = list(container = "body")
-  ),
+    // Popover-Inhalte definieren 
+    var popoverContents = {
+      '#infobutton_zyklus': `", infotexte_list[["Erhebungsreihe"]], "`,
+      '#infobutton_kompetenzbereich': `", infotexte_list[["Kompetenzbereich"]], "`,
+      '#infobutton_jahr': `", infotexte_list[["Jahr"]], "`,
+      '#infobutton_zielpopulation': `", infotexte_list[["Zielpopulation"]], "`,
+      '#infobutton_kennwert': `", infotexte_list[["Kennwert"]], "`
+    };
+    
+    // Popover-Titel definieren 
+    var popoverTitles = {
+      '#infobutton_zyklus': '", ifelse(language == "en", recode("Erhebungsreihe", !!!woerterbuch), "Erhebungsreihe"), "',
+      '#infobutton_kompetenzbereich': '", ifelse(language == "en", recode("Kompetenzbereich", !!!woerterbuch), "Kompetenzbereich"), "',
+      '#infobutton_jahr': '", ifelse(language == "en", recode("Jahr", !!!woerterbuch), "Jahr"), "',
+      '#infobutton_zielpopulation': '", ifelse(language == "en", recode("Zielpopulation", !!!woerterbuch), "Zielpopulation"), "',
+      '#infobutton_kennwert': '", ifelse(language == "en", recode("Kennwert", !!!woerterbuch), "Kennwert"), "'
+    };
+
+      
+    // Array mit allen Infobutton-IDs
+    var buttons = ['#infobutton_zyklus', '#infobutton_kompetenzbereich',
+                   '#infobutton_jahr', '#infobutton_zielpopulation', '#infobutton_kennwert'];
   
-  # Info-Button Popover für Kompetenzbereiche
-  bsPopover(
-    id = "infobutton_kompetenzbereiche",
-    title = i18n$t("Kompetenzbereich"),
-    content = HTML(paste0(infotexte[infotexte$chunk == "Kompetenzbereich", language])),
-    placement = "right",
-    trigger = "klick",
-    options = list(container = "body")
-  ),
+    // Popovers initialisieren
+    buttons.forEach(function(btnId) {
+      var btn = document.querySelector(btnId);
+      var placement = window.innerWidth <= 992 ? 'bottom' : 'right'; // für kleine Geräte soll der Text unter dem Button auftauchen
+      new bootstrap.Popover(btn, {
+        html: true,
+        trigger: 'manual',
+        container: 'body',
+        placement: placement,
+        fallbackPlacements: [], // keine Alternativen für das Placement zulassen
+        boundary: 'viewport',
+        title: popoverTitles[btnId],
+        content: popoverContents[btnId]
+      });
   
-  # Info-Button Popover für Jahre
-  bsPopover(
-    id = "infobutton_jahre",
-    title = i18n$t("Jahr"),
-    content = HTML(paste0(infotexte[infotexte$chunk == "Jahr", language])),
-    placement = "right",
-    trigger = "klick",
-    options = list(container = "body")
-  ),
+      // Click Event
+      btn.addEventListener('click', function() {
+        // alle anderen Popovers schließen
+        buttons.forEach(function(otherId) {
+          if(otherId !== btnId) {
+            var otherBtn = document.querySelector(otherId);
+            bootstrap.Popover.getInstance(otherBtn)?.hide();
+          }
+        });
   
-  # Info-Buttons Zielpopulation und Kennwert
+        // aktuellen Popover toggeln
+        var pop = bootstrap.Popover.getInstance(btn);
+        pop.toggle();
+      });
+    });
   
-  bsPopover(
-    id = "infobutton_zielpopulation",
-    title = i18n$t("Grundgesamtheit"),
-    content = HTML(paste0(infotexte[infotexte$chunk == "Zielpopulation", language])),
-    placement = "right",
-    trigger = "klick",
-    options = list(container = "body")
-  ),
-  
-  bsPopover(
-    id = "infobutton_kennwert",
-    title = i18n$t("Kennwert"),
-    content = HTML(paste0(infotexte[infotexte$chunk == "Kennwert", language])),
-    placement = "right",
-    trigger = "klick",
-    options = list(container = "body")
-  )
+    // Popover schließen, wenn außerhalb geklickt wird
+    document.addEventListener('click', function(e) {
+      if (!buttons.some(id => document.querySelector(id).contains(e.target))) {
+        buttons.forEach(function(btnId) {
+          bootstrap.Popover.getInstance(document.querySelector(btnId))?.hide();
+        });
+      }
+    });
+  "))
 )
 
 # Server -----------------------------------------------------------------------
@@ -591,7 +700,7 @@ server <- function(input, output, session) {
       # PDF soll in temporäres directory kopiert werden, falls keine Schreibrechte
       # für das aktuelle directory vorliegen
       tempReport <- file.path(tempdir(), "export.Rmd")
-      template_path <- system.file("BT_Shiny_App", "export.Rmd", package = "BTShinyApp")
+      template_path <- "export.Rmd"
       file.copy(template_path, tempReport, overwrite = TRUE)
       
       # Quellenangaben einlesen
