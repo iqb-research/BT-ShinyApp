@@ -11,14 +11,25 @@ RUN apt-get update && apt-get install -y \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Install LaTeX 
+# Install LaTeX
 RUN R -e "install.packages('tinytex'); tinytex::install_tinytex()"
 
-# Copy your Shiny package into the container
-COPY src /srv/shiny-server/app
+COPY R /tmp/BTShinyApp/R
+COPY data /tmp/BTShinyApp/data
+COPY inst /tmp/BTShinyApp/inst
+COPY man /tmp/BTShinyApp/man
+COPY DESCRIPTION /tmp/BTShinyApp/DESCRIPTION
+COPY NAMESPACE /tmp/BTShinyApp/NAMESPACE
+COPY .Rbuildignore /tmp/BTShinyApp/.Rbuildignore
 
 # Install the Shiny app package (including dependencies from DESCRIPTION)
-RUN R -e "devtools::install_local('/srv/shiny-server/app', dependencies = TRUE)"
+RUN R -e "devtools::install_local('/tmp/BTShinyApp', dependencies = TRUE)"
+
+RUN rm -rf /tmp/BTShinyApp
+
+# Copy only the app entry point to Shiny server directory
+COPY inst/BT_Shiny_App/app.R /srv/shiny-server/app/app.R
+COPY inst/BT_Shiny_App/export.Rmd /srv/shiny-server/app/export.Rmd
 
 # Make 'shiny' user the owner of the app directory
 RUN chown -R shiny:shiny /srv/shiny-server/app
