@@ -22,8 +22,6 @@ COPY DESCRIPTION /tmp/BTShinyApp/DESCRIPTION
 COPY NAMESPACE /tmp/BTShinyApp/NAMESPACE
 COPY .Rbuildignore /tmp/BTShinyApp/.Rbuildignore
 
-RUN Rscript -e "remotes::install_github('franikowsp/eatMap')"
-
 # Install the Shiny app package (including dependencies from DESCRIPTION)
 RUN R -e "devtools::install_local('/tmp/BTShinyApp', dependencies = TRUE)"
 
