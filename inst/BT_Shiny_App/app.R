@@ -28,9 +28,6 @@ library(stringr)
 
 library(bslib)
 
-if (!requireNamespace("eatMap", quietly = TRUE)) {
-  remotes::install_github("franikowsp/eatMap")
-}
 library(eatMap)
 
 if (!requireNamespace("BTShinyApp", quietly = TRUE)) {

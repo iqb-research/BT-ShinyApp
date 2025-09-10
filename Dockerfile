@@ -6,13 +6,10 @@ RUN rm -rf /srv/shiny-server/*
 # Install system libraries needed by common R packages
 RUN apt-get update && apt-get install -y \
     libudunits2-dev libproj-dev libgdal-dev \
-    libharfbuzz-dev libfribidi-dev cmake \
+    libharfbuzz-dev libfribidi-dev cmake texlive-xetex \
     less wget vim && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-
-# Install LaTeX
-RUN R -e "install.packages('tinytex'); tinytex::install_tinytex(bundle = 'TinyTeX')"
 
 COPY R /tmp/BTShinyApp/R
 COPY data /tmp/BTShinyApp/data
@@ -24,6 +21,8 @@ COPY .Rbuildignore /tmp/BTShinyApp/.Rbuildignore
 
 # Install the Shiny app package (including dependencies from DESCRIPTION)
 RUN R -e "devtools::install_local('/tmp/BTShinyApp', dependencies = TRUE)"
+
+RUN Rscript -e "remotes::install_github('franikowsp/eatMap')"
 
 RUN rm -rf /tmp/BTShinyApp
 
