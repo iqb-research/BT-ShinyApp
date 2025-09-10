@@ -38,6 +38,10 @@ Imports:
     knitr,
     viridis,
     magrittr,
-    tinytex
+    tinytex,
+    bslib
 Remotes:
-    franikowsp/eatMap
+    franikowsp/eatMap,
+    iqb-research/BT-ShinyApp@v0.1.7,
+    Appsilon/shiny.i18n,
+    rstudio/rsconnect

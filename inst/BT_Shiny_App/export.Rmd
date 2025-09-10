@@ -2,10 +2,10 @@
 output: 
   pdf_document:
     latex_engine: xelatex
+mainfont: "Latin Modern Sans"
 geometry: a4paper,landscape,left=3cm,right=3cm,top=1.5cm,bottom=1cm
 header-includes:
   - \usepackage{fontspec}
-  - \setmainfont{Arial}
   - \usepackage{titlesec}
   - \titleformat{\section}[block]{\normalfont\Large\bfseries}{\thesection}{1em}{}
   - \titleformat{\subsection}[block]{\normalfont\large\bfseries}{\thesubsection}{1em}{}
@@ -32,7 +32,6 @@ library(dplyr)
 library(gridExtra)
 library(grid)
 library(viridis)
-library(BTShinyApp)
 ```
 
 ```{r translation strings, echo = FALSE}
@@ -110,7 +109,7 @@ karte <- ggplot(data) +
     guide = guide_colorbar(reverse = params$reverse)
   ) +
   theme(
-    text = element_text(family = "ArialMT")  # Schriftart für Text
+    text = element_text(family = "sans")  # Schriftart für Text
   )
 
 karte_grob <- ggplotGrob(karte)
@@ -139,10 +138,10 @@ tabelle <- gridExtra::tableGrob(
   rows = NULL,
   theme = gridExtra::ttheme_default(
     core = list(
-      fg_params = list(cex = 0.8, fontfamily = "ArialMT")  # Schriftart für Tabellenzellen
+      fg_params = list(cex = 0.8, fontfamily = "sans")  # Schriftart für Tabellenzellen
     ),
     colhead = list(
-      fg_params = list(cex = 0.9, fontfamily = "ArialMT")  # Schriftart für Kopfzeilen
+      fg_params = list(cex = 0.9, fontfamily = "sans")  # Schriftart für Kopfzeilen
     )
   )
 )
