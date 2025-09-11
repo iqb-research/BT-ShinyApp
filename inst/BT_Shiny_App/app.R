@@ -44,7 +44,8 @@ source(system.file("config", "config.R", package = "BTShinyApp"))
 # Rohdaten: "data/allDat.RData"
 # Die Datenaufbereitung erfolgt in einem separaten Skript: "data_preparation.R".
 # "data_preparation.R" muss neu ausgeführt werden, wenn "data/allDat.RData" geupdated wird.
-BTdata <- readRDS(system.file("data", "BTdata_processed.Rds", package = "BTShinyApp"))
+# BTdata <- readRDS(system.file("data", "BTdata_processed.Rds", package = "BTShinyApp"))
+BTdata <- readRDS("Q:\\BT2024\\BT\\40_Daten\\10_aufbereitet\\03_shinyApp\\BTdata_processed.Rds")
 
 # Kartendaten
 # https://gadm.org/download_country.html
