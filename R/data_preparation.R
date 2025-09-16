@@ -129,3 +129,128 @@ BTdata$est_print <- ifelse(
 # Abspeichern ------------------------------------------------------------------
 #saveRDS(BTdata, "data/BTdata_processed.Rds")
 rm(list = ls())
+
+
+
+
+
+
+
+
+
+######################################################## hier neu:
+
+# Part II config übersetzen und abspeichern ------------------------------------
+source(system.file("config", "config.R", package = "BTShinyApp"))
+
+config_de <- config
+
+# JSON Übersetzung
+
+json_path <- system.file("extdata", "text_elements", "translation.json", package = "BTShinyApp")
+i18n <- shiny.i18n::Translator$new(translation_json_path = json_path)
+
+woerterbuch <- jsonlite::fromJSON(paste(readLines(json_path), collapse = ""), flatten = TRUE)
+woerterbuch <- setNames(woerterbuch$translation$en, woerterbuch$translation$de)
+
+# Translator setzen
+i18n$set_translation_language("en")
+
+# config Liste übersetzen
+config_en <- recode_nested_list(config, woerterbuch)
+
+config <- list("de" = config_de, "en" = config_en)
+
+# Abspeichern ------------------------------------------------------------------
+#saveRDS(config, "data/config.Rds")
+
+
+
+# UI Choices -------------------------------------------------------------------
+
+# Zyklen
+available_cycles <- unique(BTdata$cycle)[order(unique(BTdata$cycle))] # alle erhobenen Zyklen, Hotfix für Ordnung
+available_parameters <- unique(BTdata$parameter) # Parameter
+default_newest_cycle <- BTdata %>%
+  filter(year == max(BTdata$year)) %>% # Get rows for the most recent year
+  distinct(cycle) %>%                  # Find the unique cycle(s) in that year
+  pull(cycle) %>%                      # Extract the cycle name(s) as a vector
+  .[1]
+
+# alle im Datensatz enthaltenen Kombinationen der UI choices
+combinations <-
+  BTdata %>%
+  distinct(cycle, fachKb, year, parameter, targetPop)
+
+
+# Übersetzung ------------------------------------------------------------------
+
+
+# Funktionen zum Ordnen der Auswahlmöglichkeiten
+predefined_order_parameters <- names(config$parameter)
+names(predefined_order_parameters) <- config$parameter %>% map("label")
+predefined_order_targetpop <- config$targetPop
+
+
+# Datensatz rekodieren
+if(language == "en"){
+  BTdata <- BTdata %>%
+    # 1. alle Spalten übersetzen
+    mutate(across(c(cycle, fach, klassenstufe, kb, targetPop), ~ recode(.x, !!! woerterbuch))) %>%
+    # 2. 'fachKb' neu erstellen
+    mutate(fachKb = paste(fach, kb, sep = "-"))
+}
+
+# UI Choices übersetzen
+if(language == "en"){
+  combinations <- combinations %>%
+    mutate(
+      # 1. alle "einfachen" Spalten übersetzen
+      across(c(cycle, targetPop), ~ recode(.x, !!! woerterbuch)),
+      
+      # 2. 'fachKb' trennen, übersetzen und neu erstellen
+      fachKb = map_chr(fachKb, function(x) {
+        parts <- unlist(strsplit(x, "-"))
+        translated_parts <- recode(parts, !!! woerterbuch)
+        paste(translated_parts, collapse = "-")
+      })
+    )
+  
+  available_cycles <- recode(available_cycles, !!! woerterbuch)
+  available_parameters <- recode(available_parameters, !!! woerterbuch)
+}
+
+if(language == "en"){
+  default_newest_cycle <- recode(default_newest_cycle, !!! woerterbuch)
+}
+
+# Texte für die Infobuttons ----------------------------------------------------
+
+infotextfile <- system.file("extdata/text_elements/Infotexte.xlsx", package = "BTShinyApp")
+infotexte <- readxl::read_excel(infotextfile)
+
+infotexte_list <- setNames(
+  infotexte[[language]],
+  infotexte$chunk
+)
+
+
+
+
+
+
+
+
+
+
+
+
+######################## Kartendaten auch ablegen
+
+map_path <- system.file("extdata", "map_data", package = "BTShinyApp")
+mapdata <- sf::st_read(dsn = map_path, layer = "gadm41_DEU_1")
+mapdata <- mapdata[, c("NAME_1", "geometry")]
+names(mapdata) <- c("Bundesland", "geometry")
+
+# Abspeichern ------------------------------------------------------------------
+#saveRDS(mapdata, "data/mapdata.Rds")
