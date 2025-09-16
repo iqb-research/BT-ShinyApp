@@ -126,9 +126,47 @@ BTdata$est_print <- ifelse(
   BTdata$est_print 
 )
 
+
+# auch übersetzt ablegen ("it’s usually better to just load the 250 KB with all translations upfront. It keeps your app simpler, faster at runtime, and 250 KB is trivial in size")
+
+# Part II config übersetzen und abspeichern ------------------------------------
+source(system.file("config", "config.R", package = "BTShinyApp"))
+
+config_de <- config
+
+# JSON Übersetzung
+
+json_path <- system.file("extdata", "text_elements", "translation.json", package = "BTShinyApp")
+i18n <- shiny.i18n::Translator$new(translation_json_path = json_path)
+
+woerterbuch <- jsonlite::fromJSON(paste(readLines(json_path), collapse = ""), flatten = TRUE)
+woerterbuch <- setNames(woerterbuch$translation$en, woerterbuch$translation$de)
+
+# Translator setzen
+i18n$set_translation_language("en")
+
+# config Liste übersetzen
+config_en <- recode_nested_list(config, woerterbuch)
+
+config <- list("de" = config_de, "en" = config_en)
+
+# Abspeichern ------------------------------------------------------------------
+#saveRDS(config, "data/config.Rds")
+
+BTdata_de <- BTdata
+
+# Datensatz rekodieren
+BTdata_en <- BTdata %>%
+  # 1. alle Spalten übersetzen
+  mutate(across(c(cycle, fach, klassenstufe, kb, targetPop), ~ recode(.x, !!! woerterbuch))) %>%
+  # 2. 'fachKb' neu erstellen
+  mutate(fachKb = paste(fach, kb, sep = "-"))
+
+BTdata <- list("de" = BTdata_de, "en"=BTdata_en)
+
 # Abspeichern ------------------------------------------------------------------
 #saveRDS(BTdata, "data/BTdata_processed.Rds")
-rm(list = ls())
+
 
 
 
@@ -166,63 +204,61 @@ config <- list("de" = config_de, "en" = config_en)
 
 
 
+
+
+
+
+
+
+
 # UI Choices -------------------------------------------------------------------
 
 # Zyklen
-available_cycles <- unique(BTdata$cycle)[order(unique(BTdata$cycle))] # alle erhobenen Zyklen, Hotfix für Ordnung
-available_parameters <- unique(BTdata$parameter) # Parameter
-default_newest_cycle <- BTdata %>%
-  filter(year == max(BTdata$year)) %>% # Get rows for the most recent year
+available_cycles_de <- unique(BTdata_de$cycle)[order(unique(BTdata_de$cycle))] # alle erhobenen Zyklen, Hotfix für Ordnung
+available_cycles_en <- unique(BTdata_en$cycle)[order(unique(BTdata_en$cycle))] # alle erhobenen Zyklen, Hotfix für Ordnung
+available_parameters_de <- unique(BTdata_de$parameter) # Parameter
+available_parameters_en <- unique(BTdata_en$parameter) # Parameter
+
+default_newest_cycle_de <- BTdata_de %>%
+  filter(year == max(BTdata_de$year)) %>% # Get rows for the most recent year
+  distinct(cycle) %>%                  # Find the unique cycle(s) in that year
+  pull(cycle) %>%                      # Extract the cycle name(s) as a vector
+  .[1]
+default_newest_cycle_en <- BTdata_en %>%
+  filter(year == max(BTdata_en$year)) %>% # Get rows for the most recent year
   distinct(cycle) %>%                  # Find the unique cycle(s) in that year
   pull(cycle) %>%                      # Extract the cycle name(s) as a vector
   .[1]
 
 # alle im Datensatz enthaltenen Kombinationen der UI choices
-combinations <-
-  BTdata %>%
+combinations_de <-
+  BTdata_de %>%
+  distinct(cycle, fachKb, year, parameter, targetPop)
+combinations_en <-
+  BTdata_en %>%
   distinct(cycle, fachKb, year, parameter, targetPop)
 
+predefined_order_parameters_de <- names(config_de$parameter)
+predefined_order_parameters_en <- names(config_en$parameter)
 
-# Übersetzung ------------------------------------------------------------------
+names(predefined_order_parameters_de) <- config_de$parameter %>% map("label")
+names(predefined_order_parameters_en) <- config_en$parameter %>% map("label")
+
+predefined_order_targetpop_de <- config_de$targetPop
+predefined_order_targetpop_en <- config_en$targetPop
 
 
-# Funktionen zum Ordnen der Auswahlmöglichkeiten
-predefined_order_parameters <- names(config$parameter)
-names(predefined_order_parameters) <- config$parameter %>% map("label")
-predefined_order_targetpop <- config$targetPop
+available_cycles <- list("de" = available_cycles_de, "en" = available_cycles_en)
+available_parameters <- list("de" = available_parameters_de, "en" = available_parameters_en)
+default_newest_cycle <- list("de" = default_newest_cycle_de, "en" = default_newest_cycle_en)
+combinations <- list("de" = combinations_de, "en" = combinations_en)
+predefined_order_parameters <- list("de" = predefined_order_parameters_de, "en" = predefined_order_parameters_en)
+predefined_order_targetpop <- list("de" = predefined_order_targetpop_de, "en" = predefined_order_targetpop_en)
+
+save(available_cycles, available_parameters, default_newest_cycle, combinations, predefined_order_parameters, predefined_order_targetpop, file="data/uichoices.RData")
 
 
-# Datensatz rekodieren
-if(language == "en"){
-  BTdata <- BTdata %>%
-    # 1. alle Spalten übersetzen
-    mutate(across(c(cycle, fach, klassenstufe, kb, targetPop), ~ recode(.x, !!! woerterbuch))) %>%
-    # 2. 'fachKb' neu erstellen
-    mutate(fachKb = paste(fach, kb, sep = "-"))
-}
 
-# UI Choices übersetzen
-if(language == "en"){
-  combinations <- combinations %>%
-    mutate(
-      # 1. alle "einfachen" Spalten übersetzen
-      across(c(cycle, targetPop), ~ recode(.x, !!! woerterbuch)),
-      
-      # 2. 'fachKb' trennen, übersetzen und neu erstellen
-      fachKb = map_chr(fachKb, function(x) {
-        parts <- unlist(strsplit(x, "-"))
-        translated_parts <- recode(parts, !!! woerterbuch)
-        paste(translated_parts, collapse = "-")
-      })
-    )
-  
-  available_cycles <- recode(available_cycles, !!! woerterbuch)
-  available_parameters <- recode(available_parameters, !!! woerterbuch)
-}
-
-if(language == "en"){
-  default_newest_cycle <- recode(default_newest_cycle, !!! woerterbuch)
-}
 
 # Texte für die Infobuttons ----------------------------------------------------
 
@@ -238,13 +274,6 @@ infotexte_list <- setNames(
 
 
 
-
-
-
-
-
-
-
 ######################## Kartendaten auch ablegen
 
 map_path <- system.file("extdata", "map_data", package = "BTShinyApp")
@@ -254,3 +283,5 @@ names(mapdata) <- c("Bundesland", "geometry")
 
 # Abspeichern ------------------------------------------------------------------
 #saveRDS(mapdata, "data/mapdata.Rds")
+
+rm(list = ls())

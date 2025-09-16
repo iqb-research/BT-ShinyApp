@@ -47,6 +47,11 @@ BTdata <- readRDS(system.file("data", "BTdata_processed.Rds", package = "BTShiny
 # https://gadm.org/download_country.html
 mapdata <- readRDS(system.file("data", "mapdata.Rds", package = "BTShinyApp"))
 
+# Configs
+load(system.file("data", "uichoices.RData", package = "BTShinyApp"))
+
+# Infoboxen
+
 
 
 # UI ---------------------------------------------------------------------------
