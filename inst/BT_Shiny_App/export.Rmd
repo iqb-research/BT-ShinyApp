@@ -32,6 +32,11 @@ library(dplyr)
 library(gridExtra)
 library(grid)
 library(viridis)
+
+# Kartendaten für den PDF-Output
+# https://gadm.org/download_country.html
+mapdata <- readRDS(system.file("data", "mapdata.Rds", package = "BTShinyApp"))
+
 ```
 
 ```{r translation strings, echo = FALSE}

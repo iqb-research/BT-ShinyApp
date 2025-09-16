@@ -1,6 +1,3 @@
-# fix to keep it running while developing
-language <- "en"
-
 # Pakete -----------------------------------------------------------------------
 library(shiny)
 library(shinythemes)
@@ -40,17 +37,12 @@ library(BTShinyApp)
 # ... beinhaltet auch implizit die Reihenfolge der entsprechenden Einträge
 config <- readRDS(system.file("data", "config.Rds", package = "BTShinyApp"))
 
-# BT-Daten-- -------------------------------------------------------------------
+# BT-Daten ---------------------------------------------------------------------
 BTdata <- readRDS(system.file("data", "BTdata_processed.Rds", package = "BTShinyApp"))
 
-# Kartendaten für den PDF-Output
-# https://gadm.org/download_country.html
-mapdata <- readRDS(system.file("data", "mapdata.Rds", package = "BTShinyApp"))
-
-# Configs
+# Configs for UI ---------------------------------------------------------------
 load(system.file("data", "uichoices.RData", package = "BTShinyApp"))
 
-# Infoboxen
 
 
 
@@ -169,13 +161,14 @@ ui <- fluidPage(
                     # Input links 
                     div(
                       style = "flex-grow:1; min-width:0; padding-right:6px;",
-                      selectInput(
-                        inputId = "Zyklus",
-                        label = i18n$t("Erhebungsreihe"),
-                        choices = available_cycles,
-                        selected = default_newest_cycle,
-                        width = '100%'
-                      )
+                      # selectInput(
+                      #   inputId = "Zyklus",
+                      #   label = i18n$t("Erhebungsreihe"),
+                      #   choices = available_cycles,
+                      #   selected = default_newest_cycle,
+                      #   width = '100%'
+                      # )
+                      uiOutput("zyklus_ui")
                     ),
                     
                     # Button rechts 
@@ -378,7 +371,14 @@ server <- function(input, output, session) {
     }
   })
 
-  # Eingabevariablen auslesen und zwischenspeichern ----------------------------
+  # all solches überarbeiten... #################################################
+  output$zyklus_ui <- renderUI({
+    selectInput(
+      inputId = "Zyklus",
+      choices = available_cycles[[lang()]],
+      selected = NULL  # ggf. Default setzen
+    )
+  })
   
   # Zyklus (davon hängt ab, welche Eingabefelder dynamisch angezeigt werden)
   selectedZyklus <- reactive({

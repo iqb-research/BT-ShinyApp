@@ -255,20 +255,25 @@ combinations <- list("de" = combinations_de, "en" = combinations_en)
 predefined_order_parameters <- list("de" = predefined_order_parameters_de, "en" = predefined_order_parameters_en)
 predefined_order_targetpop <- list("de" = predefined_order_targetpop_de, "en" = predefined_order_targetpop_en)
 
-save(available_cycles, available_parameters, default_newest_cycle, combinations, predefined_order_parameters, predefined_order_targetpop, file="data/uichoices.RData")
-
-
-
 
 # Texte für die Infobuttons ----------------------------------------------------
 
 infotextfile <- system.file("extdata/text_elements/Infotexte.xlsx", package = "BTShinyApp")
 infotexte <- readxl::read_excel(infotextfile)
 
-infotexte_list <- setNames(
-  infotexte[[language]],
+infotexte_list_de <- setNames(
+  infotexte[["de"]],
   infotexte$chunk
 )
+infotexte_list_en <- setNames(
+  infotexte[["en"]],
+  infotexte$chunk
+)
+
+infotexte_list <- list("de" = infotexte_list_de, "en" = infotexte_list_en)
+
+
+#save(infotexte_list, available_cycles, available_parameters, default_newest_cycle, combinations, predefined_order_parameters, predefined_order_targetpop, file="data/uichoices.RData")
 
 
 
