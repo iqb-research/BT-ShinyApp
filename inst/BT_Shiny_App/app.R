@@ -1,3 +1,5 @@
+language <- "de"
+
 # Pakete -----------------------------------------------------------------------
 library(shiny)
 library(shinythemes)
@@ -30,12 +32,6 @@ library(BTShinyApp)
 
 # "data_preparation.R" muss neu ausgeführt werden, wenn Kartendaten neu, 
 # BT-Daten neu oder config/Übersetzung neu, sprich eines der Folgenden:
-
-# Konfigurationsliste ----------------------------------------------------------
-# --> jetzt ausgelagert nach data_preparation
-# ... wird von eatMap verarbeitet und beim PDF-Export für ggplot2 verwendet
-# ... beinhaltet auch implizit die Reihenfolge der entsprechenden Einträge
-config <- readRDS(system.file("data", "config.Rds", package = "BTShinyApp"))
 
 # BT-Daten ---------------------------------------------------------------------
 BTdata <- readRDS(system.file("data", "BTdata_processed.Rds", package = "BTShinyApp"))
@@ -284,26 +280,55 @@ ui <- fluidPage(
   ),
   
   # JavaScript für Infobutton-Popover
-  tags$script(HTML("
+  uiOutput("js_popovers")
   
-    // Alle Infobutton-IDs und ihr Inhalt aus infotexte_list
+)
+
+# Server -----------------------------------------------------------------------
+
+server <- function(input, output, session) {
   
-    // Popover-Inhalte definieren 
+  # lang auslesen
+  query <- reactive({
+    parseQueryString(session$clientData$url_search)
+  })
+  
+  lang <- reactive({
+    lng <- query()$lang
+    if (!is.null(lng) && lng %in% c("de", "en")) {
+      lng
+    } else {
+      "de"  
+    }
+  })
+
+  # all solches überarbeiten... #################################################
+  output$zyklus_ui <- renderUI({
+    selectInput(
+      inputId = "Zyklus",
+      choices = available_cycles[[lang()]],
+      selected = default_newest_cycle[[lang()]],
+      width = '100%'
+    )
+  })
+  
+  output$js_popovers <- renderUI({
+    tags$script(HTML(sprintf("
     var popoverContents = {
-      '#infobutton_zyklus': `", infotexte_list[["Erhebungsreihe"]], "`,
-      '#infobutton_kompetenzbereich': `", infotexte_list[["Kompetenzbereich"]], "`,
-      '#infobutton_jahr': `", infotexte_list[["Jahr"]], "`,
-      '#infobutton_zielpopulation': `", infotexte_list[["Zielpopulation"]], "`,
-      '#infobutton_kennwert': `", infotexte_list[["Kennwert"]], "`
+      '#infobutton_zyklus': `", infotexte_list[[lang()]][["Erhebungsreihe"]], "`,
+      '#infobutton_kompetenzbereich': `", infotexte_list[[lang()]][["Kompetenzbereich"]], "`,
+      '#infobutton_jahr': `", infotexte_list[[lang()]][["Jahr"]], "`,
+      '#infobutton_zielpopulation': `", infotexte_list[[lang()]][["Zielpopulation"]], "`,
+      '#infobutton_kennwert': `", infotexte_list[[lang()]][["Kennwert"]], "`
     };
     
     // Popover-Titel definieren 
     var popoverTitles = {
-      '#infobutton_zyklus': '", ifelse(language == "en", recode("Erhebungsreihe", !!!woerterbuch), "Erhebungsreihe"), "',
-      '#infobutton_kompetenzbereich': '", ifelse(language == "en", recode("Kompetenzbereich", !!!woerterbuch), "Kompetenzbereich"), "',
-      '#infobutton_jahr': '", ifelse(language == "en", recode("Jahr", !!!woerterbuch), "Jahr"), "',
-      '#infobutton_zielpopulation': '", ifelse(language == "en", recode("Zielpopulation", !!!woerterbuch), "Zielpopulation"), "',
-      '#infobutton_kennwert': '", ifelse(language == "en", recode("Kennwert", !!!woerterbuch), "Kennwert"), "'
+      '#infobutton_zyklus': '", ifelse(lang() == "en", recode("Erhebungsreihe", !!!woerterbuch), "Erhebungsreihe"), "',
+      '#infobutton_kompetenzbereich': '", ifelse(lang() == "en", recode("Kompetenzbereich", !!!woerterbuch), "Kompetenzbereich"), "',
+      '#infobutton_jahr': '", ifelse(lang() == "en", recode("Jahr", !!!woerterbuch), "Jahr"), "',
+      '#infobutton_zielpopulation': '", ifelse(lang() == "en", recode("Zielpopulation", !!!woerterbuch), "Zielpopulation"), "',
+      '#infobutton_kennwert': '", ifelse(lang() == "en", recode("Kennwert", !!!woerterbuch), "Kennwert"), "'
     };
 
       
@@ -350,36 +375,10 @@ ui <- fluidPage(
         });
       }
     });
-  "))
-)
-
-# Server -----------------------------------------------------------------------
-
-server <- function(input, output, session) {
-  
-  # lang auslesen
-  query <- reactive({
-    parseQueryString(session$clientData$url_search)
+  ")))
   })
   
-  lang <- reactive({
-    lng <- query()$lang
-    if (!is.null(lng) && lng %in% c("de", "en")) {
-      lng
-    } else {
-      "de"  
-    }
-  })
 
-  # all solches überarbeiten... #################################################
-  output$zyklus_ui <- renderUI({
-    selectInput(
-      inputId = "Zyklus",
-      choices = available_cycles[[lang()]],
-      selected = NULL  # ggf. Default setzen
-    )
-  })
-  
   # Zyklus (davon hängt ab, welche Eingabefelder dynamisch angezeigt werden)
   selectedZyklus <- reactive({
     input$Zyklus
@@ -408,7 +407,7 @@ server <- function(input, output, session) {
   
   # Dynamisches Auswahlpanel für Kompetenzbereiche generieren ------------------
   output$dynamicPanel_kompetenzbereiche <- renderUI({
-    kb_current <- config$fachKb[[selectedZyklus()]]
+    kb_current <- config[[lang()]]$fachKb[[selectedZyklus()]]
     make_radioGroupContainer(kb_current)
   })
   
@@ -422,17 +421,17 @@ server <- function(input, output, session) {
   observe({
     req(selectedKompetenzbereich())
     
-    selected_combinations <- combinations[combinations$cycle == selectedZyklus() &
-                                            combinations$fachKb == selectedKompetenzbereich() , ]
+    selected_combinations <- combinations[[lang()]][combinations[[lang()]]$cycle == selectedZyklus() &
+                                            combinations[[lang()]]$fachKb == selectedKompetenzbereich() , ]
     
-    zielpopulationen <- order_targetpop(unique(selected_combinations$targetPop), predefined_order_targetpop)
+    zielpopulationen <- order_targetpop(unique(selected_combinations[[lang()]]$targetPop), predefined_order_targetpop[[lang()]])
     # ...abhängig von Zyklus und Fach-Kompetenzbereich
     
-    kennwerte <- order_parameters(unique(selected_combinations[selected_combinations$targetPop == selectedZielpopulation() , ]$parameter), predefined_order_parameters)
+    kennwerte <- order_parameters(unique(selected_combinations[[lang()]][selected_combinations[[lang()]]$targetPop == selectedZielpopulation() , ]$parameter), predefined_order_parameters[[lang()]])
     # ...abhängig von Zyklus, Fach-Kompetenzbereich, und Zielpopulation
     
-    jahre <- unique(selected_combinations[selected_combinations$parameter == selectedKennwert() &
-                                            selected_combinations$targetPop == selectedZielpopulation(), ]$year)
+    jahre <- unique(selected_combinations[[lang()]][selected_combinations[[lang()]]$parameter == selectedKennwert() &
+                                            selected_combinations[[lang()]]$targetPop == selectedZielpopulation(), ]$year)
     # ...abhängig von Zyklus, Fach-Kompetenzbereich, Zielpopulation, und Kennwert
     
     updateSliderTextInput(session,

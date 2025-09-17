@@ -165,7 +165,7 @@ BTdata_en <- BTdata %>%
 BTdata <- list("de" = BTdata_de, "en"=BTdata_en)
 
 # Abspeichern ------------------------------------------------------------------
-#saveRDS(BTdata, "data/BTdata_processed.Rds")
+saveRDS(BTdata, "data/BTdata_processed.Rds")
 
 
 
@@ -201,14 +201,7 @@ config <- list("de" = config_de, "en" = config_en)
 
 # Abspeichern ------------------------------------------------------------------
 #saveRDS(config, "data/config.Rds")
-
-
-
-
-
-
-
-
+# mache auch mit rein bei den anderen Configs, s.u.
 
 
 # UI Choices -------------------------------------------------------------------
@@ -273,7 +266,7 @@ infotexte_list_en <- setNames(
 infotexte_list <- list("de" = infotexte_list_de, "en" = infotexte_list_en)
 
 
-#save(infotexte_list, available_cycles, available_parameters, default_newest_cycle, combinations, predefined_order_parameters, predefined_order_targetpop, file="data/uichoices.RData")
+save(config, infotexte_list, available_cycles, available_parameters, default_newest_cycle, combinations, predefined_order_parameters, predefined_order_targetpop, woerterbuch, file="data/uichoices.RData")
 
 
 
@@ -287,6 +280,6 @@ mapdata <- mapdata[, c("NAME_1", "geometry")]
 names(mapdata) <- c("Bundesland", "geometry")
 
 # Abspeichern ------------------------------------------------------------------
-#saveRDS(mapdata, "data/mapdata.Rds")
+saveRDS(mapdata, "data/mapdata.Rds")
 
 rm(list = ls())
