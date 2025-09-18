@@ -1,5 +1,3 @@
-language <- "de"
-
 # Pakete -----------------------------------------------------------------------
 library(shiny)
 library(shinythemes)
@@ -25,7 +23,7 @@ library(bslib)
 library(eatMap)
 
 # if (!requireNamespace("BTShinyApp", quietly = TRUE)) {
-#   remotes::install_github("iqb-research/BT-ShinyApp@v0.1.9")
+#   remotes::install_github("iqb-research/BT-ShinyApp@v2.0.0")
 # }
 # library(BTShinyApp)
 
@@ -39,7 +37,8 @@ BTdata <- readRDS(system.file("data", "BTdata_processed.Rds", package = "BTShiny
 # Configs for UI ---------------------------------------------------------------
 load(system.file("data", "uichoices.RData", package = "BTShinyApp"))
 
-
+# Map data for PDF output
+mapdata <- readRDS(system.file("data", "mapdata.Rds", package = "BTShinyApp"))
 
 
 # UI ---------------------------------------------------------------------------
@@ -157,13 +156,6 @@ ui <- fluidPage(
                     # Input links 
                     div(
                       style = "flex-grow:1; min-width:0; padding-right:6px;",
-                      # selectInput(
-                      #   inputId = "Zyklus",
-                      #   label = i18n$t("Erhebungsreihe"),
-                      #   choices = available_cycles,
-                      #   selected = default_newest_cycle,
-                      #   width = '100%'
-                      # )
                       uiOutput("zyklus_ui")
                     ),
                     
@@ -428,7 +420,7 @@ server <- function(input, output, session) {
   output$dynamicPanel_JahrZielpopulationKennwert <- renderUI({
     req(selectedZyklus())
     make_YearPopulationParameter(selectedZyklus(), config[[lang()]], combinations[[lang()]], 
-            lang(), predefined_order_parameters[[lang()]], predefined_order_targetpop[[lang()]])
+            lang(), predefined_order_parameters[[lang()]], predefined_order_targetpop[[lang()]], i18n)
   })
   
   
@@ -439,14 +431,14 @@ server <- function(input, output, session) {
     selected_combinations <- combinations[[lang()]][combinations[[lang()]]$cycle == selectedZyklus() &
                                             combinations[[lang()]]$fachKb == selectedKompetenzbereich() , ]
     
-    zielpopulationen <- order_targetpop(unique(selected_combinations[[lang()]]$targetPop), predefined_order_targetpop[[lang()]])
+    zielpopulationen <- order_targetpop(unique(selected_combinations$targetPop), predefined_order_targetpop[[lang()]])
     # ...abhängig von Zyklus und Fach-Kompetenzbereich
     
-    kennwerte <- order_parameters(unique(selected_combinations[[lang()]][selected_combinations[[lang()]]$targetPop == selectedZielpopulation() , ]$parameter), predefined_order_parameters[[lang()]])
+    kennwerte <- order_parameters(unique(selected_combinations[selected_combinations$targetPop == selectedZielpopulation() , ]$parameter), predefined_order_parameters[[lang()]])
     # ...abhängig von Zyklus, Fach-Kompetenzbereich, und Zielpopulation
     
-    jahre <- unique(selected_combinations[[lang()]][selected_combinations[[lang()]]$parameter == selectedKennwert() &
-                                            selected_combinations[[lang()]]$targetPop == selectedZielpopulation(), ]$year)
+    jahre <- unique(selected_combinations[selected_combinations$parameter == selectedKennwert() &
+                                            selected_combinations$targetPop == selectedZielpopulation(), ]$year)
     # ...abhängig von Zyklus, Fach-Kompetenzbereich, Zielpopulation, und Kennwert
     
     updateSliderTextInput(session,

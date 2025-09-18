@@ -15,7 +15,7 @@ recode_nested_list <- function(my_list, recode_rules) {
 
 
 # available choices configuration helper:
-make_YearPopulationParameter <- function(cycle_current, config, combinations, language, predefined_order_parameters, predefined_order_targetpop) {
+make_YearPopulationParameter <- function(cycle_current, config, combinations, language, predefined_order_parameters, predefined_order_targetpop, i18n) {
   # 1. Kb separieren
   fachKb1 <- config$fachKb[[cycle_current]][1]
   fach1 <- names(fachKb1)
@@ -24,7 +24,7 @@ make_YearPopulationParameter <- function(cycle_current, config, combinations, la
   selected_combinations <- combinations[combinations$cycle == cycle_current &
                                           combinations$fachKb == fachKb_default, ]
   
-  targetPop_default <- ifelse(language == "en", "All", "alle")
+  targetPop_default <- i18n$t("alle")
   parameter_default <- "mean"
   
   years <- sort(unique(selected_combinations[selected_combinations$targetPop == targetPop_default &
