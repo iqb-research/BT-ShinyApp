@@ -24,10 +24,10 @@ library(stringr)
 library(bslib)
 library(eatMap)
 
-if (!requireNamespace("BTShinyApp", quietly = TRUE)) {
-  remotes::install_github("iqb-research/BT-ShinyApp@v0.1.9")
-}
-library(BTShinyApp)
+# if (!requireNamespace("BTShinyApp", quietly = TRUE)) {
+#   remotes::install_github("iqb-research/BT-ShinyApp@v0.1.9")
+# }
+# library(BTShinyApp)
 
 
 # "data_preparation.R" muss neu ausgeführt werden, wenn Kartendaten neu, 
@@ -302,10 +302,15 @@ server <- function(input, output, session) {
     }
   })
 
+  observe({
+    i18n$set_translation_language(lang())
+  })
+
   # all solches überarbeiten... #################################################
   output$zyklus_ui <- renderUI({
     selectInput(
       inputId = "Zyklus",
+      label = i18n$t("Erhebungsreihe"),
       choices = available_cycles[[lang()]],
       selected = default_newest_cycle[[lang()]],
       width = '100%'
@@ -315,23 +320,22 @@ server <- function(input, output, session) {
   output$js_popovers <- renderUI({
     tags$script(HTML(sprintf("
     var popoverContents = {
-      '#infobutton_zyklus': `", infotexte_list[[lang()]][["Erhebungsreihe"]], "`,
-      '#infobutton_kompetenzbereich': `", infotexte_list[[lang()]][["Kompetenzbereich"]], "`,
-      '#infobutton_jahr': `", infotexte_list[[lang()]][["Jahr"]], "`,
-      '#infobutton_zielpopulation': `", infotexte_list[[lang()]][["Zielpopulation"]], "`,
-      '#infobutton_kennwert': `", infotexte_list[[lang()]][["Kennwert"]], "`
+      '#infobutton_zyklus': `%s`,
+      '#infobutton_kompetenzbereich': `%s`,
+      '#infobutton_jahr': `%s`,
+      '#infobutton_zielpopulation': `%s`,
+      '#infobutton_kennwert': `%s`
     };
     
     // Popover-Titel definieren 
     var popoverTitles = {
-      '#infobutton_zyklus': '", ifelse(lang() == "en", recode("Erhebungsreihe", !!!woerterbuch), "Erhebungsreihe"), "',
-      '#infobutton_kompetenzbereich': '", ifelse(lang() == "en", recode("Kompetenzbereich", !!!woerterbuch), "Kompetenzbereich"), "',
-      '#infobutton_jahr': '", ifelse(lang() == "en", recode("Jahr", !!!woerterbuch), "Jahr"), "',
-      '#infobutton_zielpopulation': '", ifelse(lang() == "en", recode("Zielpopulation", !!!woerterbuch), "Zielpopulation"), "',
-      '#infobutton_kennwert': '", ifelse(lang() == "en", recode("Kennwert", !!!woerterbuch), "Kennwert"), "'
+      '#infobutton_zyklus': '%s',
+      '#infobutton_kompetenzbereich': '%s',
+      '#infobutton_jahr': '%s',
+      '#infobutton_zielpopulation': '%s',
+      '#infobutton_kennwert': '%s'
     };
 
-      
     // Array mit allen Infobutton-IDs
     var buttons = ['#infobutton_zyklus', '#infobutton_kompetenzbereich',
                    '#infobutton_jahr', '#infobutton_zielpopulation', '#infobutton_kennwert'];
@@ -339,13 +343,13 @@ server <- function(input, output, session) {
     // Popovers initialisieren
     buttons.forEach(function(btnId) {
       var btn = document.querySelector(btnId);
-      var placement = window.innerWidth <= 992 ? 'bottom' : 'right'; // für kleine Geräte soll der Text unter dem Button auftauchen
+      var placement = window.innerWidth <= 992 ? 'bottom' : 'right';
       new bootstrap.Popover(btn, {
         html: true,
         trigger: 'manual',
         container: 'body',
         placement: placement,
-        fallbackPlacements: [], // keine Alternativen für das Placement zulassen
+        fallbackPlacements: [],
         boundary: 'viewport',
         title: popoverTitles[btnId],
         content: popoverContents[btnId]
@@ -353,15 +357,12 @@ server <- function(input, output, session) {
   
       // Click Event
       btn.addEventListener('click', function() {
-        // alle anderen Popovers schließen
         buttons.forEach(function(otherId) {
           if(otherId !== btnId) {
             var otherBtn = document.querySelector(otherId);
             bootstrap.Popover.getInstance(otherBtn)?.hide();
           }
         });
-  
-        // aktuellen Popover toggeln
         var pop = bootstrap.Popover.getInstance(btn);
         pop.toggle();
       });
@@ -375,7 +376,18 @@ server <- function(input, output, session) {
         });
       }
     });
-  ")))
+  ",
+    infotexte_list[[lang()]][["Erhebungsreihe"]],
+    infotexte_list[[lang()]][["Kompetenzbereich"]],
+    infotexte_list[[lang()]][["Jahr"]],
+    infotexte_list[[lang()]][["Zielpopulation"]],
+    infotexte_list[[lang()]][["Kennwert"]],
+    ifelse(lang() == "en", recode("Erhebungsreihe", !!!woerterbuch), "Erhebungsreihe"),
+    ifelse(lang() == "en", recode("Kompetenzbereich", !!!woerterbuch), "Kompetenzbereich"),
+    ifelse(lang() == "en", recode("Jahr", !!!woerterbuch), "Jahr"),
+    ifelse(lang() == "en", recode("Zielpopulation", !!!woerterbuch), "Zielpopulation"),
+    ifelse(lang() == "en", recode("Kennwert", !!!woerterbuch), "Kennwert")
+    )))
   })
   
 
@@ -407,20 +419,23 @@ server <- function(input, output, session) {
   
   # Dynamisches Auswahlpanel für Kompetenzbereiche generieren ------------------
   output$dynamicPanel_kompetenzbereiche <- renderUI({
+    req(selectedZyklus())
     kb_current <- config[[lang()]]$fachKb[[selectedZyklus()]]
     make_radioGroupContainer(kb_current)
   })
   
   # Dynamisches Auswahlpanel für Jahr, Kennwert $ Zielpopulation ---------------
   output$dynamicPanel_JahrZielpopulationKennwert <- renderUI({
-    make_YearPopulationParameter(selectedZyklus())
+    req(selectedZyklus())
+    make_YearPopulationParameter(selectedZyklus(), config[[lang()]], combinations[[lang()]], 
+            lang(), predefined_order_parameters[[lang()]], predefined_order_targetpop[[lang()]])
   })
   
   
   # Jahr, Zielpopulation & Kennwert jeweils voneinander abhängig ---------------
   observe({
     req(selectedKompetenzbereich())
-    
+  
     selected_combinations <- combinations[[lang()]][combinations[[lang()]]$cycle == selectedZyklus() &
                                             combinations[[lang()]]$fachKb == selectedKompetenzbereich() , ]
     
@@ -462,35 +477,42 @@ server <- function(input, output, session) {
   
   data_selected <- reactive({
     req(selectedKennwert())
-    data_selected <- BTdata[ BTdata$cycle == selectedZyklus() &
-                               BTdata$parameter == selectedKennwert() &
-                               BTdata$year == selectedJahr() &
-                               BTdata$fachKb == selectedKompetenzbereich() &
-                               BTdata$targetPop == selectedZielpopulation(), ]
+    data_selected <- BTdata[[lang()]][ BTdata[[lang()]]$cycle == selectedZyklus() &
+                               BTdata[[lang()]]$parameter == selectedKennwert() &
+                               BTdata[[lang()]]$year == selectedJahr() &
+                               BTdata[[lang()]]$fachKb == selectedKompetenzbereich() &
+                               BTdata[[lang()]]$targetPop == selectedZielpopulation(), ]
     data_selected
   })
   
   # Wähle Minimum und Maximum für die Skala
-  config_parameter <- eventReactive(selectedKennwert(), config$parameter[[selectedKennwert()]])
+  config_parameter <- eventReactive(selectedKennwert(), config[[lang()]]$parameter[[selectedKennwert()]])
   
   # Deutschlandkarte -----------------------------------------------------------
   
   output$deutschlandkarte <- renderEatMap({
-    req(data_selected(), selectedKompetenzbereich())
+    req(data_selected(), selectedKompetenzbereich(), lang())
   
     #totaler Mist-Hotfix an der falschen Stelle  
-    if(any(data_selected()$fach %in% "Französisch")) config$total_label <- "Gesamt"  
-    if(any(data_selected()$fach %in% "French")) config$total_label <- "Total"  
+    if(any(data_selected()$fach %in% "Französisch")) config[[lang()]]$total_label <- "Gesamt"  
+    if(any(data_selected()$fach %in% "French")) config[[lang()]]$total_label <- "Total"  
     
     data_selected() %>%
-      eatMap(data = ., config = config)
+      eatMap(data = ., config = config[[lang()]])
   })
   
   # PDF Export -----------------------------------------------------------------
   
   output$report <- downloadHandler(
-    
-    filename = ifelse(lang() == "de", "IQB_Bildungstrendkarte.pdf", "IQB_Trends_in_Student_Achievement_Map.pdf"),
+
+    filename = function() {
+      if (lang() == "de") {
+        "IQB_Bildungstrendkarte.pdf"
+      } else {
+        "IQB_Trends_in_Student_Achievement_Map.pdf"
+      }     
+      
+    },
     content = function(file) {
       
       # Lade-Anzeige (Feedback) während Download vorbereitet wird
@@ -514,7 +536,7 @@ server <- function(input, output, session) {
                      reverse = config_parameter()$reverse,
                      legendentitel = config_parameter()$title,
                      kennwert = input$Kennwert,
-                     na_label = config$na_label,
+                     na_label = config[[lang()]]$na_label,
                      quelle = sources[sources$year == selectedJahr(), ]$source,
                      language = lang(),
                      woerterbuch = woerterbuch)

@@ -15,7 +15,7 @@ recode_nested_list <- function(my_list, recode_rules) {
 
 
 # available choices configuration helper:
-make_YearPopulationParameter <- function(cycle_current) {
+make_YearPopulationParameter <- function(cycle_current, config, combinations, language, predefined_order_parameters, predefined_order_targetpop) {
   # 1. Kb separieren
   fachKb1 <- config$fachKb[[cycle_current]][1]
   fach1 <- names(fachKb1)
@@ -34,10 +34,10 @@ make_YearPopulationParameter <- function(cycle_current) {
   year_default <- max(years)
   
   parameters <- order_parameters(unique(selected_combinations[selected_combinations$targetPop == targetPop_default &
-                                                                selected_combinations$year == year_default, ]$parameter))
+                                                                selected_combinations$year == year_default, ]$parameter), predefined_order_parameters)
   
   targetPops <- order_targetpop(unique(selected_combinations[selected_combinations$year == year_default &
-                                                               selected_combinations$parameter == parameter_default, ]$targetPop))
+                                                               selected_combinations$parameter == parameter_default, ]$targetPop), predefined_order_targetpop)
   
   div(
     sliderTextInput(inputId = "Jahr",
