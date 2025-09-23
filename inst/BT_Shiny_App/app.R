@@ -1,9 +1,3 @@
-# Sprache der App --------------------------------------------------------------
-# "de" für Deutsch, "en" für Englisch
-language <- "de"
-
-if(language != "de" & language != "en") stop("Language selection must be \"de\" or \"en\".")
-
 # Pakete -----------------------------------------------------------------------
 library(shiny)
 library(shinythemes)
@@ -25,244 +19,27 @@ library(rmarkdown)
 library(knitr)
 library(tinytex)
 library(stringr)
-
 library(bslib)
-
 library(eatMap)
 
-if (!requireNamespace("BTShinyApp", quietly = TRUE)) {
-  remotes::install_github("iqb-research/BT-ShinyApp@v0.1.7")
-}
-library(BTShinyApp)
+# if (!requireNamespace("BTShinyApp", quietly = TRUE)) {
+#   remotes::install_github("iqb-research/BT-ShinyApp@v2.0.0")
+# }
+# library(BTShinyApp)
 
-# Konfigurationsliste ----------------------------------------------------------
-# ... wird von eatMap verarbeitet und beim PDF-Export für ggplot2 verwendet
-# ... beinhaltet auch implizit die Reihenfolge der entsprechenden Einträge
-source(system.file("config", "config.R", package = "BTShinyApp"))
 
-# Datensätze -------------------------------------------------------------------
-# Rohdaten: "data/allDat.RData"
-# Die Datenaufbereitung erfolgt in einem separaten Skript: "data_preparation.R".
-# "data_preparation.R" muss neu ausgeführt werden, wenn "data/allDat.RData" geupdated wird.
+# "data_preparation.R" muss neu ausgeführt werden, wenn Kartendaten neu, 
+# BT-Daten neu oder config/Übersetzung neu, sprich eines der Folgenden:
+
+# BT-Daten ---------------------------------------------------------------------
 BTdata <- readRDS(system.file("data", "BTdata_processed.Rds", package = "BTShinyApp"))
 
-# Kartendaten
-# https://gadm.org/download_country.html
-map_path <- system.file("extdata", "map_data", package = "BTShinyApp")
-mapdata <- sf::st_read(dsn = map_path, layer = "gadm41_DEU_1")
-mapdata <- mapdata[, c("NAME_1", "geometry")]
-names(mapdata) <- c("Bundesland", "geometry")
+# Configs for UI ---------------------------------------------------------------
+load(system.file("data", "ui_variables.RData", package = "BTShinyApp"))
 
-# BT Daten und Kartendaten werden erst zusammengefügt, nachdem der BT Datensatz
-# im Server selektiert wurde, da es sonst zu Fehlern mit den Geodaten kommt
+# Map data for PDF output
+mapdata <- readRDS(system.file("data", "mapdata.Rds", package = "BTShinyApp"))
 
-
-# UI Choices -------------------------------------------------------------------
-
-# Zyklen
-available_cycles <- unique(BTdata$cycle)[order(unique(BTdata$cycle))] # alle erhobenen Zyklen, Hotfix für Ordnung
-available_parameters <- unique(BTdata$parameter) # Parameter
-default_newest_cycle <- BTdata %>%
-  filter(year == max(BTdata$year)) %>% # Get rows for the most recent year
-  distinct(cycle) %>%                  # Find the unique cycle(s) in that year
-  pull(cycle) %>%                      # Extract the cycle name(s) as a vector
-  .[1]
-
-# alle im Datensatz enthaltenen Kombinationen der UI choices
-combinations <-
-  BTdata %>%
-  distinct(cycle, fachKb, year, parameter, targetPop)
-
-# Vorbereitung der grouped radio buttons ---------------------------------------
-
-radioSubgroup <- function(inputId, parentId, label, choices, selected, inline = FALSE) {
-  values <- paste0(parentId, "-", choices)
-  choices <- setNames(values, choices)
-  
-  div(class = "radio-group-container",
-      tags$label(class = "radio-group-label", label),  # Überschrift fett
-      radioButtons(inputId, NULL, choices, selected, inline = inline)
-  )
-}
-
-radioGroupContainer <- function(inputId, ...) {
-  class <- "form-group shiny-input-radiogroup shiny-input-container"
-  div(id = inputId, class = class, ...)
-}
-
-make_radioSubgroup <- function(kb_current, subject, n_subject) {
-  selected_choice = character(0)
-  # Treat first Kb differently
-  if (n_subject == 1) {
-    subject1 <- names(kb_current)[1]
-    kb1 <- kb_current[[subject1]][1]
-    
-    selected_choice <- str_glue("{subject1}-{kb1}")
-  }
-  
-  column(
-    12,
-    radioSubgroup(
-      inputId = "fachKb",
-      parentId = subject,
-      label = str_glue("{subject}:"),
-      choices = kb_current[[subject]],
-      selected = selected_choice
-    )
-  )
-}
-
-make_radioGroupContainer <- function(kb_current) {
-  radioGroupContainer("fachKb",
-                      fluidRow(
-                        # Uses an indexed loop (arguments are current entry (like with any loop) and
-                        # its index (to check for first subject to log on cycle change)
-                        imap(names(kb_current), function(x, i) {
-                          make_radioSubgroup(kb_current, x, i)}
-                        )
-                      ))
-}
-
-# cycle_current <- "9. Klasse: Mathe/Naturwissenschaften"
-make_YearPopulationParameter <- function(cycle_current) {
-  # 1. Kb separieren
-  fachKb1 <- config$fachKb[[cycle_current]][1]
-  fach1 <- names(fachKb1)
-  fachKb_default <- str_glue("{fach1}-{fachKb1[[1]][1]}")
-  
-  selected_combinations <- combinations[combinations$cycle == cycle_current &
-                                          combinations$fachKb == fachKb_default, ]
-  
-  targetPop_default <- ifelse(language == "en", "All", "alle")
-  parameter_default <- "mean"
-  
-  years <- sort(unique(selected_combinations[selected_combinations$targetPop == targetPop_default &
-                                               selected_combinations$parameter == parameter_default, ]$year))
-  
-  # Darüber sollte immer der aktuellste BT angesteuert werden
-  year_default <- max(years)
-  
-  parameters <- order_parameters(unique(selected_combinations[selected_combinations$targetPop == targetPop_default &
-                                                                selected_combinations$year == year_default, ]$parameter))
-  
-  targetPops <- order_targetpop(unique(selected_combinations[selected_combinations$year == year_default &
-                                                               selected_combinations$parameter == parameter_default, ]$targetPop))
-  
-  div(
-    sliderTextInput(inputId = "Jahr",
-                    label = i18n$t("Jahr"),
-                    grid = TRUE,
-                    choices = years,
-                    selected = year_default,
-                    hide_min_max = TRUE,
-                    width='75%'),
-    
-    selectInput(
-      inputId = "Zielpopulation",
-      label = i18n$t("Zielpopulation"),
-      choices = targetPops,
-      selected = targetPop_default,
-      width = '95%'
-    ),
-    
-    selectInput(
-      inputId = "Kennwert",
-      label = i18n$t("Kennwert"),
-      choices = parameters,
-      selected = parameter_default,
-      width = '95%'
-    )
-  )
-}
-
-# Übersetzung ------------------------------------------------------------------
-
-# JSON Übersetzung
-
-json_path <- system.file("extdata", "text_elements", "translation.json", package = "BTShinyApp")
-i18n <- shiny.i18n::Translator$new(translation_json_path = json_path)
-
-woerterbuch <- jsonlite::fromJSON(paste(readLines(json_path), collapse = ""), flatten = TRUE)
-woerterbuch <- setNames(woerterbuch$translation$en, woerterbuch$translation$de)
-
-# Translator setzen
-i18n$set_translation_language(language)
-
-
-recode_nested_list <- function(my_list, recode_rules) {
-  names(my_list) <- recode(names(my_list), !!!recode_rules, .default = names(my_list))
-  map(my_list, function(x) { # map() = Apply a function to each element of a vector
-    if (is.list(x)) {
-      recode_nested_list(x, recode_rules)  # rekursiv alle Listen durchgehen
-    } else if (is.character(x)) {
-      recode(x, !!! recode_rules)  # einzelne Elemente rekodieren
-    } else {
-      x  # alles was kein character ist in Ruhe lassen
-    }
-  })
-}
-
-# config Liste übersetzen
-if(language == "en"){
-  config <- recode_nested_list(config, woerterbuch)
-}
-
-# Funktionen zum Ordnen der Auswahlmöglichkeiten
-predefined_order_parameters <- names(config$parameter)
-names(predefined_order_parameters) <- config$parameter %>% map("label")
-predefined_order_targetpop <- config$targetPop
-
-order_parameters <- function(params) {
-  ordered_parameters <- predefined_order_parameters[which(predefined_order_parameters %in% params)]
-}
-
-order_targetpop <- function(targetpops) {
-  predefined_order_targetpop[which(predefined_order_targetpop %in% targetpops)]
-}
-
-
-
-# Datensatz rekodieren
-if(language == "en"){
-  BTdata <- BTdata %>%
-    # 1. alle Spalten übersetzen
-    mutate(across(c(cycle, fach, klassenstufe, kb, targetPop), ~ recode(.x, !!! woerterbuch))) %>%
-    # 2. 'fachKb' neu erstellen
-    mutate(fachKb = paste(fach, kb, sep = "-"))
-}
-
-# UI Choices übersetzen
-if(language == "en"){
-  combinations <- combinations %>%
-    mutate(
-      # 1. alle "einfachen" Spalten übersetzen
-      across(c(cycle, targetPop), ~ recode(.x, !!! woerterbuch)),
-      
-      # 2. 'fachKb' trennen, übersetzen und neu erstellen
-      fachKb = map_chr(fachKb, function(x) {
-        parts <- unlist(strsplit(x, "-"))
-        translated_parts <- recode(parts, !!! woerterbuch)
-        paste(translated_parts, collapse = "-")
-      })
-    )
-  
-  available_cycles <- recode(available_cycles, !!! woerterbuch)
-  available_parameters <- recode(available_parameters, !!! woerterbuch)
-}
-
-if(language == "en"){
-  default_newest_cycle <- recode(default_newest_cycle, !!! woerterbuch)
-}
-
-# Texte für die Infobuttons ----------------------------------------------------
-
-infotextfile <- system.file("extdata/text_elements/Infotexte.xlsx", package = "BTShinyApp")
-infotexte <- readxl::read_excel(infotextfile)
-
-infotexte_list <- setNames(
-  infotexte[[language]],
-  infotexte$chunk
-)
 
 # UI ---------------------------------------------------------------------------
 
@@ -379,13 +156,7 @@ ui <- fluidPage(
                     # Input links 
                     div(
                       style = "flex-grow:1; min-width:0; padding-right:6px;",
-                      selectInput(
-                        inputId = "Zyklus",
-                        label = i18n$t("Erhebungsreihe"),
-                        choices = available_cycles,
-                        selected = default_newest_cycle,
-                        width = '100%'
-                      )
+                      uiOutput("zyklus_ui")
                     ),
                     
                     # Button rechts 
@@ -501,29 +272,62 @@ ui <- fluidPage(
   ),
   
   # JavaScript für Infobutton-Popover
-  tags$script(HTML("
+  uiOutput("js_popovers")
   
-    // Alle Infobutton-IDs und ihr Inhalt aus infotexte_list
+)
+
+# Server -----------------------------------------------------------------------
+
+server <- function(input, output, session) {
   
-    // Popover-Inhalte definieren 
+  # lang auslesen
+  query <- reactive({
+    parseQueryString(session$clientData$url_search)
+  })
+  
+  lang <- reactive({
+    lng <- query()$lang
+    if (!is.null(lng) && lng %in% c("de", "en")) {
+      lng
+    } else {
+      "de"  
+    }
+  })
+
+  observe({
+    i18n$set_translation_language(lang())
+  })
+
+  # all solches überarbeiten... #################################################
+  output$zyklus_ui <- renderUI({
+    selectInput(
+      inputId = "Zyklus",
+      label = i18n$t("Erhebungsreihe"),
+      choices = available_cycles[[lang()]],
+      selected = default_newest_cycle[[lang()]],
+      width = '100%'
+    )
+  })
+  
+  output$js_popovers <- renderUI({
+    tags$script(HTML(sprintf("
     var popoverContents = {
-      '#infobutton_zyklus': `", infotexte_list[["Erhebungsreihe"]], "`,
-      '#infobutton_kompetenzbereich': `", infotexte_list[["Kompetenzbereich"]], "`,
-      '#infobutton_jahr': `", infotexte_list[["Jahr"]], "`,
-      '#infobutton_zielpopulation': `", infotexte_list[["Zielpopulation"]], "`,
-      '#infobutton_kennwert': `", infotexte_list[["Kennwert"]], "`
+      '#infobutton_zyklus': `%s`,
+      '#infobutton_kompetenzbereich': `%s`,
+      '#infobutton_jahr': `%s`,
+      '#infobutton_zielpopulation': `%s`,
+      '#infobutton_kennwert': `%s`
     };
     
     // Popover-Titel definieren 
     var popoverTitles = {
-      '#infobutton_zyklus': '", ifelse(language == "en", recode("Erhebungsreihe", !!!woerterbuch), "Erhebungsreihe"), "',
-      '#infobutton_kompetenzbereich': '", ifelse(language == "en", recode("Kompetenzbereich", !!!woerterbuch), "Kompetenzbereich"), "',
-      '#infobutton_jahr': '", ifelse(language == "en", recode("Jahr", !!!woerterbuch), "Jahr"), "',
-      '#infobutton_zielpopulation': '", ifelse(language == "en", recode("Zielpopulation", !!!woerterbuch), "Zielpopulation"), "',
-      '#infobutton_kennwert': '", ifelse(language == "en", recode("Kennwert", !!!woerterbuch), "Kennwert"), "'
+      '#infobutton_zyklus': '%s',
+      '#infobutton_kompetenzbereich': '%s',
+      '#infobutton_jahr': '%s',
+      '#infobutton_zielpopulation': '%s',
+      '#infobutton_kennwert': '%s'
     };
 
-      
     // Array mit allen Infobutton-IDs
     var buttons = ['#infobutton_zyklus', '#infobutton_kompetenzbereich',
                    '#infobutton_jahr', '#infobutton_zielpopulation', '#infobutton_kennwert'];
@@ -531,13 +335,13 @@ ui <- fluidPage(
     // Popovers initialisieren
     buttons.forEach(function(btnId) {
       var btn = document.querySelector(btnId);
-      var placement = window.innerWidth <= 992 ? 'bottom' : 'right'; // für kleine Geräte soll der Text unter dem Button auftauchen
+      var placement = window.innerWidth <= 992 ? 'bottom' : 'right';
       new bootstrap.Popover(btn, {
         html: true,
         trigger: 'manual',
         container: 'body',
         placement: placement,
-        fallbackPlacements: [], // keine Alternativen für das Placement zulassen
+        fallbackPlacements: [],
         boundary: 'viewport',
         title: popoverTitles[btnId],
         content: popoverContents[btnId]
@@ -545,15 +349,12 @@ ui <- fluidPage(
   
       // Click Event
       btn.addEventListener('click', function() {
-        // alle anderen Popovers schließen
         buttons.forEach(function(otherId) {
           if(otherId !== btnId) {
             var otherBtn = document.querySelector(otherId);
             bootstrap.Popover.getInstance(otherBtn)?.hide();
           }
         });
-  
-        // aktuellen Popover toggeln
         var pop = bootstrap.Popover.getInstance(btn);
         pop.toggle();
       });
@@ -567,15 +368,21 @@ ui <- fluidPage(
         });
       }
     });
-  "))
-)
-
-# Server -----------------------------------------------------------------------
-
-server <- function(input, output, session) {
+  ",
+    infotexte_list[[lang()]][["Erhebungsreihe"]],
+    infotexte_list[[lang()]][["Kompetenzbereich"]],
+    infotexte_list[[lang()]][["Jahr"]],
+    infotexte_list[[lang()]][["Zielpopulation"]],
+    infotexte_list[[lang()]][["Kennwert"]],
+    ifelse(lang() == "en", recode("Erhebungsreihe", !!!woerterbuch), "Erhebungsreihe"),
+    ifelse(lang() == "en", recode("Kompetenzbereich", !!!woerterbuch), "Kompetenzbereich"),
+    ifelse(lang() == "en", recode("Jahr", !!!woerterbuch), "Jahr"),
+    ifelse(lang() == "en", recode("Zielpopulation", !!!woerterbuch), "Zielpopulation"),
+    ifelse(lang() == "en", recode("Kennwert", !!!woerterbuch), "Kennwert")
+    )))
+  })
   
-  # Eingabevariablen auslesen und zwischenspeichern ----------------------------
-  
+
   # Zyklus (davon hängt ab, welche Eingabefelder dynamisch angezeigt werden)
   selectedZyklus <- reactive({
     input$Zyklus
@@ -604,27 +411,30 @@ server <- function(input, output, session) {
   
   # Dynamisches Auswahlpanel für Kompetenzbereiche generieren ------------------
   output$dynamicPanel_kompetenzbereiche <- renderUI({
-    kb_current <- config$fachKb[[selectedZyklus()]]
+    req(selectedZyklus())
+    kb_current <- config[[lang()]]$fachKb[[selectedZyklus()]]
     make_radioGroupContainer(kb_current)
   })
   
   # Dynamisches Auswahlpanel für Jahr, Kennwert $ Zielpopulation ---------------
   output$dynamicPanel_JahrZielpopulationKennwert <- renderUI({
-    make_YearPopulationParameter(selectedZyklus())
+    req(selectedZyklus())
+    make_YearPopulationParameter(selectedZyklus(), config[[lang()]], combinations[[lang()]], 
+            lang(), predefined_order_parameters[[lang()]], predefined_order_targetpop[[lang()]], i18n)
   })
   
   
   # Jahr, Zielpopulation & Kennwert jeweils voneinander abhängig ---------------
   observe({
     req(selectedKompetenzbereich())
+  
+    selected_combinations <- combinations[[lang()]][combinations[[lang()]]$cycle == selectedZyklus() &
+                                            combinations[[lang()]]$fachKb == selectedKompetenzbereich() , ]
     
-    selected_combinations <- combinations[combinations$cycle == selectedZyklus() &
-                                            combinations$fachKb == selectedKompetenzbereich() , ]
-    
-    zielpopulationen <- order_targetpop(unique(selected_combinations$targetPop))
+    zielpopulationen <- order_targetpop(unique(selected_combinations$targetPop), predefined_order_targetpop[[lang()]])
     # ...abhängig von Zyklus und Fach-Kompetenzbereich
     
-    kennwerte <- order_parameters(unique(selected_combinations[selected_combinations$targetPop == selectedZielpopulation() , ]$parameter))
+    kennwerte <- order_parameters(unique(selected_combinations[selected_combinations$targetPop == selectedZielpopulation() , ]$parameter), predefined_order_parameters[[lang()]])
     # ...abhängig von Zyklus, Fach-Kompetenzbereich, und Zielpopulation
     
     jahre <- unique(selected_combinations[selected_combinations$parameter == selectedKennwert() &
@@ -659,35 +469,42 @@ server <- function(input, output, session) {
   
   data_selected <- reactive({
     req(selectedKennwert())
-    data_selected <- BTdata[ BTdata$cycle == selectedZyklus() &
-                               BTdata$parameter == selectedKennwert() &
-                               BTdata$year == selectedJahr() &
-                               BTdata$fachKb == selectedKompetenzbereich() &
-                               BTdata$targetPop == selectedZielpopulation(), ]
+    data_selected <- BTdata[[lang()]][ BTdata[[lang()]]$cycle == selectedZyklus() &
+                               BTdata[[lang()]]$parameter == selectedKennwert() &
+                               BTdata[[lang()]]$year == selectedJahr() &
+                               BTdata[[lang()]]$fachKb == selectedKompetenzbereich() &
+                               BTdata[[lang()]]$targetPop == selectedZielpopulation(), ]
     data_selected
   })
   
   # Wähle Minimum und Maximum für die Skala
-  config_parameter <- eventReactive(selectedKennwert(), config$parameter[[selectedKennwert()]])
+  config_parameter <- eventReactive(selectedKennwert(), config[[lang()]]$parameter[[selectedKennwert()]])
   
   # Deutschlandkarte -----------------------------------------------------------
   
   output$deutschlandkarte <- renderEatMap({
-    req(data_selected(), selectedKompetenzbereich())
+    req(data_selected(), selectedKompetenzbereich(), lang())
   
     #totaler Mist-Hotfix an der falschen Stelle  
-    if(any(data_selected()$fach %in% "Französisch")) config$total_label <- "Gesamt"  
-    if(any(data_selected()$fach %in% "French")) config$total_label <- "Total"  
+    if(any(data_selected()$fach %in% "Französisch")) config[[lang()]]$total_label <- "Gesamt"  
+    if(any(data_selected()$fach %in% "French")) config[[lang()]]$total_label <- "Total"  
     
     data_selected() %>%
-      eatMap(data = ., config = config)
+      eatMap(data = ., config = config[[lang()]])
   })
   
   # PDF Export -----------------------------------------------------------------
   
   output$report <- downloadHandler(
-    
-    filename = ifelse(language == "de", "IQB_Bildungstrendkarte.pdf", "IQB_Trends_in_Student_Achievement_Map.pdf"),
+
+    filename = function() {
+      if (lang() == "de") {
+        "IQB_Bildungstrendkarte.pdf"
+      } else {
+        "IQB_Trends_in_Student_Achievement_Map.pdf"
+      }     
+      
+    },
     content = function(file) {
       
       # Lade-Anzeige (Feedback) während Download vorbereitet wird
@@ -711,9 +528,9 @@ server <- function(input, output, session) {
                      reverse = config_parameter()$reverse,
                      legendentitel = config_parameter()$title,
                      kennwert = input$Kennwert,
-                     na_label = config$na_label,
+                     na_label = config[[lang()]]$na_label,
                      quelle = sources[sources$year == selectedJahr(), ]$source,
-                     language = language,
+                     language = lang(),
                      woerterbuch = woerterbuch)
       
       # Knitten
