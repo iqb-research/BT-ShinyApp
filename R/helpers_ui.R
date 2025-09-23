@@ -48,7 +48,6 @@ make_radioGroupContainer <- function(kb_current) {
                       ))
 }
 
-
 order_parameters <- function(params, predefined_order_parameters) {
   ordered_parameters <- predefined_order_parameters[which(predefined_order_parameters %in% params)]
 }
