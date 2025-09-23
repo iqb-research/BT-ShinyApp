@@ -31,14 +31,15 @@ library(eatMap)
 # "data_preparation.R" muss neu ausgeführt werden, wenn Kartendaten neu, 
 # BT-Daten neu oder config/Übersetzung neu, sprich eines der Folgenden:
 # BT-Daten ---------------------------------------------------------------------
-BTdata <- readRDS(system.file("data", "BTdata_processed.Rds", package = "BTShinyApp"))
+list.files()
+print("BTData...")
+BTdata <- readRDS("BTdata_processed.Rds")
 
 # Configs for UI ---------------------------------------------------------------
-load("ui_variables.rData")
+load("ui_variables.RData")
 source("helpers_sonst.R")
 source("helpers_ui.R")
-# Map data for PDF output
-mapdata <- readRDS(system.file("data", "mapdata.Rds", package = "BTShinyApp"))
+mapdata <- readRDS("mapdata.Rds")
 
 
 # UI ---------------------------------------------------------------------------
