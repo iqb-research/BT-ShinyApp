@@ -266,7 +266,7 @@ infotexte_list_en <- setNames(
 infotexte_list <- list("de" = infotexte_list_de, "en" = infotexte_list_en)
 
 
-save(config, i18n, infotexte_list, available_cycles, available_parameters, default_newest_cycle, combinations, predefined_order_parameters, predefined_order_targetpop, woerterbuch, file="data/uichoices.RData")
+save(config, i18n, infotexte_list, available_cycles, available_parameters, default_newest_cycle, combinations, predefined_order_parameters, predefined_order_targetpop, woerterbuch, file="data/ui_variables.RData")
 
 
 
