@@ -35,7 +35,7 @@ library(eatMap)
 BTdata <- readRDS(system.file("data", "BTdata_processed.Rds", package = "BTShinyApp"))
 
 # Configs for UI ---------------------------------------------------------------
-load(system.file("data", "uichoices.RData", package = "BTShinyApp"))
+load(system.file("data", "ui_variables.RData", package = "BTShinyApp"))
 
 # Map data for PDF output
 mapdata <- readRDS(system.file("data", "mapdata.Rds", package = "BTShinyApp"))

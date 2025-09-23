@@ -41,7 +41,7 @@ Imports:
     tinytex,
     bslib
 Remotes:
-    franikowsp/eatMap,
-    iqb-research/BT-ShinyApp@v0.1.7,
+    iqb-research/eatMap,
+    iqb-research/BT-ShinyApp@v2.0.0,
     Appsilon/shiny.i18n,
     rstudio/rsconnect
