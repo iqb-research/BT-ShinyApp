@@ -19,6 +19,7 @@ COPY DESCRIPTION /tmp/BTShinyApp/DESCRIPTION
 COPY NAMESPACE /tmp/BTShinyApp/NAMESPACE
 COPY .Rbuildignore /tmp/BTShinyApp/.Rbuildignore
 
+
 # Install the Shiny app package (including dependencies from DESCRIPTION)
 RUN R -e "devtools::install_local('/tmp/BTShinyApp', dependencies = TRUE)"
 
@@ -26,9 +27,11 @@ RUN Rscript -e "remotes::install_github('franikowsp/eatMap')"
 
 RUN rm -rf /tmp/BTShinyApp
 
-# Copy only the app entry point to Shiny server directory
+# Copy app entry point and runtime libraries to Shiny server directory
 COPY inst/BT_Shiny_App/app.R /srv/shiny-server/app/app.R
 COPY inst/BT_Shiny_App/export.Rmd /srv/shiny-server/app/export.Rmd
+COPY data /srv/shiny-server/app/
+COPY R/helpers* /srv/shiny-server/app/
 
 # Make 'shiny' user the owner of the app directory
 RUN chown -R shiny:shiny /srv/shiny-server/app
