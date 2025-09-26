@@ -31,15 +31,13 @@ library(eatMap)
 # "data_preparation.R" muss neu ausgeführt werden, wenn Kartendaten neu, 
 # BT-Daten neu oder config/Übersetzung neu, sprich eines der Folgenden:
 # BT-Daten ---------------------------------------------------------------------
-list.files()
-print("BTData...")
-BTdata <- readRDS("BTdata_processed.Rds")
+
+BTdata <- readRDS("../../data/BTdata_processed.Rds")
 
 # Configs for UI ---------------------------------------------------------------
-load("ui_variables.RData")
-source("helpers_sonst.R")
-source("helpers_ui.R")
-mapdata <- readRDS("mapdata.Rds")
+load("../../data/ui_variables.RData")
+
+mapdata <- readRDS("../../data/mapdata.Rds")
 
 
 # UI ---------------------------------------------------------------------------
