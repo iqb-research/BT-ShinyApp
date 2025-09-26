@@ -10,6 +10,12 @@ RUN apt-get update && apt-get install -y \
     less wget vim && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
+    
+# Accept GITHUB_PAT as a build argument
+ARG GITHUB_PAT
+
+# Set environment variable for R to use it
+ENV GITHUB_PAT=${GITHUB_PAT}   
 
 # Install remotes and other dependencies
 RUN R -e "install.packages('remotes')"
