@@ -22,8 +22,8 @@ library(stringr)
 library(bslib)
 library(eatMap)
 
-# if (!requireNamespace("BTShinyApp", quietly = TRUE)) {
-#   remotes::install_github("iqb-research/BT-ShinyApp@v1.0.0")
+#if (!requireNamespace("BTShinyApp", quietly = TRUE)) {
+#   remotes::install_github("ffge/BT-ShinyApp@v1.1.0")
 # }
 library(BTShinyApp)
 
