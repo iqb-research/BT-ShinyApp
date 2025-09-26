@@ -17,7 +17,7 @@ RUN R -e "remotes::install_github('iqb-research/eatMap')"
 
 # Install your Shiny app package from GitHub (this includes everything: R/, data/, man/, inst/, etc.)
 # RUN R -e "remotes::install_github('iqb-research/BT-ShinyApp@v1.1.0')"
-RUN R -e 'remotes::install_github("iqb-research/BT-ShinyApp"", ref = "dockerTest2")'
+RUN R -e 'remotes::install_github("iqb-research/BT-ShinyApp", ref = "dockerTest2")'
 
 
 # Run app directly from package — no need to copy files
