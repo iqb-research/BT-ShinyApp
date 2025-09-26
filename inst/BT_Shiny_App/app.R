@@ -28,19 +28,15 @@ library(BTShinyApp)
 # BT-Daten ---------------------------------------------------------------------
 
 # Get internal data from package namespace
-BTdata <- get("BTdata", envir = asNamespace("BTShinyApp"))
-mapdata <- get("mapdata", envir = asNamespace("BTShinyApp"))
+BTdata <- readRDS(system.file("extdata", "BTdata_processed.Rds", package = "BTShinyApp"))
 
-config <- get("config", envir = asNamespace("BTShinyApp"))
-i18n <- get("i18n", envir = asNamespace("BTShinyApp"))
-infotexte_list <- get("infotexte_list", envir = asNamespace("BTShinyApp"))
-available_cycles <- get("available_cycles", envir = asNamespace("BTShinyApp"))
-available_parameters <- get("available_parameters", envir = asNamespace("BTShinyApp"))
-default_newest_cycle <- get("default_newest_cycle", envir = asNamespace("BTShinyApp"))
-combinations <- get("combinations", envir = asNamespace("BTShinyApp"))
-predefined_order_parameters <- get("predefined_order_parameters", envir = asNamespace("BTShinyApp"))
-predefined_order_targetpop <- get("predefined_order_targetpop", envir = asNamespace("BTShinyApp"))
-woerterbuch <- get("woerterbuch", envir = asNamespace("BTShinyApp"))
+# Configs for UI ---------------------------------------------------------------
+
+load(system.file("data", "ui_variables.RData", package = "BTShinyApp"))
+
+# Map data for PDF output
+
+mapdata <- readRDS(system.file("extdata", "mapdata.Rds", package = "BTShinyApp"))
 
 
 # UI ---------------------------------------------------------------------------
