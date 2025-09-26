@@ -22,7 +22,7 @@ COPY .Rbuildignore /tmp/BTShinyApp/.Rbuildignore
 # Install the Shiny app package (including dependencies from DESCRIPTION)
 RUN R -e "devtools::install_local('/tmp/BTShinyApp', dependencies = TRUE)"
 
-RUN Rscript -e "remotes::install_github('franikowsp/eatMap')"
+RUN Rscript -e "remotes::install_github('iqb-research/eatMap')"
 
 RUN rm -rf /tmp/BTShinyApp
 
