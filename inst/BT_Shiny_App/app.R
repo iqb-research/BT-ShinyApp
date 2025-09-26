@@ -21,18 +21,29 @@ library(tinytex)
 library(stringr)
 library(bslib)
 library(eatMap)
-
-#if (!requireNamespace("BTShinyApp", quietly = TRUE)) {
-#   remotes::install_github("ffge/BT-ShinyApp@v1.1.0")
-# }
 library(BTShinyApp)
-
 
 # "data_preparation.R" muss neu ausgeführt werden, wenn Kartendaten neu, 
 # BT-Daten neu oder config/Übersetzung neu, sprich eines der Folgenden:
 # BT-Daten ---------------------------------------------------------------------
 
+# Main data:
+BTdata <- BTShinyApp::BTdata
 
+# Configs
+config <- BTShinyApp::config
+i18n <- BTShinyApp::i18n
+infotexte_list <- BTShinyApp::infotexte_list
+available_cycles <- BTShinyApp::available_cycles
+available_parameters <- BTShinyApp::available_parameters
+default_newest_cycle <- BTShinyApp::default_newest_cycle
+combinations <- BTShinyApp::combinations
+predefined_order_parameters <- BTShinyApp::predefined_order_parameters
+predefined_order_targetpop <- BTShinyApp::predefined_order_targetpop
+woerterbuch <- BTShinyApp::woerterbuch
+
+# Map:
+mapdata <- BTShinyApp::mapdata
 
 # UI ---------------------------------------------------------------------------
 
@@ -424,10 +435,10 @@ server <- function(input, output, session) {
     selected_combinations <- combinations[[lang()]][combinations[[lang()]]$cycle == selectedZyklus() &
                                             combinations[[lang()]]$fachKb == selectedKompetenzbereich() , ]
     
-    zielpopulationen <- order_targetpop(unique(selected_combinations$targetPop), predefined_order_targetpop[[lang()]])
+    zielpopulationen <- BTShinyApp:::order_targetpop(unique(selected_combinations$targetPop), predefined_order_targetpop[[lang()]])
     # ...abhängig von Zyklus und Fach-Kompetenzbereich
     
-    kennwerte <- order_parameters(unique(selected_combinations[selected_combinations$targetPop == selectedZielpopulation() , ]$parameter), predefined_order_parameters[[lang()]])
+    kennwerte <- BTShinyApp:::order_parameters(unique(selected_combinations[selected_combinations$targetPop == selectedZielpopulation() , ]$parameter), predefined_order_parameters[[lang()]])
     # ...abhängig von Zyklus, Fach-Kompetenzbereich, und Zielpopulation
     
     jahre <- unique(selected_combinations[selected_combinations$parameter == selectedKennwert() &
@@ -462,11 +473,11 @@ server <- function(input, output, session) {
   
   data_selected <- reactive({
     req(selectedKennwert())
-    data_selected <- BTdata[[lang()]][ BTdata[[lang()]]$cycle == selectedZyklus() &
-                               BTdata[[lang()]]$parameter == selectedKennwert() &
-                               BTdata[[lang()]]$year == selectedJahr() &
-                               BTdata[[lang()]]$fachKb == selectedKompetenzbereich() &
-                               BTdata[[lang()]]$targetPop == selectedZielpopulation(), ]
+    data_selected <- BTdata[[lang()]][BTdata[[lang()]]$cycle == selectedZyklus() &
+           BTdata[[lang()]]$parameter == selectedKennwert() &
+           BTdata[[lang()]]$year == selectedJahr() &
+           BTdata[[lang()]]$fachKb == selectedKompetenzbereich() &
+           BTdata[[lang()]]$targetPop == selectedZielpopulation(), ]
     data_selected
   })
   
