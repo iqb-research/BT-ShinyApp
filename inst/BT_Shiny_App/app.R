@@ -32,7 +32,7 @@ BTdata <- readRDS(system.file("extdata", "BTdata_processed.Rds", package = "BTSh
 
 # Configs for UI ---------------------------------------------------------------
 
-load(system.file("data", "ui_variables.RData", package = "BTShinyApp"))
+load(system.file("extdata", "ui_variables.RData", package = "BTShinyApp"))
 
 # Map data for PDF output
 
