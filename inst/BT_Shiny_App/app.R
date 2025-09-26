@@ -23,7 +23,7 @@ library(bslib)
 library(eatMap)
 library(BTShinyApp)
 
-# "data_preparation.R" muss neu ausgeführt werden, wenn Kartendaten neu, 
+# "preparation.R" muss neu ausgeführt werden, wenn Kartendaten neu, 
 # BT-Daten neu oder config/Übersetzung neu, sprich eines der Folgenden:
 # BT-Daten ---------------------------------------------------------------------
 

@@ -14,7 +14,7 @@
 # library(tidyverse)
 
 # Laden der Konfigurationsliste
-source(system.file("config", "config.R", package = "BTShinyApp"))
+source(file.path("inst/config", "config.R"))
 
 # Rohdatensatz
 data("allDat", package = "BTShinyApp")
@@ -266,7 +266,7 @@ infotexte_list_en <- setNames(
 infotexte_list <- list("de" = infotexte_list_de, "en" = infotexte_list_en)
 
 
-save(config, i18n, infotexte_list, available_cycles, available_parameters, default_newest_cycle, combinations, predefined_order_parameters, predefined_order_targetpop, woerterbuch, file="data/ui_variables.RData")
+save(config, i18n, infotexte_list, available_cycles, available_parameters, default_newest_cycle, combinations, predefined_order_parameters, predefined_order_targetpop, woerterbuch, file="inst/extdata/ui_variables.rda")
 
 
 
