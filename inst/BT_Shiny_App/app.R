@@ -406,13 +406,13 @@ server <- function(input, output, session) {
   output$dynamicPanel_kompetenzbereiche <- renderUI({
     req(selectedZyklus())
     kb_current <- config[[lang()]]$fachKb[[selectedZyklus()]]
-    make_radioGroupContainer(kb_current)
+    BTShinyApp:::make_radioGroupContainer(kb_current)
   })
   
   # Dynamisches Auswahlpanel für Jahr, Kennwert $ Zielpopulation ---------------
   output$dynamicPanel_JahrZielpopulationKennwert <- renderUI({
     req(selectedZyklus())
-    make_YearPopulationParameter(selectedZyklus(), config[[lang()]], combinations[[lang()]], 
+    BTShinyApp:::make_YearPopulationParameter(selectedZyklus(), config[[lang()]], combinations[[lang()]], 
             lang(), predefined_order_parameters[[lang()]], predefined_order_targetpop[[lang()]], i18n)
   })
   
