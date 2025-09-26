@@ -43,9 +43,6 @@ predefined_order_targetpop <- get("predefined_order_targetpop", envir = asNamesp
 woerterbuch <- get("woerterbuch", envir = asNamespace("BTShinyApp"))
 
 
-# Map:
-mapdata <- BTShinyApp::mapdata
-
 # UI ---------------------------------------------------------------------------
 
 ui <- fluidPage(
@@ -412,7 +409,6 @@ server <- function(input, output, session) {
   selectedZielpopulation <- reactive({
     input$Zielpopulation
   })
-  
   
   # Dynamisches Auswahlpanel für Kompetenzbereiche generieren ------------------
   output$dynamicPanel_kompetenzbereiche <- renderUI({

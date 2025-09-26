@@ -64,7 +64,7 @@ make_YearPopulationParameter <- function(cycle_current, config, combinations, la
   fachKb1 <- config$fachKb[[cycle_current]][1]
   fach1 <- names(fachKb1)
   fachKb_default <- str_glue("{fach1}-{fachKb1[[1]][1]}")
-  
+
   selected_combinations <- combinations[combinations$cycle == cycle_current &
                                           combinations$fachKb == fachKb_default, ]
   
