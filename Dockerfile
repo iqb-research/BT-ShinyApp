@@ -44,16 +44,3 @@ EXPOSE 3838
 
 # Run Shiny Server
 CMD ["/usr/bin/shiny-server"]
-
-
-
-
-RUN rm -rf /tmp/BTShinyApp
-
-
-
-# Expose the port Shiny Server runs on
-EXPOSE 3838
-
-# Default CMD for shiny-server (loads any app in /srv/shiny-server)
-CMD ["/usr/bin/shiny-server"]
