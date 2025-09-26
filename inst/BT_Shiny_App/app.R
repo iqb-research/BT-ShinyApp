@@ -25,19 +25,13 @@ library(eatMap)
 # if (!requireNamespace("BTShinyApp", quietly = TRUE)) {
 #   remotes::install_github("iqb-research/BT-ShinyApp@v1.0.0")
 # }
-# library(BTShinyApp)
+library(BTShinyApp)
 
 
 # "data_preparation.R" muss neu ausgeführt werden, wenn Kartendaten neu, 
 # BT-Daten neu oder config/Übersetzung neu, sprich eines der Folgenden:
 # BT-Daten ---------------------------------------------------------------------
 
-BTdata <- readRDS("../../inst/extdata/BTdata_processed.Rds")
-
-# Configs for UI ---------------------------------------------------------------
-load("../../data/ui_variables.RData")
-
-mapdata <- readRDS("../../inst/extdata/mapdata.Rds")
 
 
 # UI ---------------------------------------------------------------------------

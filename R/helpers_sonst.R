@@ -14,56 +14,25 @@ recode_nested_list <- function(my_list, recode_rules) {
 }
 
 
-# available choices configuration helper:
-make_YearPopulationParameter <- function(cycle_current, config, combinations, language, predefined_order_parameters, predefined_order_targetpop, i18n) {
-  # 1. Kb separieren
-  fachKb1 <- config$fachKb[[cycle_current]][1]
-  fach1 <- names(fachKb1)
-  fachKb_default <- str_glue("{fach1}-{fachKb1[[1]][1]}")
+
+.onLoad <- function(libname, pkgname) {
+  # Load BTdata
+  bt_path <- system.file("extdata", "BTdata_processed.Rds", package = pkgname)
+  if (file.exists(bt_path)) {
+    bt <- readRDS(bt_path)
+    assign("BTdata", bt, envir = parent.env(environment()))
+  }
   
-  selected_combinations <- combinations[combinations$cycle == cycle_current &
-                                          combinations$fachKb == fachKb_default, ]
+  # Load mapdata
+  map_path <- system.file("extdata", "mapdata.Rds", package = pkgname)
+  if (file.exists(map_path)) {
+    mp <- readRDS(map_path)
+    assign("mapdata", mp, envir = parent.env(environment()))
+  }
   
-  targetPop_default <- i18n$t("alle")
-  parameter_default <- "mean"
-  
-  years <- sort(unique(selected_combinations[selected_combinations$targetPop == targetPop_default &
-                                               selected_combinations$parameter == parameter_default, ]$year))
-  
-  # Darüber sollte immer der aktuellste BT angesteuert werden
-  year_default <- max(years)
-  
-  parameters <- order_parameters(unique(selected_combinations[selected_combinations$targetPop == targetPop_default &
-                                                                selected_combinations$year == year_default, ]$parameter), predefined_order_parameters)
-  
-  targetPops <- order_targetpop(unique(selected_combinations[selected_combinations$year == year_default &
-                                                               selected_combinations$parameter == parameter_default, ]$targetPop), predefined_order_targetpop)
-  
-  div(
-    sliderTextInput(inputId = "Jahr",
-                    label = i18n$t("Jahr"),
-                    grid = TRUE,
-                    choices = years,
-                    selected = year_default,
-                    hide_min_max = TRUE,
-                    width='75%'),
-    
-    selectInput(
-      inputId = "Zielpopulation",
-      label = i18n$t("Zielpopulation"),
-      choices = targetPops,
-      selected = targetPop_default,
-      width = '95%'
-    ),
-    
-    selectInput(
-      inputId = "Kennwert",
-      label = i18n$t("Kennwert"),
-      choices = parameters,
-      selected = parameter_default,
-      width = '95%'
-    )
-  )
+  # Load UI variables
+  ui_path <- system.file("data", "ui_variables.RData", package = pkgname)
+  if (file.exists(ui_path)) {
+    load(ui_path, envir = parent.env(environment()))
+  }
 }
-
-
