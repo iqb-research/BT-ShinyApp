@@ -27,20 +27,21 @@ library(BTShinyApp)
 # BT-Daten neu oder config/Übersetzung neu, sprich eines der Folgenden:
 # BT-Daten ---------------------------------------------------------------------
 
-# Main data:
-BTdata <- BTShinyApp::BTdata
+# Get internal data from package namespace
+BTdata <- get("BTdata", envir = asNamespace("BTShinyApp"))
+mapdata <- get("mapdata", envir = asNamespace("BTShinyApp"))
 
-# Configs
-config <- BTShinyApp::config
-i18n <- BTShinyApp::i18n
-infotexte_list <- BTShinyApp::infotexte_list
-available_cycles <- BTShinyApp::available_cycles
-available_parameters <- BTShinyApp::available_parameters
-default_newest_cycle <- BTShinyApp::default_newest_cycle
-combinations <- BTShinyApp::combinations
-predefined_order_parameters <- BTShinyApp::predefined_order_parameters
-predefined_order_targetpop <- BTShinyApp::predefined_order_targetpop
-woerterbuch <- BTShinyApp::woerterbuch
+config <- get("config", envir = asNamespace("BTShinyApp"))
+i18n <- get("i18n", envir = asNamespace("BTShinyApp"))
+infotexte_list <- get("infotexte_list", envir = asNamespace("BTShinyApp"))
+available_cycles <- get("available_cycles", envir = asNamespace("BTShinyApp"))
+available_parameters <- get("available_parameters", envir = asNamespace("BTShinyApp"))
+default_newest_cycle <- get("default_newest_cycle", envir = asNamespace("BTShinyApp"))
+combinations <- get("combinations", envir = asNamespace("BTShinyApp"))
+predefined_order_parameters <- get("predefined_order_parameters", envir = asNamespace("BTShinyApp"))
+predefined_order_targetpop <- get("predefined_order_targetpop", envir = asNamespace("BTShinyApp"))
+woerterbuch <- get("woerterbuch", envir = asNamespace("BTShinyApp"))
+
 
 # Map:
 mapdata <- BTShinyApp::mapdata
