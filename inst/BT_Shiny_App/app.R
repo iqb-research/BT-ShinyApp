@@ -32,12 +32,12 @@ library(eatMap)
 # BT-Daten neu oder config/Übersetzung neu, sprich eines der Folgenden:
 # BT-Daten ---------------------------------------------------------------------
 
-BTdata <- readRDS("../../data/BTdata_processed.Rds")
+BTdata <- readRDS("../../inst/extdata/BTdata_processed.Rds")
 
 # Configs for UI ---------------------------------------------------------------
 load("../../data/ui_variables.RData")
 
-mapdata <- readRDS("../../data/mapdata.Rds")
+mapdata <- readRDS("../../inst/extdata/mapdata.Rds")
 
 
 # UI ---------------------------------------------------------------------------
