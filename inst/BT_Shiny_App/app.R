@@ -475,7 +475,7 @@ server <- function(input, output, session) {
   
   # Deutschlandkarte -----------------------------------------------------------
   
-  output$deutschlandkarte <- renderEatMap({
+  output$deutschlandkarte <- eatMap::renderEatMap({
     req(data_selected(), selectedKompetenzbereich(), lang())
   
     #totaler Mist-Hotfix an der falschen Stelle  
@@ -483,7 +483,7 @@ server <- function(input, output, session) {
     if(any(data_selected()$fach %in% "French")) config[[lang()]]$total_label <- "Total"  
     
     data_selected() %>%
-      eatMap(data = ., config = config[[lang()]])
+      eatMap::eatMap(data = ., config = config[[lang()]])
   })
   
   # PDF Export -----------------------------------------------------------------
