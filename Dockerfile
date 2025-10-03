@@ -28,4 +28,4 @@ RUN R -e 'remotes::install_github("iqb-research/BT-ShinyApp", ref = "dockerTest3
 
 # Run app directly from package — no need to copy files
 EXPOSE 3838
-CMD ["R", "-e", "BTShinyApp::run_app(host = "0.0.0.0", port = 3838)"]
+CMD ["R", "-e", "BTShinyApp::run_app(host = '0.0.0.0', port = 3838)"]
