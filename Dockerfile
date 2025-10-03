@@ -28,6 +28,9 @@ RUN R -e 'remotes::install_github("iqb-research/BT-ShinyApp", ref = "dockerTest3
 # Run app directly from package — no need to copy files
 EXPOSE 3838
 
+# Add this line
+ENV SHINY_SERVER_VERSION=1.5.0
+
 # Set default host and port (can be overridden at runtime)
 ENV SHINY_HOST=0.0.0.0
 ENV SHINY_PORT=3838
