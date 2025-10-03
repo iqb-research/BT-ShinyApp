@@ -25,7 +25,13 @@ RUN R -e "remotes::install_github('iqb-research/eatMap')"
 # RUN R -e "remotes::install_github('iqb-research/BT-ShinyApp@v1.1.0')"
 RUN R -e 'remotes::install_github("iqb-research/BT-ShinyApp", ref = "dockerTest3")'
 
-
 # Run app directly from package — no need to copy files
 EXPOSE 3838
-CMD ["R", "-e", "BTShinyApp::run_app(host = '0.0.0.0', port = 3838)"]
+
+# Set default host and port (can be overridden at runtime)
+ENV SHINY_HOST=0.0.0.0
+ENV SHINY_PORT=3838
+
+# Run the app from the installed R package
+CMD R -e "BTShinyApp::run_app()"
+
