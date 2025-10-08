@@ -21,25 +21,22 @@ library(tinytex)
 library(stringr)
 library(bslib)
 library(eatMap)
+library(BTShinyApp)
 
-# if (!requireNamespace("BTShinyApp", quietly = TRUE)) {
-#   remotes::install_github("iqb-research/BT-ShinyApp@v1.0.0")
-# }
-# library(BTShinyApp)
-
-
-# "data_preparation.R" muss neu ausgeführt werden, wenn Kartendaten neu, 
+# "preparation.R" muss neu ausgeführt werden, wenn Kartendaten neu, 
 # BT-Daten neu oder config/Übersetzung neu, sprich eines der Folgenden:
 # BT-Daten ---------------------------------------------------------------------
-list.files()
-print("BTData...")
-BTdata <- readRDS("BTdata_processed.Rds")
+
+# Get internal data from package namespace
+BTdata <- readRDS(system.file("extdata", "BTdata_processed.Rds", package = "BTShinyApp"))
 
 # Configs for UI ---------------------------------------------------------------
-load("ui_variables.RData")
-source("helpers_sonst.R")
-source("helpers_ui.R")
-mapdata <- readRDS("mapdata.Rds")
+
+load(system.file("extdata", "ui_variables.rda", package = "BTShinyApp"))
+
+# Map data for PDF output
+
+mapdata <- readRDS(system.file("extdata", "mapdata.Rds", package = "BTShinyApp"))
 
 
 # UI ---------------------------------------------------------------------------
@@ -409,18 +406,17 @@ server <- function(input, output, session) {
     input$Zielpopulation
   })
   
-  
   # Dynamisches Auswahlpanel für Kompetenzbereiche generieren ------------------
   output$dynamicPanel_kompetenzbereiche <- renderUI({
     req(selectedZyklus())
     kb_current <- config[[lang()]]$fachKb[[selectedZyklus()]]
-    make_radioGroupContainer(kb_current)
+    BTShinyApp:::make_radioGroupContainer(kb_current)
   })
   
   # Dynamisches Auswahlpanel für Jahr, Kennwert $ Zielpopulation ---------------
   output$dynamicPanel_JahrZielpopulationKennwert <- renderUI({
     req(selectedZyklus())
-    make_YearPopulationParameter(selectedZyklus(), config[[lang()]], combinations[[lang()]], 
+    BTShinyApp:::make_YearPopulationParameter(selectedZyklus(), config[[lang()]], combinations[[lang()]], 
             lang(), predefined_order_parameters[[lang()]], predefined_order_targetpop[[lang()]], i18n)
   })
   
@@ -432,10 +428,10 @@ server <- function(input, output, session) {
     selected_combinations <- combinations[[lang()]][combinations[[lang()]]$cycle == selectedZyklus() &
                                             combinations[[lang()]]$fachKb == selectedKompetenzbereich() , ]
     
-    zielpopulationen <- order_targetpop(unique(selected_combinations$targetPop), predefined_order_targetpop[[lang()]])
+    zielpopulationen <- BTShinyApp:::order_targetpop(unique(selected_combinations$targetPop), predefined_order_targetpop[[lang()]])
     # ...abhängig von Zyklus und Fach-Kompetenzbereich
     
-    kennwerte <- order_parameters(unique(selected_combinations[selected_combinations$targetPop == selectedZielpopulation() , ]$parameter), predefined_order_parameters[[lang()]])
+    kennwerte <- BTShinyApp:::order_parameters(unique(selected_combinations[selected_combinations$targetPop == selectedZielpopulation() , ]$parameter), predefined_order_parameters[[lang()]])
     # ...abhängig von Zyklus, Fach-Kompetenzbereich, und Zielpopulation
     
     jahre <- unique(selected_combinations[selected_combinations$parameter == selectedKennwert() &
@@ -470,11 +466,11 @@ server <- function(input, output, session) {
   
   data_selected <- reactive({
     req(selectedKennwert())
-    data_selected <- BTdata[[lang()]][ BTdata[[lang()]]$cycle == selectedZyklus() &
-                               BTdata[[lang()]]$parameter == selectedKennwert() &
-                               BTdata[[lang()]]$year == selectedJahr() &
-                               BTdata[[lang()]]$fachKb == selectedKompetenzbereich() &
-                               BTdata[[lang()]]$targetPop == selectedZielpopulation(), ]
+    data_selected <- BTdata[[lang()]][BTdata[[lang()]]$cycle == selectedZyklus() &
+           BTdata[[lang()]]$parameter == selectedKennwert() &
+           BTdata[[lang()]]$year == selectedJahr() &
+           BTdata[[lang()]]$fachKb == selectedKompetenzbereich() &
+           BTdata[[lang()]]$targetPop == selectedZielpopulation(), ]
     data_selected
   })
   
@@ -483,7 +479,7 @@ server <- function(input, output, session) {
   
   # Deutschlandkarte -----------------------------------------------------------
   
-  output$deutschlandkarte <- renderEatMap({
+  output$deutschlandkarte <- eatMap::renderEatMap({
     req(data_selected(), selectedKompetenzbereich(), lang())
   
     #totaler Mist-Hotfix an der falschen Stelle  
@@ -491,7 +487,7 @@ server <- function(input, output, session) {
     if(any(data_selected()$fach %in% "French")) config[[lang()]]$total_label <- "Total"  
     
     data_selected() %>%
-      eatMap(data = ., config = config[[lang()]])
+      eatMap::eatMap(data = ., config = config[[lang()]])
   })
   
   # PDF Export -----------------------------------------------------------------
