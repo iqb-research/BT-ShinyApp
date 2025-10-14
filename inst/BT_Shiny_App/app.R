@@ -259,6 +259,12 @@ ui <- fluidPage(
                    height: 30px;")
                     )
                   )
+              ),
+              
+              # Versionsnotiz
+              div(
+                style = "margin-top: 10px; font-size: 12px; color: lightgrey;",
+                textOutput("btshiny_version")
               )
           ),
           div(
@@ -488,6 +494,12 @@ server <- function(input, output, session) {
     
     data_selected() %>%
       eatMap::eatMap(data = ., config = config[[lang()]])
+  })
+  
+  # Version number
+  
+  output$btshiny_version <- renderText({
+    paste("BTShinyApp Version:", as.character(packageVersion("BTShinyApp")))
   })
   
   # PDF Export -----------------------------------------------------------------
