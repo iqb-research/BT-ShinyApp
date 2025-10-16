@@ -13,8 +13,8 @@
 # library(dplyr)
 # library(tidyverse)
 
-# Laden der Konfigurationsliste
-source(file.path("inst/config", "config.R"))
+# Konfigurationsliste laden
+source(system.file("config", "config.R", package = "BTShinyApp"))
 
 # Rohdatensatz
 data("allDat", package = "BTShinyApp")

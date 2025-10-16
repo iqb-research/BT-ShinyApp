@@ -1,6 +1,6 @@
 Package: BTShinyApp
 Title: Interactive Visualization of IQB-Bildungstrend Results
-Version: 1.1.0
+Version: 1.2.1
 Authors@R: 
     c(person(given = "Karoline", family ="Sachse", email = "karoline.sachse@iqb.hu-berlin.de", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-6688-1267")),
       person(given = "Alina", family ="Apel", email = "apelalin@hu-berlin.de", role = "aut"),

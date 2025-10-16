@@ -4,7 +4,10 @@
 \alias{run_app}
 \title{Run the Shiny App}
 \usage{
-run_app()
+run_app(
+  host = Sys.getenv("SHINY_HOST", "0.0.0.0"),
+  port = as.numeric(Sys.getenv("SHINY_PORT", 3838))
+)
 }
 \description{
 Run the Shiny App
