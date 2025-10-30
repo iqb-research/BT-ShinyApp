@@ -493,7 +493,7 @@ server <- function(input, output, session) {
     if(any(data_selected()$fach %in% "French")) config[[lang()]]$total_label <- "Total"  
     
     data_selected() %>%
-      eatMap::eatMap(data = ., config = config[[lang()]])
+      eatMap::eatMap(data = ., config = config[[lang()]], lang = lang())
   })
   
   # Version number
