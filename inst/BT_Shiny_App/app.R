@@ -44,7 +44,7 @@ mapdata <- readRDS(system.file("extdata", "mapdata.Rds", package = "BTShinyApp")
 ui <- fluidPage(
   
   # Styling --------------------------------------------------------------------
-  theme = bs_theme(version = 5, bootswatch = "sandstone"),
+  theme = bs_theme(version = 5, bootswatch = "sandstone", base_font = "system-ui"),
   
   # Aussehen des Sliders
   # .irs-grid-pol.small: entfernt die vertikalen Gitternetzlinien zwischen den Ticks
